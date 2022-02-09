@@ -1,0 +1,29 @@
+{
+  "extends": [
+    // "next/core-web-vitals",
+    "airbnb",
+    "airbnb/hooks"
+  ],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": "true"
+    }
+  },
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "react/require-default-props": "off",
+    "no-console": "error",
+    "max-len": "off"
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/*.spec.js",
+        "**/*.spec.jsx"
+      ],
+      "env": {
+        "jest": true
+      }
+    }
+  ]
+}
