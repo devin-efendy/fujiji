@@ -10,7 +10,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navigation title="Fujiji" />
-      <AdListings data={['test1', 'test2', 'test3']} />
+      <AdListings data={['some changes', 'test2', 'test3']} />
     </div>
   );
 }
