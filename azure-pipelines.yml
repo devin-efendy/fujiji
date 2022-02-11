@@ -19,5 +19,6 @@ steps:
     cd fujiji-client/
     npm run lint
     npm install
+    npm install next
     npm run build
   displayName: 'npm install and build'
