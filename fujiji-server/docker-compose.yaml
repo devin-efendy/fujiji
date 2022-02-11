@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  node-app-starter:
+    image: "fujiji-server-image"
+    container_name: "fujiji-server"
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - .:/app
+    ports:
+      - "8000:8000"
