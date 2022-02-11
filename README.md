@@ -24,6 +24,6 @@ Core features and their user stories breakdown (for first 3 features): https://g
 | Name        | GitHub Username | Email |
 | ----------- | -----------     |--     |
 | Jishan Arora | jishanarora | aroraj@myumanitoba.ca |
-| Asifur Rahman | slash57 | rahmana2@myumanitoba.ca |
+| Asifur Rahman | asifrahman57 | rahmana2@myumanitoba.ca |
 | Wynona Goldiella | wynonagcc | goldielw@myumanitoba.ca |
 | Devin Efendy | devin-efendy | efendyd@myumanitoba.ca |
