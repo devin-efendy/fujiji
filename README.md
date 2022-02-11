@@ -13,6 +13,8 @@ Sellers can post an ad and choose to boost their ad by purchasing an extra fee. 
 5. Comments and reviews
 6. Chat between users
 
+Core features and their user stories breakdown (for first 3 features): https://github.com/devin-efendy/fujiji/wiki/Core-Features
+
 ## Technologies
 - Front-end: Next.js
 - Back-end: Node.js, Express
