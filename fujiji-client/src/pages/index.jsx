@@ -1,7 +1,17 @@
 import Head from 'next/head';
-import { Navigation, AdListings } from '../components';
+import { Navigation, AdListing } from '../components';
 
 export default function Home() {
+  const props = {
+    imageUrl: 'https://bit.ly/2Z4KKcF',
+    imageAlt: 'Rear view of modern home with pool',
+    beds: 3,
+    baths: 2,
+    title: 'Modern home in city center in the heart of historic Los Angeles',
+    formattedPrice: '$1,900.00',
+    reviewCount: 34,
+    rating: 4,
+  };
   return (
     <div>
       <Head>
@@ -10,7 +20,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navigation title="Fujiji" />
-      <AdListings data={['test1', 'test2', 'test3']} />
+      <AdListing {...props} />
     </div>
   );
 }
