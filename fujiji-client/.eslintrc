@@ -13,14 +13,12 @@
     "react/react-in-jsx-scope": "off",
     "react/require-default-props": "off",
     "no-console": "error",
-    "max-len": "off"
+    "max-len": "off",
+    "react/jsx-props-no-spreading": "off"
   },
   "overrides": [
     {
-      "files": [
-        "**/*.spec.js",
-        "**/*.spec.jsx"
-      ],
+      "files": ["**/*.spec.js", "**/*.spec.jsx"],
       "env": {
         "jest": true
       }
