@@ -15,8 +15,8 @@ steps:
     versionSpec: '16.x'
   displayName: 'Install Node.js'
 
-- script: 
-    cd fujiji-server/
+- script:
     npm install docker compose up
     npm run dev
+  workingDirectory: fujiji-server/
   displayName: 'npm install and build'
