@@ -1,74 +1,130 @@
 import PropTypes from 'prop-types';
-import { Box, Badge, Image } from '@chakra-ui/react';
-import { StarIcon } from '@chakra-ui/icons';
-/**
- * TODO: This is just an example, Change this to actual implementation
- */
+import {
+  AspectRatio, Box, Badge, Text, Image, Icon,
+} from '@chakra-ui/react';
+import { MdLocationOn } from 'react-icons/md';
+import { BsCalendar } from 'react-icons/bs';
+import { format, isValid, parse } from 'date-fns';
+
+function renderConditionBadge(condition) {
+  switch (condition) {
+    case 'new':
+      return (
+        <Badge borderRadius="full" px="2" colorScheme="teal">
+          Brand New
+        </Badge>
+      );
+    case 'used':
+      return (
+        <Badge borderRadius="full" px="2" colorScheme="orange">
+          Used
+        </Badge>
+      );
+    default:
+      return undefined;
+  }
+}
+
+function ListingInfoBox({ children }) {
+  return (
+    <Box
+      color="gray.500"
+      fontWeight="semibold"
+      letterSpacing="wide"
+      textTransform="uppercase"
+      fontSize="xs"
+      display="flex"
+      alignItems="center"
+    >
+      {children}
+    </Box>
+  );
+}
 export default function AdListing({
   imageUrl,
   imageAlt,
-  beds,
-  baths,
   title,
-  formattedPrice,
-  reviewCount,
-  rating,
+  price,
+  description = '',
+  location,
+  condition = 'used',
+  onClick = undefined,
+  postingDate,
 }) {
-  return (
-    <Box maxW="sm" borderWidth="1px" borderRadius="lg" overflow="hidden">
-      <Image src={imageUrl} alt={imageAlt} />
+  const formattedPrice = price.toLocaleString();
+  const parsedDate = parse(postingDate, 'yyyy-MM-dd', new Date());
+  const formattedDate = isValid(parsedDate)
+    ? format(new Date(parsedDate), 'dd MMM yyyy')
+    : '';
 
-      <Box p="6">
-        <Box display="flex" alignItems="baseline">
-          <Badge borderRadius="full" px="2" colorScheme="teal">
-            New
-          </Badge>
-          <Box
-            color="gray.500"
-            fontWeight="semibold"
-            letterSpacing="wide"
-            fontSize="xs"
-            textTransform="uppercase"
-            ml="2"
-          >
-            {beds}
-            {' '}
-            beds &bull;
-            {baths}
-            {' '}
-            baths
-          </Box>
+  const { city, provinceCode } = location;
+  const formattedLocation = `${city}, ${provinceCode}`;
+
+  return (
+    <Box
+      as="button"
+      w="xs"
+      borderWidth="1px"
+      rounded="lg"
+      onClick={onClick}
+      _hover={{ boxShadow: 'lg' }}
+    >
+      <AspectRatio ratio={4 / 3}>
+        <Image src={imageUrl} roundedTop="md" alt={imageAlt} />
+      </AspectRatio>
+      <Box p="6" pb="5" d="flex" flexDirection="column" height="230px">
+        <Box display="flex" alignItems="center" justifyContent="space-between">
+          {formattedDate && (
+            <ListingInfoBox>
+              <Icon as={BsCalendar} w={5} h={5} color="teal.500" />
+              <Text ml={2}>{formattedDate}</Text>
+            </ListingInfoBox>
+          )}
+
+          <ListingInfoBox>
+            <Icon as={MdLocationOn} w={5} h={5} color="teal.500" />
+            <Text ml={1}>{formattedLocation}</Text>
+          </ListingInfoBox>
         </Box>
 
         <Box
-          mt="1"
-          fontWeight="semibold"
-          as="h4"
+          mt="3"
+          fontWeight="Bold"
           lineHeight="tight"
-          isTruncated
+          textAlign="left"
+          fontSize="lg"
         >
           {title}
         </Box>
 
-        <Box>
-          {formattedPrice}
-          <Box as="span" color="gray.600" fontSize="sm">
-            / wk
+        {description && (
+          <Box
+            mt={1}
+            textAlign="left"
+            noOfLines={4}
+            color="gray.600"
+            fontSize="sm"
+          >
+            {description}
           </Box>
-        </Box>
+        )}
 
-        <Box display="flex" mt="2" alignItems="center">
-          {Array(5)
-            .fill('')
-            .map((_, i) => (
-              <StarIcon
-                color={i < rating ? 'teal.500' : 'gray.300'}
-              />
-            ))}
-          <Box as="span" ml="2" color="gray.600" fontSize="sm">
-            {reviewCount}
+        <Box
+          mt="auto"
+          d="flex"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          {renderConditionBadge(condition)}
+          <Box
+            textAlign="right"
+            fontSize="lg"
+            fontWeight="semibold"
+            color="teal.600"
+          >
+            $
             {' '}
-            reviews
+            {formattedPrice}
           </Box>
         </Box>
       </Box>
@@ -76,13 +132,21 @@ export default function AdListing({
   );
 }
 
+ListingInfoBox.propTypes = {
+  children: PropTypes.node,
+};
+
 AdListing.propTypes = {
   imageUrl: PropTypes.string,
   imageAlt: PropTypes.string,
-  beds: PropTypes.number,
-  baths: PropTypes.number,
   title: PropTypes.string,
-  formattedPrice: PropTypes.string,
-  reviewCount: PropTypes.number,
-  rating: PropTypes.number,
+  price: PropTypes.number,
+  description: PropTypes.string,
+  location: PropTypes.objectOf({
+    city: PropTypes.string,
+    provinceCode: PropTypes.string,
+  }),
+  condition: PropTypes.string,
+  onClick: PropTypes.func,
+  postingDate: PropTypes.string,
 };
