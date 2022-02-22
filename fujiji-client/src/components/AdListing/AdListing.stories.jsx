@@ -7,7 +7,7 @@ export default {
   component: AdListing,
   argTypes: {
     condition: {
-      options: ['new', 'used'],
+      options: ['new', 'used', 'refurbished'],
       control: { type: 'radio' },
     },
     postingDate: {
@@ -35,5 +35,3 @@ export const EmptyDescription = Template.bind({});
 EmptyDescription.args = {
   ...mockAdListing[2],
 };
-
-// export const Primary;

@@ -20,6 +20,12 @@ function renderConditionBadge(condition) {
           Used
         </Badge>
       );
+    case 'refurbished':
+      return (
+        <Badge borderRadius="full" px="2" colorScheme="blue">
+          Refurbished
+        </Badge>
+      );
     default:
       return undefined;
   }
@@ -47,7 +53,7 @@ export default function AdListing({
   price,
   description = '',
   location,
-  condition = 'used',
+  condition,
   onClick = undefined,
   postingDate,
 }) {
@@ -142,7 +148,7 @@ AdListing.propTypes = {
   title: PropTypes.string,
   price: PropTypes.number,
   description: PropTypes.string,
-  location: PropTypes.objectOf({
+  location: PropTypes.shape({
     city: PropTypes.string,
     provinceCode: PropTypes.string,
   }),

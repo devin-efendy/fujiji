@@ -11,8 +11,6 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <AdListing {...mockAdListings[0]} />
-      <AdListing {...mockAdListings[1]} />
-      <AdListing {...mockAdListings[2]} />
     </div>
   );
 }

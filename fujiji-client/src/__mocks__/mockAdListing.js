@@ -1,7 +1,7 @@
 const mockAdListings = [
   {
     imageUrl: 'https://source.unsplash.com/gySMaocSdqs/',
-    imageAlt: 'Rear view of modern home with pool',
+    imageAlt: 'A dog using an iPad on a wooden table',
     title: 'Wooden Table',
     price: 9999,
     description: 'Does not come with doggo :(',
@@ -14,7 +14,7 @@ const mockAdListings = [
   },
   {
     imageUrl: 'https://source.unsplash.com/ueJ2oJeEK-U/',
-    imageAlt: 'Rear view of modern home with pool',
+    imageAlt: 'comfortable sofa',
     title: 'Comfy Sofa',
     price: 123.23,
     description:
@@ -28,7 +28,7 @@ const mockAdListings = [
   },
   {
     imageUrl: 'https://source.unsplash.com/1P6AnKDw6S8/',
-    imageAlt: 'Rear view of modern home with pool',
+    imageAlt: 'Antique white chair',
     title: 'Antique Chair',
     price: 1900,
     location: {
