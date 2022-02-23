@@ -1,26 +1,37 @@
 import React from 'react';
 import AdListing from './AdListing';
+import mockAdListing from '../../__mocks__/mockAdListing';
 
 export default {
   title: 'AdListing',
   component: AdListing,
+  argTypes: {
+    condition: {
+      options: ['new', 'used', 'refurbished'],
+      control: { type: 'radio' },
+    },
+    postingDate: {
+      control: { type: 'text' },
+      defaultValue: '2022-02-21',
+    },
+  },
 };
 
 function Template({ ...args }) {
   return <AdListing {...args} />;
 }
 
-export const Default = Template.bind({});
-
-Default.args = {
-  imageUrl: 'https://bit.ly/2Z4KKcF',
-  imageAlt: 'Rear view of modern home with pool',
-  beds: 3,
-  baths: 2,
-  title: 'Modern home in city center in the heart of historic Los Angeles',
-  formattedPrice: '$1,900.00',
-  reviewCount: 34,
-  rating: 4,
+export const NewFurniture = Template.bind({});
+NewFurniture.args = {
+  ...mockAdListing[0],
 };
 
-// export const Primary;
+export const UsedFurniture = Template.bind({});
+UsedFurniture.args = {
+  ...mockAdListing[1],
+};
+
+export const EmptyDescription = Template.bind({});
+EmptyDescription.args = {
+  ...mockAdListing[2],
+};

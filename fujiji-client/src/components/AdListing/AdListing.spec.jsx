@@ -1,25 +1,53 @@
 import { render } from '@testing-library/react';
 
 import AdListing from './AdListing';
-
-const mockProps = {
-  imageUrl: 'https://bit.ly/2Z4KKcF',
-  imageAlt: 'Rear view of modern home with pool',
-  beds: 3,
-  baths: 2,
-  title: 'Modern home in city center in the heart of historic Los Angeles',
-  formattedPrice: '$1,900.00',
-  reviewCount: 34,
-  rating: 4,
-};
+import mockAdListing from '../../__mocks__/mockAdListing';
 
 describe('TestComponent', () => {
   it('should render properly', () => {
-    const { getByText } = render(<AdListing {...mockProps} />);
-    expect(
-      getByText(
-        'Modern home in city center in the heart of historic Los Angeles',
-      ),
-    ).toBeInTheDocument();
+    const { getByText } = render(<AdListing {...mockAdListing[0]} />);
+    expect(getByText(mockAdListing[0].title)).toBeInTheDocument();
+    expect(getByText(mockAdListing[0].description)).toBeInTheDocument();
+    expect(getByText('Brand New')).toBeInTheDocument();
+    expect(getByText('21 Feb 2022')).toBeInTheDocument();
+  });
+
+  it('should render with empty description', () => {
+    const mockPropsWithoutDescription = {
+      ...mockAdListing[0],
+      description: '',
+    };
+    const { getByText, queryByText } = render(
+      <AdListing {...mockPropsWithoutDescription} />,
+    );
+    expect(getByText(mockPropsWithoutDescription.title)).toBeInTheDocument();
+    expect(queryByText(mockAdListing[0].description)).toBeFalsy();
+    expect(getByText('Brand New')).toBeInTheDocument();
+    expect(getByText('21 Feb 2022')).toBeInTheDocument();
+  });
+
+  it('should render without any Badges', () => {
+    const mockPropsWithoutCondition = {
+      ...mockAdListing[0],
+      condition: '',
+    };
+    const { queryByText } = render(
+      <AdListing {...mockPropsWithoutCondition} />,
+    );
+
+    expect(queryByText('Brand New')).toBeFalsy();
+    expect(queryByText('Used')).toBeFalsy();
+  });
+
+  it('should not render invalid date', () => {
+    const mockPropsWithInvalidDate = {
+      ...mockAdListing[0],
+      postingDate: '',
+    };
+    const { queryByText } = render(
+      <AdListing {...mockPropsWithInvalidDate} />,
+    );
+
+    expect(queryByText('21 Feb 2022')).toBeFalsy();
   });
 });
