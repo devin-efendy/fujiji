@@ -20,6 +20,34 @@ Core features and their user stories breakdown (for first 3 features): https://g
 - Back-end: Node.js, Express
 - Database: Azure SQL
 
+## Contributing
+
+**Branching & Commits**
+
+Please create branch and give them high level description (like the issues). We should follow this format:
+
+`<type_of_issue>/<issue_number>-high-level-description`
+
+### Feature
+
+Use `feat/` prefix if the PR implement a new feature
+
+`feat/45-setup-ad-listings-database`
+
+### Bug
+
+Use `fix/` prefix if the PR addresses and fixes a bug
+
+`fix/50-resolved-build-issues-in-ci-pipeline`
+
+### Chore 
+
+Use `chore/` prefix if the PR does not make any changes to production code
+
+`chore/17-added-markdown-template-for-pull-request`
+
+Commit messages could follow this formats as well.
+
 ## Team Modern Diskette
 | Name        | GitHub Username | Email |
 | ----------- | -----------     |--     |
