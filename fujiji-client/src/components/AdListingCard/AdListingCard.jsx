@@ -1,35 +1,11 @@
 import PropTypes from 'prop-types';
 import {
-  AspectRatio, Box, Badge, Text, Image, Icon,
+  AspectRatio, Box, Text, Image, Icon,
 } from '@chakra-ui/react';
 import { MdLocationOn } from 'react-icons/md';
 import { BsCalendar } from 'react-icons/bs';
 import { format, isValid, parse } from 'date-fns';
-
-function renderConditionBadge(condition) {
-  switch (condition) {
-    case 'new':
-      return (
-        <Badge borderRadius="full" px="2" colorScheme="teal">
-          Brand New
-        </Badge>
-      );
-    case 'used':
-      return (
-        <Badge borderRadius="full" px="2" colorScheme="orange">
-          Used
-        </Badge>
-      );
-    case 'refurbished':
-      return (
-        <Badge borderRadius="full" px="2" colorScheme="blue">
-          Refurbished
-        </Badge>
-      );
-    default:
-      return undefined;
-  }
-}
+import ConditionBadge from '../ConditionBadge/ConditionBadge';
 
 function ListingInfoBox({ children }) {
   return (
@@ -46,7 +22,7 @@ function ListingInfoBox({ children }) {
     </Box>
   );
 }
-export default function AdListing({
+export default function AdListingCard({
   imageUrl,
   imageAlt,
   title,
@@ -105,6 +81,7 @@ export default function AdListing({
 
         {description && (
           <Box
+            data-testid="DESC_TEST_ID"
             mt={1}
             textAlign="left"
             noOfLines={4}
@@ -121,7 +98,7 @@ export default function AdListing({
           alignItems="center"
           justifyContent="space-between"
         >
-          {renderConditionBadge(condition)}
+          <ConditionBadge condition={condition} />
           <Box
             textAlign="right"
             fontSize="lg"
@@ -142,7 +119,7 @@ ListingInfoBox.propTypes = {
   children: PropTypes.node,
 };
 
-AdListing.propTypes = {
+AdListingCard.propTypes = {
   imageUrl: PropTypes.string,
   imageAlt: PropTypes.string,
   title: PropTypes.string,

@@ -2,7 +2,7 @@ import { render, fireEvent } from '@testing-library/react';
 
 import SignIn from './SignIn';
 
-describe('TestComponent', () => {
+describe('SignIn', () => {
   it('should render login components properly', () => {
     const { getByText } = render(<SignIn />);
     expect(getByText("Don't have an account?")).toBeInTheDocument();

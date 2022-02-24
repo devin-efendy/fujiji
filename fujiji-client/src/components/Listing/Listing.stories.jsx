@@ -1,10 +1,10 @@
 import React from 'react';
-import AdListing from './AdListing';
+import Listing from './Listing';
 import mockAdListing from '../../__mocks__/mockAdListing';
 
 export default {
-  title: 'AdListing',
-  component: AdListing,
+  title: 'Listing',
+  component: Listing,
   argTypes: {
     condition: {
       options: ['new', 'used', 'refurbished'],
@@ -18,7 +18,7 @@ export default {
 };
 
 function Template({ ...args }) {
-  return <AdListing {...args} />;
+  return <Listing {...args} />;
 }
 
 export const NewFurniture = Template.bind({});
