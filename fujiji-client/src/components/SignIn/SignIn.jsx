@@ -18,13 +18,7 @@ import {
 import {
   AtSignIcon, LockIcon, ViewIcon, ViewOffIcon,
 } from '@chakra-ui/icons';
-
-function validateEmail(email) {
-  return email.match(
-    // eslint-disable-next-line no-useless-escape
-    /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-  );
-}
+import { validateEmail } from '../../utils/validate';
 
 export default function SignIn({ isSignUp = false }) {
   const [emailInput, setEmailInput] = useState('');

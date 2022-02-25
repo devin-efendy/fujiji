@@ -4,4 +4,5 @@ export { default as AdListingCard } from './AdListingCard/AdListingCard';
 export { default as ConditionBadge } from './ConditionBadge/ConditionBadge';
 export { default as Listing } from './Listing/Listing';
 export { default as SignIn } from './SignIn/SignIn';
+export { default as ListingForm } from './ListingForm/ListingForm';
 export { default as PageLayout } from './PageLayout/PageLayout';
