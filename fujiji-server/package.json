@@ -2,7 +2,6 @@
   "name": "fujiji-server",
   "version": "1.0.0",
   "description": "Backend/server application for Fujiji",
-  "type": "module",
   "scripts": {
     "dev": "nodemon src/app.js",
     "build": "echo \"Error: no build script specified\" && exit 1",
@@ -21,8 +20,13 @@
   },
   "homepage": "https://github.com/devin-efendy/fujiji#readme",
   "dependencies": {
+    "date-fns": "^2.28.0",
     "dotenv": "^10.0.0",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "multer": "^1.4.4",
+    "sequelize": "^6.17.0",
+    "tedious": "^14.3.0"
   },
   "devDependencies": {
     "eslint": "^8.8.0",
