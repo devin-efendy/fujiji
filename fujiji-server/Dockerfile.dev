@@ -1,7 +1,7 @@
 FROM node:16.10.0-alpine
 
 WORKDIR /app
-COPY package.json .
+COPY package*.json ./
 
 # bash for debugging with `docker exec`
 RUN apk update && apk add bash 
@@ -10,7 +10,5 @@ RUN npm install && npm i -g nodemon
 COPY . .
 
 EXPOSE 8000
-
-# ENTRYPOINT ["node"]
 
 CMD ["npm", "run", "dev"]
