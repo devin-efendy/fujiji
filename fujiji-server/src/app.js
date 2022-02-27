@@ -4,24 +4,14 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const express = require('express');
-const { Sequelize } = require('sequelize');
-const { config, dbConfig } = require('./config/config');
+const { config } = require('./config/config');
 const routes = require('./routes');
+const sequelize = require('./repositories/db');
 
 const app = express();
 
 const appUrl = config.APP_URL;
 const port = config.PORT || 3000;
-
-const sequelize = new Sequelize(dbConfig.NAME, dbConfig.USERNAME, dbConfig.PASSWORD, {
-  host: dbConfig.HOST,
-  dialect: 'mssql',
-  pool: {
-    max: 5,
-    min: 0,
-    idle: 10000,
-  },
-});
 
 app.use('/', routes);
 
