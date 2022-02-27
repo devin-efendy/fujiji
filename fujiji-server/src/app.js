@@ -1,18 +1,20 @@
 // Express
 const dotenv = require('dotenv');
+
 dotenv.config();
 
 const express = require('express');
 const { Sequelize } = require('sequelize');
-const { config, db } = require('./config/config');
+const { config, dbConfig } = require('./config/config');
+const routes = require('./routes');
 
 const app = express();
 
 const appUrl = config.APP_URL;
 const port = config.PORT || 3000;
 
-const sequelize = new Sequelize(db.NAME, db.USERNAME, db.PASSWORD, {
-  host: db.HOST,
+const sequelize = new Sequelize(dbConfig.NAME, dbConfig.USERNAME, dbConfig.PASSWORD, {
+  host: dbConfig.HOST,
   dialect: 'mssql',
   pool: {
     max: 5,
@@ -20,6 +22,8 @@ const sequelize = new Sequelize(db.NAME, db.USERNAME, db.PASSWORD, {
     idle: 10000,
   },
 });
+
+app.use('/', routes);
 
 app.get('/appstatus', async (req, res) => {
   const response = {
@@ -33,7 +37,9 @@ app.get('/appstatus', async (req, res) => {
   const [allToken] = await sequelize.query('SELECT * FROM fujiji_token');
   console.log(allToken);
 
-  return res.status(200).json({ response, allUser, allListing, allToken });
+  return res.status(200).json({
+    response, allUser, allListing, allToken,
+  });
 });
 
 app.listen(port, async () => {
