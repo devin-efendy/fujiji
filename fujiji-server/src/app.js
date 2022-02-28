@@ -1,7 +1,9 @@
 // Express
 const dotenv = require('dotenv');
 
-dotenv.config();
+if (process.env.NODE_ENV === 'develop') {
+  dotenv.config();
+}
 
 const express = require('express');
 const { config } = require('./config/config');
@@ -17,19 +19,32 @@ app.use('/', routes);
 
 app.get('/appstatus', async (req, res) => {
   const response = {
-    message: 'Hello from the server!!!',
+    message: 'Hello from the server!!! adsf',
   };
-
-  const [allUser] = await sequelize.query('SELECT * FROM fujiji_user');
-  console.log(allUser);
-  const [allListing] = await sequelize.query('SELECT * FROM fujiji_listing');
-  console.log(allListing);
-  const [allToken] = await sequelize.query('SELECT * FROM fujiji_token');
-  console.log(allToken);
-
+  
+  try {
+    const [allUser] = await sequelize.query('SELECT * FROM fujiji_user');
+    console.log(allUser);
+    const [allListing] = await sequelize.query('SELECT * FROM fujiji_listing');
+    console.log(allListing);
+    const [allToken] = await sequelize.query('SELECT * FROM fujiji_token');
+    console.log(allToken);
+  }
+  catch(err) {
+    console.log(err);
+  }
+  
   return res.status(200).json({
     response, allUser, allListing, allToken,
   });
+});
+
+app.get('/', async (req, res) => {
+  const response = {
+    message: 'Test for homepage. This should be showing pls',
+  };
+
+  return res.status(200).json({ response });
 });
 
 app.listen(port, async () => {
