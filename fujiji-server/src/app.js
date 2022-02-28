@@ -1,6 +1,9 @@
 // Express
 const dotenv = require('dotenv');
-dotenv.config();
+
+if (process.env.NODE_ENV === 'develop') {
+  dotenv.config();
+}
 
 const express = require('express');
 const { Sequelize } = require('sequelize');
@@ -23,7 +26,7 @@ const sequelize = new Sequelize(db.NAME, db.USERNAME, db.PASSWORD, {
 
 app.get('/appstatus', async (req, res) => {
   const response = {
-    message: 'Hello from the server!!!',
+    message: 'Hello from the server!!! adsf',
   };
 
   const [allUser] = await sequelize.query('SELECT * FROM fujiji_user');
@@ -33,7 +36,17 @@ app.get('/appstatus', async (req, res) => {
   const [allToken] = await sequelize.query('SELECT * FROM fujiji_token');
   console.log(allToken);
 
-  return res.status(200).json({ response, allUser, allListing, allToken });
+  return res.status(200).json({
+    response, allUser, allListing, allToken,
+  });
+});
+
+app.get('/', async (req, res) => {
+  const response = {
+    message: 'Test for homepage',
+  };
+
+  return res.status(200).json({ response });
 });
 
 app.listen(port, async () => {
