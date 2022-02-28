@@ -43,7 +43,7 @@ app.get('/appstatus', async (req, res) => {
 
 app.get('/', async (req, res) => {
   const response = {
-    message: 'Test for homepage',
+    message: 'Test for homepage. This should be showing pls',
   };
 
   return res.status(200).json({ response });
