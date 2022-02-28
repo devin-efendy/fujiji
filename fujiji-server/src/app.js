@@ -6,36 +6,34 @@ if (process.env.NODE_ENV === 'develop') {
 }
 
 const express = require('express');
-const { Sequelize } = require('sequelize');
-const { config, db } = require('./config/config');
+const { config } = require('./config/config');
+const routes = require('./routes');
+const sequelize = require('./repositories/db');
 
 const app = express();
 
 const appUrl = config.APP_URL;
 const port = config.PORT || 3000;
 
-const sequelize = new Sequelize(db.NAME, db.USERNAME, db.PASSWORD, {
-  host: db.HOST,
-  dialect: 'mssql',
-  pool: {
-    max: 5,
-    min: 0,
-    idle: 10000,
-  },
-});
+app.use('/', routes);
 
 app.get('/appstatus', async (req, res) => {
   const response = {
     message: 'Hello from the server!!! adsf',
   };
-
-  const [allUser] = await sequelize.query('SELECT * FROM fujiji_user');
-  console.log(allUser);
-  const [allListing] = await sequelize.query('SELECT * FROM fujiji_listing');
-  console.log(allListing);
-  const [allToken] = await sequelize.query('SELECT * FROM fujiji_token');
-  console.log(allToken);
-
+  
+  try {
+    const [allUser] = await sequelize.query('SELECT * FROM fujiji_user');
+    console.log(allUser);
+    const [allListing] = await sequelize.query('SELECT * FROM fujiji_listing');
+    console.log(allListing);
+    const [allToken] = await sequelize.query('SELECT * FROM fujiji_token');
+    console.log(allToken);
+  }
+  catch(err) {
+    console.log(err);
+  }
+  
   return res.status(200).json({
     response, allUser, allListing, allToken,
   });
