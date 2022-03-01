@@ -21,19 +21,20 @@ app.get('/appstatus', async (req, res) => {
   const response = {
     message: 'Hello from the server!!! adsf',
   };
-  
+  let [allUser] = '';
+  let [allListing] = '';
+  let [allToken] = '';
   try {
-    const [allUser] = await sequelize.query('SELECT * FROM fujiji_user');
+    [allUser] = await sequelize.query('SELECT * FROM fujiji_user');
     console.log(allUser);
-    const [allListing] = await sequelize.query('SELECT * FROM fujiji_listing');
+    [allListing] = await sequelize.query('SELECT * FROM fujiji_listing');
     console.log(allListing);
-    const [allToken] = await sequelize.query('SELECT * FROM fujiji_token');
+    [allToken] = await sequelize.query('SELECT * FROM fujiji_token');
     console.log(allToken);
-  }
-  catch(err) {
+  } catch (err) {
     console.log(err);
   }
-  
+
   return res.status(200).json({
     response, allUser, allListing, allToken,
   });
