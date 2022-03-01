@@ -17,6 +17,4 @@ const sequelize = new Sequelize(dbConfig.NAME, dbConfig.USERNAME, dbConfig.PASSW
   },
 });
 
-console.log(dbConfig);
-
 module.exports = sequelize;

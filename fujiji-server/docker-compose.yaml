@@ -12,15 +12,3 @@ services:
       - .:/app
     ports:
       - '8000:8000'
-
-  database:
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    container_name: fujiji-db
-    restart: always
-    ports:
-      - 1433:1433
-    environment:
-      SA_PASSWORD: 'Fujiji123'
-      ACCEPT_EULA: 'Y'
-    volumes:
-      - ./migration-scripts:/scripts/
