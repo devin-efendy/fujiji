@@ -17,31 +17,9 @@ CREATE TABLE fujiji_user
 );
 
 INSERT INTO fujiji_user
-    (name, phone_number, email_address, password)
+    (name, email_address, phone_number, password)
 VALUES
     ('Fujiji Admin', 'fujiji_admin@gmail.com', '1234568888', 'super_secret_password');
-GO
-
-DROP TABLE IF EXISTS
-fujiji_token;
-
-CREATE TABLE fujiji_token
-(
-    token_id bigint NOT NULL IDENTITY(1,1),
-    user_id bigint NOT NULL,
-    expiry DATETIME NOT NULL,
-    token int,
-    CONSTRAINT PK_fujiji_token PRIMARY KEY NONCLUSTERED (token_id),
-    CONSTRAINT FK_fujiji_token_user FOREIGN KEY (user_id) REFERENCES fujiji_user(user_id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
-
-INSERT INTO fujiji_token
-    (user_id, expiry, token)
-VALUES
-    (1, GETUTCDATE(), 11);
-
 GO
 
 DROP TABLE IF EXISTS 

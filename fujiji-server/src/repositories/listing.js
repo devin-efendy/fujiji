@@ -10,8 +10,6 @@ async function getAllListingsByCity(city) {
         type: Sequelize.SELECT,
       },
     );
-    console.log('DEBUG-listingsByCity');
-    console.log(listingsByCity);
     return listingsByCity;
   } catch (err) {
     return err;
@@ -27,8 +25,6 @@ async function getAllListingsByProvince(provinceCode) {
         type: Sequelize.SELECT,
       },
     );
-    console.log('DEBUG-listingsByProvince');
-    console.log(listingsByProvince);
     return listingsByProvince;
   } catch (err) {
     return err;
@@ -37,13 +33,17 @@ async function getAllListingsByProvince(provinceCode) {
 
 async function getAllListingsDefault() {
   try {
-    const [listingsByCity] = await sequelize.query('SELECT * FROM fujiji_listing');
-    console.log('DEBUG-listingsByCity');
-    console.log(listingsByCity);
+    const [listingsByCity] = await sequelize.query(
+      'SELECT * FROM fujiji_listing',
+    );
     return listingsByCity;
   } catch (err) {
     return err;
   }
 }
 
-module.exports = { getAllListingsDefault, getAllListingsByCity, getAllListingsByProvince };
+module.exports = {
+  getAllListingsDefault,
+  getAllListingsByCity,
+  getAllListingsByProvince,
+};

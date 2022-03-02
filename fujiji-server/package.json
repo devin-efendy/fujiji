@@ -7,7 +7,7 @@
     "start": "NODE_ENV=production node src/app.js",
     "build": "echo \"Error: no build script specified\" && exit 1",
     "lint": "eslint --fix src/",
-    "test": "NODE_ENV=test jest --runInBand --testTimeout=10000 --detectOpenHandles --forceExit",
+    "test": "NODE_ENV=test jest --coverage --runInBand --testTimeout=10000 --detectOpenHandles --forceExit",
     "prepare": "cd .. && husky install ./fujiji-server/.husky"
   },
   "repository": {
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/devin-efendy/fujiji#readme",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "date-fns": "^2.28.0",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
@@ -50,6 +51,9 @@
     "testEnvironment": "node",
     "coveragePathIgnorePatterns": [
       "/node_modules/"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.js"
     ]
   }
 }
