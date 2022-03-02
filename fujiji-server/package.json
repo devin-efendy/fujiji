@@ -6,7 +6,7 @@
     "dev": "nodemon src/app.js",
     "build": "echo \"Error: no build script specified\" && exit 1",
     "lint": "eslint --fix src/",
-    "test": "cross-env NODE_ENV=test jest --testTimeout=10000 --detectOpenHandles --forceExit",
+    "test": "NODE_ENV=test jest --runInBand --testTimeout=10000 --detectOpenHandles --forceExit",
     "prepare": "cd .. && husky install ./fujiji-server/.husky"
   },
   "repository": {
