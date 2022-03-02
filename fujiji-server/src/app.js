@@ -48,14 +48,18 @@ app.get('/', async (req, res) => {
   return res.status(200).json({ response });
 });
 
-app.listen(port, async () => {
-  console.log(`Server is up on port ${appUrl}:${port}`);
-  console.log('test');
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, async () => {
+    console.log(`Server is up on port ${appUrl}:${port}`);
+    console.log('test');
 
-  try {
-    await sequelize.authenticate();
-    console.log('Connection has beena established successfully.');
-  } catch (error) {
-    console.error('Unable to connect to the database:', error);
-  }
-});
+    try {
+      await sequelize.authenticate();
+      console.log('Connection has been established successfully.');
+    } catch (error) {
+      console.error('Unable to connect to the database:', error);
+    }
+  });
+}
+
+module.exports = app;
