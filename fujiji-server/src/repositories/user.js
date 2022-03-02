@@ -32,4 +32,20 @@ async function createUser(email, password, name, phoneNumber) {
   return result[0];
 }
 
-module.exports = { testGetUser, getUserByEmail, createUser };
+async function getUserByID(id) {
+  try {
+    const [userByID] = await sequelize.query(
+      'SELECT * FROM fujiji_user WHERE user_id = ?',
+      {
+        replacements: [id],
+        type: QueryTypes.SELECT,
+      },
+    );
+    logDebug('DEBUG-userByID', userByID);
+    return userByID;
+  } catch (err) {
+    return err;
+  }
+}
+
+module.exports = { testGetUser, getUserByEmail, createUser, getUserByID };
