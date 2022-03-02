@@ -4,19 +4,26 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 trigger:
-- main
+  - main
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: "ubuntu-latest"
 
 steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '16.x'
-  displayName: 'Install Node.js'
+  - task: NodeTool@0
+    inputs:
+      versionSpec: "16.x"
+    displayName: "Install Node.js"
 
-- script:
-    npm install docker compose up
-    npm run dev
-  workingDirectory: fujiji-server/
-  displayName: 'npm install and build'
+  - script: |
+      npm install
+    workingDirectory: fujiji-server/
+    displayName: "npm install and build"
+  - task: Docker@2
+    inputs:
+      containerRegistry: "fujijicontainer"
+      repository: "Azure Container Registry"
+      command: "buildAndPush"
+      Dockerfile: "**/Dockerfile.prod"
+      tags: $(Build.BuildNumber)
+    displayName: "Docker image build"
