@@ -1,12 +1,14 @@
 // Express
 const dotenv = require('dotenv');
 
-if (process.env.NODE_ENV === 'develop') {
+if (process.env.NODE_ENV === 'develop' || process.env.NODE_ENV === 'test') {
   dotenv.config();
 }
 
 const express = require('express');
 const { config } = require('./config/config');
+const apiError = require('./middleware/apiError');
+const authentication = require('./middleware/authentication');
 const routes = require('./routes');
 const sequelize = require('./repositories/db');
 
@@ -15,28 +17,41 @@ const app = express();
 const appUrl = config.APP_URL;
 const port = config.PORT || 3000;
 
+app.use(express.json());
+app.use(express.urlencoded());
+
 app.use('/', routes);
 
+// for debugging purposes if you are actually logged in
+app.get('/authstatus', authentication, async (req, res) => {
+  const { userData } = req.locals;
+
+  return res.status(200).json({
+    userData,
+  });
+});
+
+// for debugging purposes to check if we able to connect to DB
 app.get('/appstatus', async (req, res) => {
   const response = {
-    message: 'Hello from the server!!! adsf',
+    message: 'Hello from the server!!!',
   };
   let [allUser] = '';
   let [allListing] = '';
   let [allToken] = '';
   try {
     [allUser] = await sequelize.query('SELECT * FROM fujiji_user');
-    console.log(allUser);
     [allListing] = await sequelize.query('SELECT * FROM fujiji_listing');
-    console.log(allListing);
     [allToken] = await sequelize.query('SELECT * FROM fujiji_token');
-    console.log(allToken);
   } catch (err) {
     console.log(err);
   }
 
   return res.status(200).json({
-    response, allUser, allListing, allToken,
+    response,
+    allUser,
+    allListing,
+    allToken,
   });
 });
 
@@ -51,7 +66,6 @@ app.get('/', async (req, res) => {
 if (process.env.NODE_ENV !== 'test') {
   app.listen(port, async () => {
     console.log(`Server is up on port ${appUrl}:${port}`);
-    console.log('test');
 
     try {
       await sequelize.authenticate();
@@ -61,5 +75,7 @@ if (process.env.NODE_ENV !== 'test') {
     }
   });
 }
+
+app.use(apiError);
 
 module.exports = app;
