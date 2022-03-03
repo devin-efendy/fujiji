@@ -3,20 +3,7 @@
 import '../styles/globals.css';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import { PageLayout } from '../components';
-
-const customTheme = {
-  styles: {
-    global: {
-      'html, body': {
-        padding: 0,
-        margin: 0,
-      },
-      a: {
-        color: 'teal.500',
-      },
-    },
-  },
-};
+import customTheme from '../utils/theme';
 
 const theme = extendTheme(customTheme);
 
