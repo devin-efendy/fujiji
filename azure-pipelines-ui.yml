@@ -41,3 +41,9 @@ steps:
     npm run build
   workingDirectory: fujiji-client/
   displayName: 'Build fujiji-client'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
