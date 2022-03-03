@@ -1,4 +1,5 @@
 const { Sequelize } = require('sequelize');
+const { logDebug } = require('../utils/logging');
 const sequelize = require('./db');
 
 async function getAllListingsByCity(city) {
@@ -10,6 +11,7 @@ async function getAllListingsByCity(city) {
         type: Sequelize.SELECT,
       },
     );
+    logDebug('DEBUG-listingsByCity', listingsByCity);
     return listingsByCity;
   } catch (err) {
     return err;
@@ -25,8 +27,7 @@ async function getAllListingsByCityCategory(city, category) {
         type: Sequelize.SELECT,
       },
     );
-    console.log('DEBUG-listingsByCityCategory');
-    console.log(listingsByCityCategory);
+    logDebug('DEBUG-listingsByCityCategory', listingsByCityCategory);
     return listingsByCityCategory;
   } catch (err) {
     return err;
@@ -42,8 +43,7 @@ async function getAllListingsByCityCondition(city, condition) {
         type: Sequelize.SELECT,
       },
     );
-    console.log('DEBUG-listingsByCityCondition');
-    console.log(listingsByCityCondition);
+    logDebug('DEBUG-listingsByCityCondition', listingsByCityCondition);
     return listingsByCityCondition;
   } catch (err) {
     return err;
@@ -59,8 +59,7 @@ async function getAllListingsByCityPriceRange(city, startPrice, endPrice) {
         type: Sequelize.SELECT,
       },
     );
-    console.log('DEBUG-listingsByCityPriceRange');
-    console.log(listingsByCityPriceRange);
+    logDebug('DEBUG-listingsByCityPriceRange', listingsByCityPriceRange);
     return listingsByCityPriceRange;
   } catch (err) {
     return err;
@@ -76,6 +75,7 @@ async function getAllListingsByProvince(provinceCode) {
         type: Sequelize.SELECT,
       },
     );
+    logDebug('DEBUG-listingsByProvince', listingsByProvince);
     return listingsByProvince;
   } catch (err) {
     return err;
@@ -91,8 +91,7 @@ async function getAllListingsByProvinceCategory(provinceCode, category) {
         type: Sequelize.SELECT,
       },
     );
-    console.log('DEBUG-listingsByProvinceCategory');
-    console.log(listingsByProvinceCategory);
+    logDebug('DEBUG-listingsByProvinceCategory', listingsByProvinceCategory);
     return listingsByProvinceCategory;
   } catch (err) {
     return err;
@@ -108,8 +107,7 @@ async function getAllListingsByProvinceCondition(provinceCode, condition) {
         type: Sequelize.SELECT,
       },
     );
-    console.log('DEBUG-listingsByProvinceConditon');
-    console.log(listingsByProvinceCondition);
+    logDebug('DEBUG-listingsByProvinceConditon', listingsByProvinceCondition);
     return listingsByProvinceCondition;
   } catch (err) {
     return err;
@@ -125,8 +123,7 @@ async function getAllListingsByProvincePriceRange(provinceCode, startPrice, endP
         type: Sequelize.SELECT,
       },
     );
-    console.log('DEBUG-listingsByProvincePriceRange');
-    console.log(listingsByProvincePriceRange);
+    logDebug('DEBUG-listingsByProvincePriceRange', listingsByProvincePriceRange);
     return listingsByProvincePriceRange;
   } catch (err) {
     return err;

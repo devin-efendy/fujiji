@@ -1,4 +1,5 @@
 const { QueryTypes } = require('sequelize');
+const { logDebug } = require('../utils/logging');
 const sequelize = require('./db');
 
 async function testGetUser() {
@@ -14,6 +15,7 @@ async function getUserByEmail(email) {
   const [result] = await sequelize.query(
     `SELECT * FROM fujiji_user WHERE email_address='${email}'`,
   );
+  logDebug('DEBUG-getUserByEmail', result);
   return result[0];
 }
 
@@ -26,6 +28,7 @@ async function createUser(email, password, name, phoneNumber) {
       ($1, $2, $3, $4);`,
     { bind: [name, email, phoneNumber, password], type: QueryTypes.INSERT },
   );
+  logDebug('DEBUG-createUser', result);
   return result[0];
 }
 

@@ -5,6 +5,7 @@ const { seedTestDB, tearDownDB } = require('../dbSetup');
 describe('Test /listing endpoints', () => {
   describe('GET /listing', () => {
     beforeEach(async () => {
+      await tearDownDB();
       await seedTestDB();
     });
 
@@ -17,6 +18,13 @@ describe('Test /listing endpoints', () => {
         .get('/listing')
         .query({ city: 'Winnipeg' });
       expect(res.statusCode).toEqual(200);
+    });
+
+    it('nonexistent city returns expected error', async () => {
+      const res = await request(app)
+        .get('/listing')
+        .query({ city: 'None' });
+      expect(res.statusCode).toEqual(404);
     });
 
     it('successfully get all listings by existing province', async () => {
@@ -55,7 +63,7 @@ describe('Test /listing endpoints', () => {
     it('successfully get all listings by existing province and condition', async () => {
       const res = await request(app)
         .get('/listing')
-        .query({ provinceCode: 'MB', category: 'used' });
+        .query({ provinceCode: 'MB', condition: 'used' });
       expect(res.statusCode).toEqual(200);
     });
 

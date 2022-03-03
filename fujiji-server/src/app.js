@@ -38,11 +38,9 @@ app.get('/appstatus', async (req, res) => {
   };
   let [allUser] = '';
   let [allListing] = '';
-  let [allToken] = '';
   try {
     [allUser] = await sequelize.query('SELECT * FROM fujiji_user');
     [allListing] = await sequelize.query('SELECT * FROM fujiji_listing');
-    [allToken] = await sequelize.query('SELECT * FROM fujiji_token');
   } catch (err) {
     console.log(err);
   }
@@ -51,7 +49,6 @@ app.get('/appstatus', async (req, res) => {
     response,
     allUser,
     allListing,
-    allToken,
   });
 });
 

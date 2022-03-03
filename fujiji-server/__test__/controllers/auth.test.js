@@ -5,6 +5,7 @@ const { mockUser, seedTestDB, tearDownDB } = require('../dbSetup');
 describe('Test /auth endpoints', () => {
   describe('POST /signup', () => {
     beforeAll(async () => {
+      await tearDownDB();
       await seedTestDB();
     });
 
