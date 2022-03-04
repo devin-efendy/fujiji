@@ -6,6 +6,7 @@ const { getAllListingsByCityCondition } = require('../repositories/listing');
 const { getAllListingsByProvinceCondition } = require('../repositories/listing');
 const { getAllListingsByCityPriceRange } = require('../repositories/listing');
 const { getAllListingsByProvincePriceRange } = require('../repositories/listing');
+const { createListing } = require('../repositories/listing');
 const APIError = require('../errors/api');
 const ListingNotFoundError = require('../errors/listing/listingNotFound');
 const ListingLocationUndefinedError = require('../errors/listing/listingLocationUndefined');
@@ -118,4 +119,29 @@ async function getAllListings(req, res, next) {
   }
 }
 
-module.exports = { getAllListings };
+async function postListing(req, res, next) {
+  try {
+    const {
+      userID, title, condition, category, city, provinceCode, imageURL, price, description,
+    } = req.body;
+
+    const newListing = await createListing(
+      userID,
+      title,
+      condition,
+      category,
+      city,
+      provinceCode,
+      imageURL,
+      price,
+      description,
+    );
+
+    res.status(200).json({
+      id: newListing.listing_id,
+    });
+  } catch (err) {
+    next(new APIError(err, 500));
+  }
+}
+module.exports = { getAllListings, postListing };
