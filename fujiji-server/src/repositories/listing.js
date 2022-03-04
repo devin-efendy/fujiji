@@ -141,6 +141,33 @@ async function getAllListingsDefault() {
   }
 }
 
+async function createListing(
+  userID,
+  title,
+  condition,
+  category,
+  city,
+  provinceCode,
+  imageURL,
+  price,
+  description,
+) {
+  const [result] = await sequelize.query(
+    `INSERT INTO fujiji_listing
+      (user_id, title, condition, category, city, province_code, image_url, price, description, creation_date)
+    OUTPUT INSERTED.*
+    VALUES
+      ($1, $2, $3, $4, $5, $6, $7, $8, $9, getutcdate());`,
+    {
+      bind: [userID, title, condition, category, city,
+        provinceCode, imageURL, price, description],
+      type: Sequelize.INSERT,
+    },
+  );
+  logDebug('DEBUG-createListing', result);
+  return result[0];
+}
+
 module.exports = {
   getAllListingsDefault,
   getAllListingsByCity,
@@ -151,4 +178,5 @@ module.exports = {
   getAllListingsByProvinceCondition,
   getAllListingsByCityPriceRange,
   getAllListingsByProvincePriceRange,
+  createListing,
 };
