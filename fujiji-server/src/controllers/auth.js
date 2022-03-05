@@ -31,19 +31,18 @@ async function signUp(req, res, next) {
           email,
         },
         config.JWT_SECRET,
-        { expiresIn: '3h' },
+        { expiresIn: '1h' },
       );
 
       return res.status(200).json({
         authToken,
-        user: {
-          id: newUser.user_id,
-          name,
-          email,
-          phoneNumber,
-        },
+        userId: newUser.user_id,
+        name,
+        email,
+        phoneNumber,
       });
     }
+
     return next(new EmailAlreadyRegistredError());
   } catch (err) {
     return next(new APIError(err, 500));
@@ -53,7 +52,13 @@ async function signUp(req, res, next) {
 async function signIn(req, res, next) {
   const { email, password } = req.body;
 
-  const existingUser = await getUserByEmail(email);
+  let existingUser;
+
+  try {
+    existingUser = await getUserByEmail(email);
+  } catch (error) {
+    return next(new APIError());
+  }
 
   if (!existingUser) {
     return next(new UserNotFoundError());
@@ -72,14 +77,15 @@ async function signIn(req, res, next) {
       email,
     },
     config.JWT_SECRET,
-    { expiresIn: '3h' },
+    { expiresIn: '1h' },
   );
 
   return res.status(200).json({
     authToken,
-    id: existingUser.user_id,
+    userId: existingUser.user_id,
     name: existingUser.name,
     email,
+    phoneNumber: existingUser.phone_number,
   });
 }
 

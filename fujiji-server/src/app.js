@@ -6,6 +6,7 @@ if (process.env.NODE_ENV === 'develop' || process.env.NODE_ENV === 'test') {
 }
 
 const express = require('express');
+const cors = require('cors');
 const { config } = require('./config/config');
 const apiError = require('./middleware/apiError');
 const authentication = require('./middleware/authentication');
@@ -17,8 +18,11 @@ const app = express();
 const appUrl = config.APP_URL;
 const port = config.PORT || 3000;
 
+app.options('*', cors()); // include before other routes
+app.use(cors());
+
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 
 app.use('/', routes);
 

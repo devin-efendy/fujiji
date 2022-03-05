@@ -14,27 +14,43 @@ import {
   FormHelperText,
   Flex,
   Text,
+  useToast,
 } from '@chakra-ui/react';
 import {
-  AtSignIcon, LockIcon, ViewIcon, ViewOffIcon,
+  AtSignIcon,
+  LockIcon,
+  PhoneIcon,
+  ViewIcon,
+  ViewOffIcon,
 } from '@chakra-ui/icons';
-import { validateEmail } from '../../utils/validate';
+import { useRouter } from 'next/router';
+import { validateEmail, validatePhoneNumber } from '../../utils/validate';
+import { useSession } from '../../context/session';
 
-export default function SignIn({ isSignUp = false }) {
+export default function SignIn({ onSubmit, isSignUp = false }) {
+  const router = useRouter();
+  const toast = useToast();
+  const { setCredentials } = useSession();
+
   const [emailInput, setEmailInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
+  const [firstNameInput, setFirstNameInput] = useState('');
+  const [lastNameInput, setLastNameInput] = useState('');
+  const [phoneInput, setPhoneInput] = useState('');
 
   const [showPassword, setShowPassword] = useState(false);
 
   const [emailErrorMessage, setEmailError] = useState('');
   const [passwordErrorMessage, setPasswordError] = useState('');
+  const [firstNameErrorMessage, setFirstNameError] = useState('');
+  const [phoneErrorMessage, setPhoneError] = useState('');
 
   const submitButtonText = isSignUp ? 'Sign Up' : 'Login';
   const helperText = isSignUp
     ? 'Already have an account?'
     : "Don't have an account?";
   const helperLinkText = isSignUp ? 'Login' : 'Sign Up';
-  const helperLink = isSignUp ? '#' : '#';
+  const helperLink = isSignUp ? '/signin' : '/signup';
 
   const handleShowClick = () => {
     setShowPassword(!showPassword);
@@ -48,29 +64,103 @@ export default function SignIn({ isSignUp = false }) {
     setEmailInput(event.target.value);
   };
 
-  const handleOnSubmit = () => {
+  const handleFirstNameChange = (event) => {
+    setFirstNameInput(event.target.value);
+  };
+
+  const handleLastNameChange = (event) => {
+    setLastNameInput(event.target.value);
+  };
+
+  const handlePhoneNumberChange = (event) => {
+    setPhoneInput(event.target.value);
+  };
+
+  const handleOnSubmit = async () => {
     // unset error messages
     setEmailError('');
     setPasswordError('');
+    setFirstNameError('');
+    setPhoneError('');
+
+    const signUpValidation = isSignUp
+      ? validatePhoneNumber(phoneInput) && firstNameInput
+      : true;
+
+    const isInputValid = signUpValidation
+      && validateEmail(emailInput)
+      && passwordInput
+      && passwordInput.length >= 8;
 
     if (!emailInput) {
       setEmailError("Email can't be empty");
-    }
-
-    if (emailInput && !validateEmail(emailInput)) {
+    } else if (!validateEmail(emailInput)) {
       setEmailError('Invalid email');
     }
 
     if (!passwordInput) {
       setPasswordError("Password can't be empty");
-    }
-
-    if (passwordInput && passwordInput.length < 8) {
+    } else if (passwordInput.length < 8) {
       setPasswordError('Password need at least 8 characters');
     }
-    /**
-     * TODO: Handle email and password. And send appropriate request to backend
-     */
+
+    if (isSignUp) {
+      if (!firstNameInput) {
+        setFirstNameError("Name can't be empty");
+      }
+
+      if (!phoneInput) {
+        setPhoneError("Phone number can't be empty");
+      } else if (!validatePhoneNumber(phoneInput)) {
+        setPhoneError('Phone number is not valid');
+      }
+    }
+
+    if (isInputValid) {
+      const payload = {
+        email: emailInput,
+        password: passwordInput,
+        firstName: firstNameInput,
+        lastName: lastNameInput,
+        phoneNumber: phoneInput,
+      };
+
+      const result = await onSubmit(payload);
+
+      if (result.error) {
+        // there is an error
+        const statusCode = result.status;
+        if (isSignUp) {
+          setEmailError(result.error);
+        } else if (statusCode === 404) {
+          setEmailError(result.error);
+        } else if (statusCode === 401) {
+          setPasswordError(result.error);
+        }
+
+        toast({
+          title: 'Oops! Something went wrong...',
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+        });
+      } else {
+        // successful signin or signup
+        const {
+          userId, email, name, phoneNumber, authToken,
+        } = result.data;
+        setCredentials(
+          {
+            userId,
+            email,
+            name,
+            phoneNumber,
+          },
+          authToken,
+        );
+        router.push('/');
+      }
+    }
   };
 
   return (
@@ -85,12 +175,41 @@ export default function SignIn({ isSignUp = false }) {
           <Text fontSize="6xl">Fujiji</Text>
         </Flex>
         <Stack spacing={4} p="1rem">
+          {isSignUp && (
+            <FormControl>
+              <Stack direction="row">
+                <InputGroup>
+                  <Input
+                    id="firstNameInput"
+                    aria-label="first-name"
+                    isInvalid={firstNameErrorMessage}
+                    type="text"
+                    placeholder="First Name"
+                    onChange={handleFirstNameChange}
+                  />
+                </InputGroup>
+                <InputGroup>
+                  <Input
+                    id="lastNameInput"
+                    aria-label="last-name"
+                    type="text"
+                    placeholder="Last Name"
+                    onChange={handleLastNameChange}
+                  />
+                </InputGroup>
+              </Stack>
+              {firstNameErrorMessage && (
+                <FormHelperText>{firstNameErrorMessage}</FormHelperText>
+              )}
+            </FormControl>
+          )}
           <FormControl>
             <InputGroup>
               <InputLeftElement pointerEvents="none">
                 <AtSignIcon color="gray.400" />
               </InputLeftElement>
               <Input
+                id="emailInput"
                 aria-label="email"
                 isInvalid={emailErrorMessage}
                 type="email"
@@ -108,6 +227,7 @@ export default function SignIn({ isSignUp = false }) {
                 <LockIcon color="gray.400" />
               </InputLeftElement>
               <Input
+                id="passwordInput"
                 aria-label="password"
                 isInvalid={passwordErrorMessage}
                 type={showPassword ? 'text' : 'password'}
@@ -129,7 +249,28 @@ export default function SignIn({ isSignUp = false }) {
               <FormHelperText>{passwordErrorMessage}</FormHelperText>
             )}
           </FormControl>
+          {isSignUp && (
+            <FormControl>
+              <InputGroup>
+                <InputLeftElement pointerEvents="none">
+                  <PhoneIcon color="gray.400" />
+                </InputLeftElement>
+                <Input
+                  id="phoneNumberInput"
+                  aria-label="phone-number"
+                  isInvalid={phoneErrorMessage}
+                  type="text"
+                  placeholder="phone number"
+                  onChange={handlePhoneNumberChange}
+                />
+              </InputGroup>
+              {phoneErrorMessage && (
+                <FormHelperText>{phoneErrorMessage}</FormHelperText>
+              )}
+            </FormControl>
+          )}
           <Button
+            aria-label="submit-user-form-button"
             borderRadius="md"
             type="submit"
             variant="solid"
@@ -160,4 +301,5 @@ export default function SignIn({ isSignUp = false }) {
 
 SignIn.propTypes = {
   isSignUp: PropTypes.bool,
+  onSubmit: PropTypes.func,
 };

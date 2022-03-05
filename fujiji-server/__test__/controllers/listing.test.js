@@ -106,9 +106,9 @@ describe('Test /listing endpoints', () => {
         email: mockUser.email,
         password: mockUser.password,
       };
-      const signinRes = await request(app).get('/auth/signin').send(mockUserReqBody);
+      const signinRes = await request(app).post('/auth/signin').send(mockUserReqBody);
       token = signinRes.body.authToken;
-      userid = signinRes.body.id;
+      userid = signinRes.body.userId;
     });
 
     afterEach(async () => {
