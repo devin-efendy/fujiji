@@ -1,4 +1,5 @@
 import React from 'react';
+import { SessionProvider } from '../../context/session';
 import NavBar from './NavBar';
 
 export default {
@@ -7,7 +8,11 @@ export default {
 };
 
 function Template({ ...args }) {
-  return <NavBar {...args} />;
+  return (
+    <SessionProvider value={{ ...args }}>
+      <NavBar />
+    </SessionProvider>
+  );
 }
 
 export const Default = Template.bind({});

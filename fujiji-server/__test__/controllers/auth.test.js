@@ -24,7 +24,7 @@ describe('Test /auth endpoints', () => {
       expect(res.statusCode).toEqual(200);
       expect(res.body.error).toBeUndefined();
       expect(res.body.authToken).toBeDefined();
-      expect(res.body.user).toBeDefined();
+      expect(res.body.userId).toBeDefined();
     });
 
     it("can't create a user with existing email", async () => {
@@ -48,7 +48,7 @@ describe('Test /auth endpoints', () => {
     });
   });
 
-  describe('GET /signin', () => {
+  describe('POST /signin', () => {
     beforeAll(async () => {
       await seedTestDB();
     });
@@ -62,7 +62,7 @@ describe('Test /auth endpoints', () => {
         email: mockUser.email,
         password: mockUser.password,
       };
-      const res = await request(app).get('/auth/signin').send(mockReqBody);
+      const res = await request(app).post('/auth/signin').send(mockReqBody);
       expect(res.statusCode).toEqual(200);
     });
 
@@ -71,8 +71,8 @@ describe('Test /auth endpoints', () => {
         email: mockUser.email,
         password: '123',
       };
-      const res = await request(app).get('/auth/signin').send(mockReqBody);
-      expect(res.statusCode).toEqual(400);
+      const res = await request(app).post('/auth/signin').send(mockReqBody);
+      expect(res.statusCode).toEqual(401);
     });
 
     it('email is not associated with any accounts', async () => {
@@ -80,7 +80,7 @@ describe('Test /auth endpoints', () => {
         email: 'non-existent@mail.com',
         password: '123',
       };
-      const res = await request(app).get('/auth/signin').send(mockReqBody);
+      const res = await request(app).post('/auth/signin').send(mockReqBody);
       expect(res.statusCode).toEqual(404);
     });
   });

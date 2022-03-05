@@ -4,6 +4,7 @@ import {
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import PropTypes from 'prop-types';
+import { useSession } from '../../context/session';
 
 function MenuItem({ children, isLast, to = '/' }) {
   return (
@@ -17,61 +18,68 @@ function MenuItem({ children, isLast, to = '/' }) {
   );
 }
 
-const SignInGroup = (
-  <Flex
-    align="center"
-    justify={['center']}
-    direction={['column', 'row', 'row', 'row']}
-    pt={[4, 4, 0, 0]}
-  >
-    <MenuItem to="/">Home</MenuItem>
-    <MenuItem to="/search">Search </MenuItem>
-    <MenuItem to="/signIn" isLast>
-      <Button
-        size="sm"
-        rounded="md"
-        color={['primary.500', 'primary.500', 'white', 'white']}
-        bg={['white', 'white', 'primary.500', 'primary.500']}
-        _hover={{
-          bg: ['primary.100', 'primary.100', 'primary.600', 'primary.600'],
-        }}
-      >
-        Sign In
-      </Button>
-    </MenuItem>
-  </Flex>
-);
+function SignInGroup() {
+  return (
+    <Flex
+      align="center"
+      justify={['center']}
+      direction={['column', 'row', 'row', 'row']}
+      pt={[4, 4, 0, 0]}
+    >
+      <MenuItem to="/">Home</MenuItem>
+      <MenuItem to="/search">Search </MenuItem>
+      <MenuItem to="/signin" isLast>
+        <Button
+          size="sm"
+          rounded="md"
+          color="white"
+          bg="teal.500"
+          _hover={{
+            bg: 'teal.600',
+          }}
+        >
+          Sign In
+        </Button>
+      </MenuItem>
+    </Flex>
+  );
+}
 
-const UserGroup = (
-  <Flex
-    align="center"
-    justify={['center']}
-    direction={['column', 'row', 'row', 'row']}
-    pt={[4, 4, 0, 0]}
-  >
-    <MenuItem to="/">Home </MenuItem>
-    <MenuItem to="/search">Search </MenuItem>
-    <MenuItem to="/post">Post </MenuItem>
-    <MenuItem to="/favourites">Favourites </MenuItem>
-    <MenuItem to="/signout" isLast>
-      <Button
-        size="sm"
-        rounded="md"
-        color={['primary.500', 'primary.500', 'white', 'white']}
-        bg={['white', 'white', 'primary.500', 'primary.500']}
-        _hover={{
-          bg: ['primary.100', 'primary.100', 'primary.600', 'primary.600'],
-        }}
-      >
-        Sign Out
-      </Button>
-    </MenuItem>
-  </Flex>
-);
+function UserGroup({ signOutUser }) {
+  return (
+    <Flex
+      align="center"
+      justify={['center']}
+      direction={['column', 'row', 'row', 'row']}
+      pt={[4, 4, 0, 0]}
+    >
+      <MenuItem to="/">Home </MenuItem>
+      <MenuItem to="/search">Search </MenuItem>
+      <MenuItem to="/post">Post </MenuItem>
+      <MenuItem to="/favourites">Favourites </MenuItem>
+      <MenuItem to="/" isLast>
+        <Button
+          size="sm"
+          rounded="md"
+          onClick={() => {
+            signOutUser();
+          }}
+        >
+          Sign Out
+        </Button>
+      </MenuItem>
+    </Flex>
+  );
+}
 
-export default function NavBar({ isSignedIn = false }) {
+export default function NavBar() {
+  const { isSignedIn, signOutUser } = useSession();
   const [show, setShow] = useBoolean();
-  const rightNavGroup = isSignedIn ? UserGroup : SignInGroup;
+  const rightNavGroup = isSignedIn ? (
+    <UserGroup signOutUser={signOutUser} />
+  ) : (
+    <SignInGroup />
+  );
 
   return (
     <Flex
@@ -80,16 +88,12 @@ export default function NavBar({ isSignedIn = false }) {
       justify="space-between"
       wrap="wrap"
       w="100%"
-      mb={8}
-      p={[2, 2, 4, 8]}
-      bg={['primary.500', 'primary.500', 'transparent', 'transparent']}
-      color={['white', 'white', 'primary.700', 'primary.700']}
+      // mb={8}
+      p={[2, 2, 4, 6]}
+      shadow="md"
     >
       <Flex align="center">
-        <Box
-          w="100px"
-          color={['white', 'white', 'primary.500', 'primary.500']}
-        >
+        <Box w="100px">
           <Text fontSize="3xl" fontWeight="bold">
             Fujiji
           </Text>
@@ -110,12 +114,15 @@ export default function NavBar({ isSignedIn = false }) {
   );
 }
 
-NavBar.propTypes = {
-  isSignedIn: PropTypes.bool,
+UserGroup.propTypes = {
+  signOutUser: PropTypes.func,
 };
 
 MenuItem.propTypes = {
-  children: PropTypes.instanceOf(Object),
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]).isRequired,
   isLast: PropTypes.bool,
   to: PropTypes.string,
 };
