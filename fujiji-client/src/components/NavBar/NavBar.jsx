@@ -12,6 +12,7 @@ function MenuItem({ children, isLast, to = '/' }) {
       mb={{ base: isLast ? 0 : 8, sm: 0 }}
       mr={{ base: 0, sm: isLast ? 0 : 8 }}
       display="block"
+      color="primary.500"
     >
       <Link href={to}>{children}</Link>
     </Text>
@@ -94,7 +95,7 @@ export default function NavBar() {
     >
       <Flex align="center">
         <Box w="100px">
-          <Text fontSize="3xl" fontWeight="bold">
+          <Text fontSize="3xl" fontWeight="bold" color="primary.500">
             Fujiji
           </Text>
         </Box>
