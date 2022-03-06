@@ -1,16 +1,16 @@
 import Link from 'next/link';
 import {
-  Box, Flex, Text, Button, useBoolean,
+  Box, Flex, Text, Button, useBoolean, Menu, MenuButton, MenuList, Avatar, MenuItem,
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import PropTypes from 'prop-types';
 import { useSession } from '../../context/session';
 
-function MenuItem({ children, isLast, to = '/' }) {
+function Item({ children, to = '/' }) {
   return (
     <Text
-      mb={{ base: isLast ? 0 : 8, sm: 0 }}
-      mr={{ base: 0, sm: isLast ? 0 : 8 }}
+      mb={{ base: 8, sm: 0 }}
+      mr={{ base: 0, sm: 8 }}
       display="block"
       color="primary.500"
     >
@@ -27,9 +27,9 @@ function SignInGroup() {
       direction={['column', 'row', 'row', 'row']}
       pt={[4, 4, 0, 0]}
     >
-      <MenuItem to="/">Home</MenuItem>
-      <MenuItem to="/search">Search </MenuItem>
-      <MenuItem to="/signin" isLast>
+      <Item to="/">Home</Item>
+      <Item to="/search">Search </Item>
+      <Item to="/signin" isLast>
         <Button
           size="sm"
           rounded="md"
@@ -41,12 +41,12 @@ function SignInGroup() {
         >
           Sign In
         </Button>
-      </MenuItem>
+      </Item>
     </Flex>
   );
 }
 
-function UserGroup({ signOutUser }) {
+function UserGroup({ signOutUser, userData }) {
   return (
     <Flex
       align="center"
@@ -54,30 +54,30 @@ function UserGroup({ signOutUser }) {
       direction={['column', 'row', 'row', 'row']}
       pt={[4, 4, 0, 0]}
     >
-      <MenuItem to="/">Home </MenuItem>
-      <MenuItem to="/search">Search </MenuItem>
-      <MenuItem to="/post">Post </MenuItem>
-      <MenuItem to="/favourites">Favourites </MenuItem>
-      <MenuItem to="/" isLast>
-        <Button
-          size="sm"
-          rounded="md"
-          onClick={() => {
-            signOutUser();
-          }}
-        >
-          Sign Out
-        </Button>
-      </MenuItem>
+      <Item to="/">Home </Item>
+      <Item to="/search">Search </Item>
+      <Item to="/post">Post </Item>
+      <Item to="/favourites">Favourites </Item>
+      <Menu>
+        <MenuButton alignContent="center">
+          <Avatar src="https://broken-link.com" name={userData.name} />
+        </MenuButton>
+        <MenuList>
+          <MenuItem><Item to="/profile">Profile</Item></MenuItem>
+          <MenuItem onClick={() => { signOutUser(); }}>
+            <Item to="/">Sign Out</Item>
+          </MenuItem>
+        </MenuList>
+      </Menu>
     </Flex>
   );
 }
 
 export default function NavBar() {
-  const { isSignedIn, signOutUser } = useSession();
+  const { isSignedIn, signOutUser, userData } = useSession();
   const [show, setShow] = useBoolean();
   const rightNavGroup = isSignedIn ? (
-    <UserGroup signOutUser={signOutUser} />
+    <UserGroup signOutUser={signOutUser} userData={userData} />
   ) : (
     <SignInGroup />
   );
@@ -117,13 +117,13 @@ export default function NavBar() {
 
 UserGroup.propTypes = {
   signOutUser: PropTypes.func,
+  userData: PropTypes.node,
 };
 
-MenuItem.propTypes = {
+Item.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]).isRequired,
-  isLast: PropTypes.bool,
   to: PropTypes.string,
 };
