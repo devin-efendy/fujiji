@@ -7,7 +7,7 @@ Backend/Server application for Fujiji build using Node.js, Express, and Azure SQ
 Create `.env` file:
 
 ```
-cp .env.test .env
+cp .env.sample .env
 ```
 
 Install dependencies:

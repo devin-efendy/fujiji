@@ -11,7 +11,7 @@ npm install
 
 Create new `.env` file and put api keys here:
 ```
-cp .env.test .env
+cp .env.sample .env
 ```
 
 Running the application:

@@ -26,7 +26,7 @@ export default async function signIn({ email, password }) {
     }
     return {
       error: 'Something went wrong... Check if Fujiji API is running',
-      status: 501,
+      status: 500,
     };
   }
 }
