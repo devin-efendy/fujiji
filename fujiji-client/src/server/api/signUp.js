@@ -29,10 +29,16 @@ export default async function signUp({
     );
     return result;
   } catch (error) {
-    const { data, status } = error.response;
+    if (error.response) {
+      const { data, status } = error.response;
+      return {
+        error: data.error,
+        status,
+      };
+    }
     return {
-      error: data.error,
-      status,
+      error: 'Something went wrong... Check if Fujiji API is running',
+      status: 500,
     };
   }
 }

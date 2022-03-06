@@ -131,7 +131,9 @@ export default function SignIn({ onSubmit, isSignUp = false }) {
         // there is an error
         const statusCode = result.status;
         if (isSignUp) {
-          setEmailError(result.error);
+          if (statusCode !== 500) {
+            setEmailError(result.error);
+          }
         } else if (statusCode === 404) {
           setEmailError(result.error);
         } else if (statusCode === 401) {
