@@ -168,6 +168,48 @@ async function createListing(
   return result[0];
 }
 
+async function updateListing(
+  userID,
+  listingId,
+  title,
+  condition,
+  category,
+  city,
+  provinceCode,
+  imageURL,
+  price,
+  description,
+) {
+  const [result] = await sequelize.query(
+    `UPDATE fujiji_listing
+     SET title = ? , condition = ?, category = ?, city = ?, province_code = ?, image_url = ?,
+     price = ?, description = ? WHERE user_id = ? and listing_id = ?`,
+    {
+      replacements: [title, condition, category, city, provinceCode, imageURL,
+        price, description, userID, listingId],
+      type: Sequelize.UPDATE,
+    },
+  );
+  logDebug('DEBUG-updateListing', result);
+  return result[0];
+}
+
+async function getListingById(listingId) {
+  try {
+    const [listing] = await sequelize.query(
+      'SELECT * FROM fujiji_listing WHERE listing_id = ?',
+      {
+        replacements: [listingId],
+        type: Sequelize.SELECT,
+      },
+    );
+    logDebug('DEBUG-getListingById', getListingById);
+    return listing;
+  } catch (err) {
+    return err;
+  }
+}
+
 module.exports = {
   getAllListingsDefault,
   getAllListingsByCity,
@@ -179,4 +221,6 @@ module.exports = {
   getAllListingsByCityPriceRange,
   getAllListingsByProvincePriceRange,
   createListing,
+  updateListing,
+  getListingById,
 };
