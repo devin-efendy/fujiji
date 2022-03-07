@@ -147,4 +147,76 @@ describe('Test /listing endpoints', () => {
       expect(res.statusCode).toEqual(200);
     });
   });
+
+  describe('PUT /listing', () => {
+    let token;
+    let userid;
+    let listingid;
+
+    beforeEach(async () => {
+      await seedTestDB();
+      const mockUserReqBody = {
+        email: mockUser.email,
+        password: mockUser.password,
+      };
+      const signinRes = await request(app).post('/auth/signin').send(mockUserReqBody);
+      token = signinRes.body.authToken;
+      userid = signinRes.body.userId;
+    });
+
+    afterEach(async () => {
+      await tearDownDB();
+    });
+
+    it('returns expected error when not signed in user try to edit a post', async () => {
+      const mockReqBody = {
+        userID: 10,
+        listingId: listingid,
+        title: 'Dining Table In Good Condition',
+        condition: 'used',
+        category: 'Table',
+        city: 'Winnipeg',
+        provinceCode: 'MB',
+        imageURL: 'https://source.unsplash.com/gySMaocSdqs/',
+        price: 50,
+        description: 'Just used for 3 years',
+      };
+      const res = await request(app).put('/listing').send(mockReqBody);
+      expect(res.statusCode).toEqual(400);
+    });
+
+    it('successfully edit a listing when a user is signed in', async () => {
+      const mockReqBody = {
+        userID: userid,
+        title: 'Dining Table In Good Condition',
+        condition: 'used',
+        category: 'Table',
+        city: 'Winnipeg',
+        provinceCode: 'MB',
+        imageURL: 'https://source.unsplash.com/gySMaocSdqs/',
+        price: 50,
+        description: 'Just used for 3 years',
+      };
+      const existListing = await request(app).post('/listing').set('Authorization', `Bearer ${token}`).send(mockReqBody);
+      expect(existListing.statusCode).toEqual(200);
+      listingid = existListing.body.listingId;
+
+      const mockReqBody1 = {
+        userID: userid,
+        listingId: listingid,
+        title: 'Table is in good condition',
+        condition: 'new',
+        category: 'Other',
+        city: 'Winnipeg',
+        provinceCode: 'MB',
+        imageURL: 'https://source.unsplash.com/gySMaocSdqs/',
+        price: 1000,
+        description: 'Sparkling Kitchen set',
+      };
+      const res1 = await request(app).put('/listing').set('Authorization', `Bearer ${token}`).send(mockReqBody1);
+      expect(res1.body.updatedListing[0].title).toEqual('Table is in good condition');
+      expect(res1.body.updatedListing[0].listing_id).toEqual(listingid);
+      expect(res1.statusCode).toEqual(200);
+    });
+  });
 });
