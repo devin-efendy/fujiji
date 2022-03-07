@@ -1,9 +1,19 @@
 import Link from 'next/link';
 import {
-  Box, Flex, Text, Button, useBoolean, Menu, MenuButton, MenuList, Avatar, MenuItem,
+  Box,
+  Flex,
+  Text,
+  Button,
+  useBoolean,
+  Menu,
+  MenuButton,
+  MenuList,
+  Avatar,
+  MenuItem,
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import PropTypes from 'prop-types';
+import { useRouter } from 'next/router';
 import { useSession } from '../../context/session';
 
 function Item({ children, to = '/' }) {
@@ -28,7 +38,7 @@ function SignInGroup() {
       pt={[4, 4, 0, 0]}
     >
       <Item to="/">Home</Item>
-      <Item to="/search">Search </Item>
+      <Item to="/search">Search</Item>
       <Item to="/signin" isLast>
         <Button
           size="sm"
@@ -47,6 +57,7 @@ function SignInGroup() {
 }
 
 function UserGroup({ signOutUser, userData }) {
+  const router = useRouter();
   return (
     <Flex
       align="center"
@@ -54,18 +65,25 @@ function UserGroup({ signOutUser, userData }) {
       direction={['column', 'row', 'row', 'row']}
       pt={[4, 4, 0, 0]}
     >
-      <Item to="/">Home </Item>
-      <Item to="/search">Search </Item>
-      <Item to="/post">Post </Item>
-      <Item to="/favourites">Favourites </Item>
+      <Item to="/">Home</Item>
+      <Item to="/search">Search</Item>
+      <Item to="/listing/create">Post</Item>
+      <Item to="/favourites">Favourites</Item>
       <Menu>
         <MenuButton alignContent="center">
           <Avatar src="https://broken-link.com" name={userData.name} />
         </MenuButton>
         <MenuList>
-          <MenuItem><Item to="/profile">Profile</Item></MenuItem>
-          <MenuItem onClick={() => { signOutUser(); }}>
-            <Item to="/">Sign Out</Item>
+          <MenuItem>
+            <Item to="/profile">Profile</Item>
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              router.push('/');
+              signOutUser();
+            }}
+          >
+            Sign Out
           </MenuItem>
         </MenuList>
       </Menu>
@@ -89,7 +107,6 @@ export default function NavBar() {
       justify="space-between"
       wrap="wrap"
       w="100%"
-      // mb={8}
       p={[2, 2, 4, 6]}
       shadow="md"
     >
@@ -117,7 +134,12 @@ export default function NavBar() {
 
 UserGroup.propTypes = {
   signOutUser: PropTypes.func,
-  userData: PropTypes.node,
+  userData: PropTypes.shape({
+    id: PropTypes.string,
+    email: PropTypes.string,
+    phoneNumber: PropTypes.string,
+    name: PropTypes.string,
+  }),
 };
 
 Item.propTypes = {

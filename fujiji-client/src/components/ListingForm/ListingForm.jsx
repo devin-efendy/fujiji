@@ -18,6 +18,7 @@ import {
   Text,
   Textarea,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import {
   AddIcon,
@@ -26,8 +27,10 @@ import {
   EditIcon,
 } from '@chakra-ui/icons';
 import { BsCurrencyDollar } from 'react-icons/bs';
+import { useRouter } from 'next/router';
 import AlertContainer from '../AlertContainer/AlertContainer';
 import { provinces, furnitureCategories } from '../../utils/fujijiConfig';
+import { useSession } from '../../context/session';
 
 const inputMarginTop = 4;
 
@@ -71,6 +74,7 @@ function validateImage(fileImage) {
  * @param {func} onDelete callback function that will be executed when the form is discarded (during POST) and deleted (during UPDATE)
  */
 export default function ListingForm({
+  listingID,
   title,
   description,
   condition = 'Used',
@@ -83,6 +87,10 @@ export default function ListingForm({
   onSubmit,
   onDelete,
 }) {
+  const { userData, authToken } = useSession();
+  const router = useRouter();
+  const toast = useToast();
+
   const [listingTitle, setListingTitle] = useState(title);
   const [listingDescription, setListingDescription] = useState(description);
   const [listingCondition, setListingCondition] = useState(condition);
@@ -114,14 +122,14 @@ export default function ListingForm({
     isOpen,
     onClose,
     cancelRef,
-    onDelete,
+    onConfirm: onDelete,
   };
 
   const uploadButtonText = uploadedImage
     ? uploadedImage.name
     : 'Attach new image';
 
-  const handleOnSubmit = () => {
+  const handleOnSubmit = async () => {
     setTitleErrorMessage('');
     setCityErrorMessage('');
     setUploadErrorMessage('');
@@ -148,7 +156,42 @@ export default function ListingForm({
     }
 
     if (isValid) {
-      onSubmit();
+      const payload = {
+        userID: userData.userID,
+        title: listingTitle,
+        condition: listingCondition,
+        category: listingCategory,
+        city: listingCity,
+        provinceCode: listingProvince,
+        // imageURL: listingImageUrl,
+        imageURL: 'https://source.unsplash.com/ueJ2oJeEK-U/',
+        price: listingPrice,
+        description: listingDescription,
+        authToken,
+      };
+
+      const response = await onSubmit(
+        isUpdate ? { listingID, ...payload } : payload,
+      );
+
+      if (response.error) {
+        toast({
+          title: 'Oops! Something went wrong...',
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: isUpdate
+            ? 'Listing is successfully updated!'
+            : 'Listing is successfully created!',
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+        });
+        router.push('/');
+      }
     }
   };
 
@@ -165,7 +208,13 @@ export default function ListingForm({
   };
 
   return (
-    <Box p={[3, 6]} d="flex" maxW="600px" borderWidth="1px" borderRadius="lg">
+    <Box
+      id="listingForm"
+      p={[3, 6]}
+      w={['100%', '700px']}
+      borderWidth="1px"
+      borderRadius="lg"
+    >
       <FormControl>
         <Box>
           <FormLabel htmlFor="listingTitle" id="listing-title-label">
@@ -360,6 +409,7 @@ export default function ListingForm({
 }
 
 ListingForm.propTypes = {
+  listingID: PropTypes.number,
   title: PropTypes.string,
   description: PropTypes.string,
   condition: PropTypes.string,

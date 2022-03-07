@@ -27,6 +27,9 @@ LoggedOut.args = {
 
 SignedIn.args = {
   isSignedIn: true,
+  userData: {
+    name: 'First Last',
+  },
 };
 
 Default.args = {

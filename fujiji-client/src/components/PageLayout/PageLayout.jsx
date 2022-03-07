@@ -19,7 +19,7 @@ export default function PageLayout({ children }) {
       </Head>
       <NavBar />
       <main>
-        <Box p="1">{children}</Box>
+        <Box id="mainContainer" p="1">{children}</Box>
       </main>
       <Footer />
     </Flex>
