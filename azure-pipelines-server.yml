@@ -19,6 +19,19 @@ steps:
       npm install
     workingDirectory: fujiji-server/
     displayName: "npm install and build"
+
+  - script: |
+      npm run test
+    workingDirectory: fujiji-server/
+    displayName: "Tests"
+    env: 
+      DB_TEST_HOST: $(DB_TEST_HOST)
+      DB_TEST_PASSWORD: $(DB_TEST_PASSWORD)
+      DB_TEST_USERNAME: $(DB_TEST_USERNAME)
+      DB_TEST_PORT: $(DB_TEST_PORT)
+      DB_TEST_NAME: $(DB_TEST_NAME)
+
+
   - task: Docker@2
     inputs:
       containerRegistry: "fujijicontainer"
