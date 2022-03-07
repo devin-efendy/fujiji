@@ -30,6 +30,7 @@ steps:
       DB_TEST_USERNAME: $(DB_TEST_USERNAME)
       DB_TEST_PORT: $(DB_TEST_PORT)
       DB_TEST_NAME: $(DB_TEST_NAME)
+      JWT_AUTH_TOKEN: $(JWT_AUTH_TOKEN)
 
 
   - task: Docker@2
