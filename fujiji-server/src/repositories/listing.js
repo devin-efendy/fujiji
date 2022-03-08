@@ -114,7 +114,11 @@ async function getAllListingsByProvinceCondition(provinceCode, condition) {
   }
 }
 
-async function getAllListingsByProvincePriceRange(provinceCode, startPrice, endPrice) {
+async function getAllListingsByProvincePriceRange(
+  provinceCode,
+  startPrice,
+  endPrice,
+) {
   try {
     const [listingsByProvincePriceRange] = await sequelize.query(
       'SELECT * FROM fujiji_listing WHERE province_code = ? AND price BETWEEN ? AND ?',
@@ -123,7 +127,10 @@ async function getAllListingsByProvincePriceRange(provinceCode, startPrice, endP
         type: Sequelize.SELECT,
       },
     );
-    logDebug('DEBUG-listingsByProvincePriceRange', listingsByProvincePriceRange);
+    logDebug(
+      'DEBUG-listingsByProvincePriceRange',
+      listingsByProvincePriceRange,
+    );
     return listingsByProvincePriceRange;
   } catch (err) {
     return err;
@@ -159,8 +166,17 @@ async function createListing(
     VALUES
       ($1, $2, $3, $4, $5, $6, $7, $8, $9, getutcdate());`,
     {
-      bind: [userID, title, condition, category, city,
-        provinceCode, imageURL, price, description],
+      bind: [
+        userID,
+        title,
+        condition,
+        category,
+        city,
+        provinceCode,
+        imageURL,
+        price,
+        description,
+      ],
       type: Sequelize.INSERT,
     },
   );
@@ -170,7 +186,7 @@ async function createListing(
 
 async function updateListing(
   userID,
-  listingId,
+  listingID,
   title,
   condition,
   category,
@@ -185,8 +201,18 @@ async function updateListing(
      SET title = ? , condition = ?, category = ?, city = ?, province_code = ?, image_url = ?,
      price = ?, description = ? WHERE user_id = ? and listing_id = ?`,
     {
-      replacements: [title, condition, category, city, provinceCode, imageURL,
-        price, description, userID, listingId],
+      replacements: [
+        title,
+        condition,
+        category,
+        city,
+        provinceCode,
+        imageURL,
+        price,
+        description,
+        userID,
+        listingID,
+      ],
       type: Sequelize.UPDATE,
     },
   );
@@ -194,17 +220,33 @@ async function updateListing(
   return result[0];
 }
 
-async function getListingById(listingId) {
+async function getListingById(listingID) {
   try {
     const [listing] = await sequelize.query(
       'SELECT * FROM fujiji_listing WHERE listing_id = ?',
       {
-        replacements: [listingId],
+        replacements: [listingID],
         type: Sequelize.SELECT,
       },
     );
-    logDebug('DEBUG-getListingById', getListingById);
-    return listing;
+    logDebug('DEBUG-getListingById', listing);
+    return listing[0];
+  } catch (err) {
+    return err;
+  }
+}
+
+async function deleteListingById(listingId, userId) {
+  try {
+    const listing = await sequelize.query(
+      'DELETE FROM fujiji_listing WHERE listing_id = ? and user_id = ?',
+      {
+        replacements: [listingId, userId],
+        type: Sequelize.SELECT,
+      },
+    );
+    logDebug('DEBUG-deleteListingById', listing);
+    return listing[1];
   } catch (err) {
     return err;
   }
@@ -223,4 +265,5 @@ module.exports = {
   createListing,
   updateListing,
   getListingById,
+  deleteListingById,
 };

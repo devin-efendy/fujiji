@@ -1,11 +1,19 @@
 const express = require('express');
 const authentication = require('../middleware/authentication');
-const { postListing, getAllListings, editListing } = require('../controllers/listing');
+const {
+  postListing,
+  getAllListings,
+  getByListingId,
+  editListing,
+  deleteListing,
+} = require('../controllers/listing');
 
 const router = express.Router();
 
 router.post('/', authentication, postListing);
 router.get('/', getAllListings);
+router.get('/:id', getByListingId);
 router.put('/', authentication, editListing);
+router.delete('/:id', authentication, deleteListing);
 
 module.exports = router;

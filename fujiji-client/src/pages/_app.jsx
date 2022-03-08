@@ -15,21 +15,21 @@ function MyApp({ Component, pageProps }) {
   } = useSessionHook();
 
   return (
-    <SessionProvider
-      value={{
-        isSignedIn: !!userData && !!authToken,
-        userData,
-        authToken,
-        setCredentials,
-        signOutUser,
-      }}
-    >
-      <ChakraProvider theme={theme}>
+    <ChakraProvider theme={theme}>
+      <SessionProvider
+        value={{
+          isSignedIn: !!userData && !!authToken,
+          userData,
+          authToken,
+          setCredentials,
+          signOutUser,
+        }}
+      >
         <PageLayout>
           <Component {...pageProps} />
         </PageLayout>
-      </ChakraProvider>
-    </SessionProvider>
+      </SessionProvider>
+    </ChakraProvider>
   );
 }
 

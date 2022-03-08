@@ -21,9 +21,7 @@ describe('Test /listing endpoints', () => {
     });
 
     it('nonexistent city returns expected error', async () => {
-      const res = await request(app)
-        .get('/listing')
-        .query({ city: 'None' });
+      const res = await request(app).get('/listing').query({ city: 'None' });
       expect(res.statusCode).toEqual(404);
     });
 
@@ -96,6 +94,55 @@ describe('Test /listing endpoints', () => {
     });
   });
 
+  describe('GET /listing/:id', () => {
+    let token;
+    let userid;
+
+    beforeEach(async () => {
+      await tearDownDB();
+      await seedTestDB();
+      const mockUserReqBody = {
+        email: mockUser.email,
+        password: mockUser.password,
+      };
+      const signinRes = await request(app)
+        .post('/auth/signin')
+        .send(mockUserReqBody);
+      token = signinRes.body.authToken;
+      userid = signinRes.body.userId;
+    });
+
+    afterEach(async () => {
+      await tearDownDB();
+    });
+
+    it('returns listing with existing listingID', async () => {
+      const mockReqBody = {
+        userID: userid,
+        title: 'Dining Table In Good Condition',
+        condition: 'used',
+        category: 'Table',
+        city: 'Winnipeg',
+        provinceCode: 'MB',
+        imageURL: 'https://source.unsplash.com/gySMaocSdqs/',
+        price: 50,
+        description: 'Just used for 3 years',
+      };
+
+      const postRes = await request(app)
+        .post('/listing')
+        .set('Authorization', `Bearer ${token}`)
+        .send(mockReqBody);
+      const res = await request(app).get(`/listing/${postRes.body.listingId}`);
+      expect(res.statusCode).toEqual(200);
+    });
+
+    it('returns 404 with non-existent listingID', async () => {
+      const res = await request(app).get('/listing/-1');
+      expect(res.statusCode).toEqual(404);
+    });
+  });
+
   describe('POST /listing', () => {
     let token;
     let userid;
@@ -106,7 +153,9 @@ describe('Test /listing endpoints', () => {
         email: mockUser.email,
         password: mockUser.password,
       };
-      const signinRes = await request(app).post('/auth/signin').send(mockUserReqBody);
+      const signinRes = await request(app)
+        .post('/auth/signin')
+        .send(mockUserReqBody);
       token = signinRes.body.authToken;
       userid = signinRes.body.userId;
     });
@@ -143,7 +192,10 @@ describe('Test /listing endpoints', () => {
         price: 1000,
         description: 'Sparkling Kitchen set',
       };
-      const res = await request(app).post('/listing').set('Authorization', `Bearer ${token}`).send(mockReqBody);
+      const res = await request(app)
+        .post('/listing')
+        .set('Authorization', `Bearer ${token}`)
+        .send(mockReqBody);
       expect(res.statusCode).toEqual(200);
     });
   });
@@ -159,7 +211,9 @@ describe('Test /listing endpoints', () => {
         email: mockUser.email,
         password: mockUser.password,
       };
-      const signinRes = await request(app).post('/auth/signin').send(mockUserReqBody);
+      const signinRes = await request(app)
+        .post('/auth/signin')
+        .send(mockUserReqBody);
       token = signinRes.body.authToken;
       userid = signinRes.body.userId;
     });
@@ -171,7 +225,7 @@ describe('Test /listing endpoints', () => {
     it('returns expected error when not signed in user try to edit a post', async () => {
       const mockReqBody = {
         userID: 10,
-        listingId: listingid,
+        listingID: listingid,
         title: 'Dining Table In Good Condition',
         condition: 'used',
         category: 'Table',
@@ -197,13 +251,16 @@ describe('Test /listing endpoints', () => {
         price: 50,
         description: 'Just used for 3 years',
       };
-      const existListing = await request(app).post('/listing').set('Authorization', `Bearer ${token}`).send(mockReqBody);
+      const existListing = await request(app)
+        .post('/listing')
+        .set('Authorization', `Bearer ${token}`)
+        .send(mockReqBody);
       expect(existListing.statusCode).toEqual(200);
       listingid = existListing.body.listingId;
 
       const mockReqBody1 = {
         userID: userid,
-        listingId: listingid,
+        listingID: listingid,
         title: 'Table is in good condition',
         condition: 'new',
         category: 'Other',
@@ -213,10 +270,66 @@ describe('Test /listing endpoints', () => {
         price: 1000,
         description: 'Sparkling Kitchen set',
       };
-      const res1 = await request(app).put('/listing').set('Authorization', `Bearer ${token}`).send(mockReqBody1);
-      expect(res1.body.updatedListing[0].title).toEqual('Table is in good condition');
-      expect(res1.body.updatedListing[0].listing_id).toEqual(listingid);
+      const res1 = await request(app)
+        .put('/listing')
+        .set('Authorization', `Bearer ${token}`)
+        .send(mockReqBody1);
+      expect(res1.body.updatedListing.title).toEqual(
+        'Table is in good condition',
+      );
+      expect(res1.body.updatedListing.listing_id).toEqual(listingid);
       expect(res1.statusCode).toEqual(200);
+    });
+  });
+
+  describe('DELETE /listing/:id', () => {
+    let token;
+    let userid;
+
+    beforeEach(async () => {
+      await seedTestDB();
+      const mockUserReqBody = {
+        email: mockUser.email,
+        password: mockUser.password,
+      };
+      const signinRes = await request(app)
+        .post('/auth/signin')
+        .send(mockUserReqBody);
+      token = signinRes.body.authToken;
+      userid = signinRes.body.userId;
+    });
+
+    afterEach(async () => {
+      await tearDownDB();
+    });
+
+    it('should delete listing with correct listing and user id', async () => {
+      const mockReqBody = {
+        userID: userid,
+        title: 'Dining Table In Good Condition',
+        condition: 'used',
+        category: 'Table',
+        city: 'Winnipeg',
+        provinceCode: 'MB',
+        imageURL: 'https://source.unsplash.com/gySMaocSdqs/',
+        price: 50,
+        description: 'Just used for 3 years',
+      };
+      const postRes = await request(app)
+        .post('/listing')
+        .set('Authorization', `Bearer ${token}`)
+        .send(mockReqBody);
+      const res = await request(app)
+        .delete(`/listing/${postRes.body.listingId}`)
+        .set('Authorization', `Bearer ${token}`);
+      expect(res.statusCode).toEqual(200);
+    });
+
+    it('should returns 404 when deleting non-existent listing', async () => {
+      const res = await request(app)
+        .delete('/listing/-1')
+        .set('Authorization', `Bearer ${token}`);
+      expect(res.statusCode).toEqual(404);
     });
   });
 });

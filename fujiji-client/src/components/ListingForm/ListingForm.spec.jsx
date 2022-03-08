@@ -1,6 +1,19 @@
 import { render, fireEvent } from '@testing-library/react';
+import { SessionProvider } from '../../context/session';
 
 import ListingForm from './ListingForm';
+
+jest.mock('next/router', () => ({
+  useRouter() {
+    return {
+      route: '/',
+      pathname: '',
+      query: '',
+      asPath: '',
+      push: jest.fn(),
+    };
+  },
+}));
 
 const mockInvalidFile = {
   name: 'test.txt',
@@ -13,6 +26,7 @@ const mockValidFile = {
 };
 
 const mockUpdateProps = {
+  listingID: 1,
   title: 'mockTitle',
   description: 'mockDescription',
   condition: 'Refurbished',
@@ -25,6 +39,7 @@ const mockUpdateProps = {
 };
 
 const mockPostProps = {
+  listingID: 1,
   title: 'mockTitle',
   description: 'mockDescription',
   condition: 'Refurbished',
@@ -33,6 +48,15 @@ const mockPostProps = {
   price: 99,
   category: 'Other',
   isUpdate: false,
+};
+
+const mockSessionValue = {
+  isSignedIn: true,
+  userData: {
+    userID: 1,
+    name: 'First Last',
+  },
+  authToken: 'authToken',
 };
 
 describe('ListingForm', () => {
@@ -117,11 +141,14 @@ describe('ListingForm', () => {
     expect(getByLabelText('listing-image')).toBeInTheDocument();
   });
 
-  it('should submit the form if all fields are valid', () => {
+  it('should submit the POST form if all fields are valid', () => {
     const mockOnSubmit = jest.fn();
+    mockOnSubmit.mockResolvedValueOnce({ status: 200 });
 
     const { getByText, getByDisplayValue } = render(
-      <ListingForm {...mockPostProps} onSubmit={mockOnSubmit} />,
+      <SessionProvider value={mockSessionValue}>
+        <ListingForm {...mockPostProps} onSubmit={mockOnSubmit} />
+      </SessionProvider>,
     );
 
     const fileInput = document.querySelector('#image-upload-input');

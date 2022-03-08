@@ -153,7 +153,7 @@ export default function SignIn({ onSubmit, isSignUp = false }) {
         } = result.data;
         setCredentials(
           {
-            userId,
+            userID: userId,
             email,
             name,
             phoneNumber,
