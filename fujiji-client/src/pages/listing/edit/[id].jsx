@@ -1,17 +1,17 @@
 import { Center } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
-import { ListingForm, withSession } from '../../components';
-import { useSession } from '../../context/session';
+import { ListingForm, withSession } from '../../../components';
+import { useSession } from '../../../context/session';
 import {
   updateListing,
   deleteListingById,
   getListingById,
-} from '../../server/api';
+} from '../../../server/api';
 
 function EditListingPage({ data }) {
   const router = useRouter();
-  const { authToken } = useSession();
+  const { userData, authToken } = useSession();
 
   if (data.error) {
     return <Center>{data.error}</Center>;
@@ -20,7 +20,7 @@ function EditListingPage({ data }) {
   const onDelete = async () => {
     const { listingID } = data;
     await deleteListingById(listingID, authToken);
-    router.push('/');
+    router.push(`/user/${userData.userID}/listings`);
   };
 
   return (

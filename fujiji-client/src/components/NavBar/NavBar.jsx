@@ -68,6 +68,7 @@ function UserGroup({ signOutUser, userData }) {
       <Item to="/">Home</Item>
       <Item to="/search">Search</Item>
       <Item to="/listing/create">Post</Item>
+      <Item to={`/user/${userData.userID}/listings`}>My Listings</Item>
       <Item to="/favourites">Favourites</Item>
       <Menu>
         <MenuButton alignContent="center">
@@ -135,7 +136,7 @@ export default function NavBar() {
 UserGroup.propTypes = {
   signOutUser: PropTypes.func,
   userData: PropTypes.shape({
-    id: PropTypes.string,
+    userID: PropTypes.string,
     email: PropTypes.string,
     phoneNumber: PropTypes.string,
     name: PropTypes.string,

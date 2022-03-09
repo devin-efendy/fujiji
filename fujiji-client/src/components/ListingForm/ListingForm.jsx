@@ -190,7 +190,7 @@ export default function ListingForm({
           duration: 9000,
           isClosable: true,
         });
-        router.push('/');
+        router.push(`/user/${userData.userID}/listings`);
       }
     }
   };

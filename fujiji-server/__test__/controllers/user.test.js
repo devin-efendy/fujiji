@@ -106,7 +106,7 @@ describe('Test /user endpoints', () => {
       const res = await request(app)
         .get(`/user/${newUserid}/listings`)
         .set('Authorization', `Bearer ${newUserToken}`);
-      expect(res.statusCode).toEqual(500);
+      expect(res.statusCode).toEqual(404);
     });
 
     it('not signed-in user returns an expected error', async () => {
