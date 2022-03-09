@@ -48,4 +48,26 @@ async function getUserByID(id) {
   }
 }
 
-module.exports = { testGetUser, getUserByEmail, createUser, getUserByID };
+async function getUserListingsByID(id) {
+  try {
+    const [userListings] = await sequelize.query(
+      'SELECT * FROM fujiji_listing WHERE user_id = ?',
+      {
+        replacements: [id],
+        type: QueryTypes.SELECT,
+      },
+    );
+    logDebug('DEBUG-userListings', userListings);
+    return userListings;
+  } catch (err) {
+    return err;
+  }
+}
+
+module.exports = {
+  testGetUser,
+  getUserByEmail,
+  createUser,
+  getUserByID,
+  getUserListingsByID,
+};
