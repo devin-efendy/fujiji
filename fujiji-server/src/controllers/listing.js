@@ -11,11 +11,11 @@ const {
   updateListing,
   getListingById: queryByListingId,
   deleteListingById,
+  getAllListingsDefault,
 } = require('../repositories/listing');
 
 const APIError = require('../errors/api');
 const ListingNotFoundError = require('../errors/listing/listingNotFound');
-const ListingLocationUndefinedError = require('../errors/listing/listingLocationUndefined');
 const ListingInvalidPriceRangeError = require('../errors/listing/listingInvalidPriceRange');
 
 function validatePriceRange(priceRange) {
@@ -106,8 +106,7 @@ async function getAllListings(req, res, next) {
     } else if (req.query.provinceCode) {
       listings = await getListingsByProvince(req);
     } else {
-      next(new ListingLocationUndefinedError());
-      return;
+      listings = await getAllListingsDefault();
     }
 
     if (listings.length === 0) {

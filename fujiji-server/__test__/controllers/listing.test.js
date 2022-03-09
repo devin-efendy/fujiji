@@ -32,9 +32,9 @@ describe('Test /listing endpoints', () => {
       expect(res.statusCode).toEqual(200);
     });
 
-    it('undefined location returns expected error', async () => {
+    it('successfully returns all listings when location is undefined', async () => {
       const res = await request(app).get('/listing');
-      expect(res.statusCode).toEqual(400);
+      expect(res.statusCode).toEqual(200);
     });
 
     it('successfully get all listings by existing city and category', async () => {
