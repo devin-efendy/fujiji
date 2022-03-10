@@ -1,9 +1,11 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const { getUserByID, getUserListingsByID, updateUser } = require('../repositories/user');
 const APIError = require('../errors/api');
 const UserNotFoundError = require('../errors/user/userNotFound');
 const UserListingsNotFoundError = require('../errors/user/userListingsNotFound');
 const InvalidUserIDError = require('../errors/user/invalidUserID');
+const { config } = require('../config/config');
 
 function isNumber(value) {
   try {
@@ -82,7 +84,23 @@ async function editUser(req, res, next) {
     );
 
     const updatedUser = await getUserByID(userID);
-    res.status(200).json({ updatedUser });
+
+    const authToken = jwt.sign(
+      {
+        id: updatedUser.user_id,
+        email,
+      },
+      config.JWT_SECRET,
+      { expiresIn: '1h' },
+    );
+
+    res.status(200).json({
+      authToken,
+      userId: updatedUser.user_id,
+      name: updatedUser.name,
+      email,
+      phoneNumber: updatedUser.phone_number,
+    });
   } catch (err) {
     next(new APIError(err, 500));
   }

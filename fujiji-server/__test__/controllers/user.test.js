@@ -158,7 +158,7 @@ describe('Test /user endpoints', () => {
         .set('Authorization', `Bearer ${token}`)
         .send(mockNewUserInfo);
       expect(res.statusCode).toEqual(200);
-      expect(res.body.updatedUser.name).toEqual('new-test-user');
+      expect(res.body.name).toEqual('new-test-user');
     });
 
     it('returns expected error when not signed in user try to edit', async () => {
