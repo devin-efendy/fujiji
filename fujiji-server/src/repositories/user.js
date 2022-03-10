@@ -64,10 +64,31 @@ async function getUserListingsByID(id) {
   }
 }
 
+async function updateUser(name, email, phoneNumber, password, userID) {
+  const [result] = await sequelize.query(
+    `UPDATE fujiji_user
+     SET name = ?, email_address = ?, phone_number = ?, password = ? 
+     WHERE user_id = ?`,
+    {
+      replacements: [
+        name,
+        email,
+        phoneNumber,
+        password,
+        userID,
+      ],
+      type: QueryTypes.UPDATE,
+    },
+  );
+  logDebug('DEBUG-updateUser', result);
+  return result[0];
+}
+
 module.exports = {
   testGetUser,
   getUserByEmail,
   createUser,
   getUserByID,
   getUserListingsByID,
+  updateUser,
 };
