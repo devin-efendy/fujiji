@@ -13,6 +13,7 @@ const {
   deleteListingById,
   getAllListingsDefault,
 } = require('../repositories/listing');
+const { getUserByID } = require('../repositories/user');
 
 const APIError = require('../errors/api');
 const ListingNotFoundError = require('../errors/listing/listingNotFound');
@@ -136,7 +137,11 @@ async function getByListingId(req, res, next) {
       );
     }
 
-    return res.status(200).json({ listing });
+    const user = await getUserByID(listing.user_id);
+
+    return res
+      .status(200)
+      .json({ listing: { ...listing, contact_email: user.email_address } });
   } catch (err) {
     return next(new APIError());
   }

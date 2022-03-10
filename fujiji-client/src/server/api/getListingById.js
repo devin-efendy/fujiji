@@ -8,6 +8,7 @@ export default async function getListingById(listingId) {
     );
     const { listing } = result.data;
     return {
+      userID: parseInt(listing.user_id, 10),
       listingID: parseInt(listing.listing_id, 10),
       title: listing.title,
       condition: listing.condition,
@@ -17,7 +18,8 @@ export default async function getListingById(listingId) {
       imageUrl: listing.image_url,
       price: listing.price,
       description: listing.description,
-      creationDate: listing.creation_date,
+      postingDate: listing.creation_date,
+      contactEmail: listing.contact_email,
     };
   } catch (error) {
     if (error.response) {

@@ -1,6 +1,12 @@
 import PropTypes from 'prop-types';
 import {
-  Box, Button, Flex, Text, Image, Icon,
+  Box,
+  Button,
+  Flex,
+  Text,
+  Image,
+  Icon,
+  Link,
 } from '@chakra-ui/react';
 import { MdLocationOn } from 'react-icons/md';
 import { BsCalendar } from 'react-icons/bs';
@@ -39,19 +45,20 @@ export default function Listing({
   condition,
   description,
   imageUrl,
-  location,
+  city,
+  province,
   postingDate,
   price,
   title,
-  onContactClick,
+  onContactClick = () => {},
+  contactEmail,
 }) {
   const formattedPrice = price.toLocaleString();
   const parsedDate = parse(postingDate, 'yyyy-MM-dd', new Date());
   const formattedDate = isValid(parsedDate)
     ? format(new Date(parsedDate), 'dd MMMM yyyy')
     : '';
-  const { city, provinceCode } = location;
-  const formattedLocation = `${city}, ${provinceCode}`;
+  const formattedLocation = `${city}, ${province}`;
 
   return (
     <Flex d="inline-flex" flexDir={['column', null, 'row', 'row']}>
@@ -75,7 +82,7 @@ export default function Listing({
         minW={['320px', null, '360px', '400px']}
         maxW="500px"
         mt={['6', '0']}
-        ml={['0', '10']}
+        mx={['2', '5', '10']}
       >
         <Text fontSize="3xl" fontWeight="bold">
           {title}
@@ -122,9 +129,18 @@ export default function Listing({
             {' '}
             {formattedPrice}
           </Box>
-          <Button aria-label="contact-seller-button" colorScheme="teal" size="md" onClick={() => onContactClick()}>
-            Contact
-          </Button>
+          <Link
+            href={`mailto:${contactEmail}`}
+            _hover={{ textDecoration: 'none' }}
+          >
+            <Button
+              aria-label="contact-seller-button"
+              colorScheme="teal"
+              onClick={onContactClick}
+            >
+              Contact
+            </Button>
+          </Link>
         </Box>
       </Flex>
     </Flex>
@@ -143,11 +159,10 @@ Listing.propTypes = {
   price: PropTypes.number,
   description: PropTypes.string,
   category: PropTypes.string,
-  location: PropTypes.shape({
-    city: PropTypes.string,
-    provinceCode: PropTypes.string,
-  }),
+  city: PropTypes.string,
+  province: PropTypes.string,
   condition: PropTypes.string,
   onContactClick: PropTypes.func,
   postingDate: PropTypes.string,
+  contactEmail: PropTypes.string,
 };

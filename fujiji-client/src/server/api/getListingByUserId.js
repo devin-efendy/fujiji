@@ -26,10 +26,8 @@ export default async function getListingByUserId(userId, authToken) {
         title: listing.title,
         condition: listing.condition,
         category: listing.category,
-        location: {
-          city: listing.city,
-          provinceCode: listing.province_code,
-        },
+        city: listing.city,
+        province: listing.province_code,
         imageUrl: listing.image_url,
         price: listing.price,
         description: listing.description,

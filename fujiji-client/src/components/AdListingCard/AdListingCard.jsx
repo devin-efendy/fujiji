@@ -28,7 +28,8 @@ export default function AdListingCard({
   title,
   price,
   description = '',
-  location,
+  city,
+  province,
   condition,
   onClick = undefined,
   postingDate,
@@ -39,8 +40,7 @@ export default function AdListingCard({
     ? format(new Date(parsedDate), 'dd MMM yyyy')
     : '';
 
-  const { city, provinceCode } = location;
-  const formattedLocation = `${city}, ${provinceCode}`;
+  const formattedLocation = `${city}, ${province}`;
 
   return (
     <Box
@@ -125,10 +125,8 @@ AdListingCard.propTypes = {
   title: PropTypes.string,
   price: PropTypes.number,
   description: PropTypes.string,
-  location: PropTypes.shape({
-    city: PropTypes.string,
-    provinceCode: PropTypes.string,
-  }),
+  city: PropTypes.string,
+  province: PropTypes.string,
   condition: PropTypes.string,
   onClick: PropTypes.func,
   postingDate: PropTypes.string,
