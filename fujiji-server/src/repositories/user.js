@@ -50,7 +50,7 @@ async function getUserByID(id) {
 
 async function getUserListingsByID(id) {
   try {
-    const [userListings] = await sequelize.query(
+    const userListings = await sequelize.query(
       'SELECT * FROM fujiji_listing WHERE user_id = ?',
       {
         replacements: [id],

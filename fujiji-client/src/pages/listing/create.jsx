@@ -1,13 +1,15 @@
 import { Center } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { ListingForm, withSession } from '../../components';
+import { useSession } from '../../context/session';
 import { postListing } from '../../server/api';
 
 function CreateListingPage() {
   const router = useRouter();
+  const { userData } = useSession();
 
   const onDelete = () => {
-    router.push('/');
+    router.push(`/user/${userData.userID}/listings`);
   };
 
   return (
