@@ -6,3 +6,4 @@ export { default as updateListing } from './updateListing';
 export { default as getListingById } from './getListingById';
 export { default as getListingByUserId } from './getListingByUserId';
 export { default as deleteListingById } from './deleteListingById';
+export { default as editProfile } from './editProfile';
