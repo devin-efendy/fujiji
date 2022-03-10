@@ -31,7 +31,7 @@ import {
   EditIcon,
 } from '@chakra-ui/icons';
 import { useRouter } from 'next/router';
-import { validateEmail, validatePhoneNumber } from '../../utils/validate';
+import { validatePhoneNumber } from '../../utils/validate';
 import { useSession } from '../../context/session';
 import { withSession } from '..';
 
@@ -43,7 +43,7 @@ function EditProfilePage({ onSubmit }) {
   const toast = useToast();
   const { setCredentials } = useSession();
 
-  const [emailInput, setEmailInput] = useState(userData.email);
+  const [emailInput] = useState(userData.email);
   const [passwordInput, setPasswordInput] = useState('');
   const [firstNameInput, setFirstNameInput] = useState((userData.name).split(' ')[0]);
   const [lastNameInput, setLastNameInput] = useState((userData.name).split(' ')[1]);
@@ -65,10 +65,6 @@ function EditProfilePage({ onSubmit }) {
 
   const handlePasswordChange = (event) => {
     setPasswordInput(event.target.value);
-  };
-
-  const handleEmailChange = (event) => {
-    setEmailInput(event.target.value);
   };
 
   const handleFirstNameChange = (event) => {
@@ -95,14 +91,11 @@ function EditProfilePage({ onSubmit }) {
     const signUpValidation = validatePhoneNumber(phoneInput) && firstNameInput;
 
     const isInputValid = signUpValidation
-      && validateEmail(emailInput)
       && passwordInput
       && passwordInput.length >= 8;
 
     if (!emailInput) {
       setEmailError("Email can't be empty");
-    } else if (!validateEmail(emailInput)) {
-      setEmailError('Invalid email');
     }
 
     if (!passwordInput) {
@@ -244,8 +237,8 @@ function EditProfilePage({ onSubmit }) {
                 isInvalid={emailErrorMessage}
                 type="email"
                 placeholder="email address"
-                onChange={handleEmailChange}
                 defaultValue={emailInput}
+                isDisabled
               />
             </InputGroup>
             {emailErrorMessage && (
