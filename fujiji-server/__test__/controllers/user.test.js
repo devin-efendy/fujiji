@@ -121,4 +121,72 @@ describe('Test /user endpoints', () => {
       expect(res.statusCode).toEqual(400);
     });
   });
+
+  describe('PUT /user/:id', () => {
+    let token;
+    let userid;
+
+    beforeEach(async () => {
+      await tearDownDB();
+      await seedTestDB();
+      const mockUserReqBody = {
+        email: mockUser.email,
+        password: mockUser.password,
+      };
+      const signinRes = await request(app)
+        .post('/auth/signin')
+        .send(mockUserReqBody);
+      expect(signinRes.statusCode).toEqual(200);
+      token = signinRes.body.authToken;
+      userid = signinRes.body.userId;
+    });
+
+    afterEach(async () => {
+      await tearDownDB();
+    });
+
+    it('successfully edit user\'s profile when they are signed in', async () => {
+      const mockNewUserInfo = {
+        name: 'new-test-user',
+        email: mockUser.email,
+        phoneNumber: '2041235555',
+        password: mockUser.password,
+      };
+
+      const res = await request(app)
+        .put(`/user/${userid}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send(mockNewUserInfo);
+      expect(res.statusCode).toEqual(200);
+      expect(res.body.updatedUser.name).toEqual('new-test-user');
+    });
+
+    it('returns expected error when not signed in user try to edit', async () => {
+      const mockNewUserInfo = {
+        name: 'new-bad-test-user',
+        email: mockUser.email,
+        phoneNumber: '2041235555',
+        password: mockUser.password,
+      };
+
+      const res = await request(app)
+        .put(`/user/${userid}`)
+        .send(mockNewUserInfo);
+      expect(res.statusCode).toEqual(400);
+    });
+
+    it('returns expected error when invalid userid is being passed', async () => {
+      const mockNewUserInfo = {
+        name: 'new-bad-test-user1',
+        email: mockUser.email,
+        phoneNumber: '2041235555',
+        password: mockUser.password,
+      };
+
+      const res = await request(app)
+        .put('/user/abc123')
+        .send(mockNewUserInfo);
+      expect(res.statusCode).toEqual(400);
+    });
+  });
 });
