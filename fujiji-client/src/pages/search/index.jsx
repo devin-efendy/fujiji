@@ -4,7 +4,7 @@ import {
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
-import { AdListingCard, withSession } from '../../components';
+import { AdListingCard} from '../../components';
 import { getAllListings } from '../../server/api';
 
 function SearchPage() {
