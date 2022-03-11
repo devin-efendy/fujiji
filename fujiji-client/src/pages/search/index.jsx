@@ -82,7 +82,7 @@ function SearchPage() {
   );
 }
 
-export default withSession(SearchPage);
+export default SearchPage;
 
 SearchPage.propTypes = {
   listings: PropTypes.arrayOf({
