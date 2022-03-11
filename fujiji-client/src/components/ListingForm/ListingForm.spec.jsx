@@ -67,7 +67,7 @@ describe('ListingForm', () => {
     expect(getByText('Discard')).toBeInTheDocument();
     // condition is "Used" by default
     expect(getByText('Used').selected).toBeTruthy();
-    expect(getByText('Brand New').selected).toBeFalsy();
+    expect(getByText('New').selected).toBeFalsy();
     expect(getByText('Refurbished').selected).toBeFalsy();
     // province is "MB" by default
     expect(getByText('MB').selected).toBeTruthy();
@@ -186,7 +186,7 @@ describe('ListingForm', () => {
       target: { value: 'different title' },
     });
     fireEvent.change(getByLabelText('listing-condition'), {
-      target: { value: 'Brand New' },
+      target: { value: 'New' },
     });
     fireEvent.change(getByLabelText('listing-description'), {
       target: { value: 'different description' },
@@ -208,7 +208,7 @@ describe('ListingForm', () => {
     expect(getByDisplayValue('different description')).toBeInTheDocument();
     expect(getByDisplayValue('Toronto')).toBeInTheDocument();
 
-    expect(getByText('Brand New').selected).toBeTruthy();
+    expect(getByText('New').selected).toBeTruthy();
     expect(getByText('Refurbished').selected).toBeFalsy();
 
     expect(getByText('ON').selected).toBeTruthy();
