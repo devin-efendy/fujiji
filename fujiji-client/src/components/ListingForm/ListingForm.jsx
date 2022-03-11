@@ -246,7 +246,7 @@ export default function ListingForm({
               }}
               value={listingCondition}
             >
-              <option key="brand-new">Brand New</option>
+              <option key="new">New</option>
               <option key="used">Used</option>
               <option key="refurbished">Refurbished</option>
             </Select>
