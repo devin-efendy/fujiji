@@ -1,11 +1,13 @@
 import { Flex } from '@chakra-ui/react';
-import EditProfile from '../../components/EditProfile/EditProfile';
+import { EditProfile, withSession } from '../../components';
 import { editProfile } from '../../server/api';
 
-export default function ProfilePage() {
+function ProfilePage() {
   return (
     <Flex justifyContent="center" mx="auto" py="10">
       <EditProfile onSubmit={editProfile} />
     </Flex>
   );
 }
+
+export default withSession(ProfilePage);

@@ -21,17 +21,22 @@ function Template({ ...args }) {
   return <AdListingCard {...args} />;
 }
 
-export const NewFurniture = Template.bind({});
-NewFurniture.args = {
+export const Default = Template.bind({});
+Default.args = {
   ...mockAdListing[0],
 };
 
-export const UsedFurniture = Template.bind({});
-UsedFurniture.args = {
+export const TruncatedDescription = Template.bind({});
+TruncatedDescription.args = {
   ...mockAdListing[1],
 };
 
 export const EmptyDescription = Template.bind({});
 EmptyDescription.args = {
   ...mockAdListing[2],
+};
+
+export const TruncatedTitle = Template.bind({});
+TruncatedTitle.args = {
+  ...mockAdListing[3],
 };

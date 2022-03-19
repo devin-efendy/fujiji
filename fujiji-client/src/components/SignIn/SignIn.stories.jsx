@@ -6,14 +6,18 @@ export default {
   component: SignIn,
 };
 
-function Template({ ...args }) {
+export function SignInForm({ ...args }) {
   return <SignIn {...args} />;
 }
 
-export const Default = Template.bind({});
-
-Default.args = {
+SignInForm.args = {
   isSignUp: false,
 };
 
-// export const Primary;
+export function SignUpForm({ ...args }) {
+  return <SignIn {...args} />;
+}
+
+SignUpForm.args = {
+  isSignUp: true,
+};

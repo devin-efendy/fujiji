@@ -7,33 +7,35 @@ export default {
   component: NavBar,
 };
 
-function Template({ ...args }) {
+export function LoggedOut({ ...args }) {
+  const { isSignedIn, name } = args;
   return (
-    <SessionProvider value={{ ...args }}>
+    <SessionProvider
+      value={{
+        isSignedIn,
+        userData: { name },
+      }}
+    >
       <NavBar />
     </SessionProvider>
   );
 }
 
-export const Default = Template.bind({});
-
-export const LoggedOut = Template.bind({});
-
-export const SignedIn = Template.bind({});
-
 LoggedOut.args = {
   isSignedIn: false,
+  name: '',
 };
+
+export function SignedIn({ ...args }) {
+  const { isSignedIn, name } = args;
+  return (
+    <SessionProvider value={{ isSignedIn, userData: { name } }}>
+      <NavBar />
+    </SessionProvider>
+  );
+}
 
 SignedIn.args = {
   isSignedIn: true,
-  userData: {
-    name: 'First Last',
-  },
+  name: 'John Doe',
 };
-
-Default.args = {
-  isSignedIn: false,
-};
-
-// export const Primary;

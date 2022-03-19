@@ -33,7 +33,6 @@ import {
 import { useRouter } from 'next/router';
 import { validatePhoneNumber } from '../../utils/validate';
 import { useSession } from '../../context/session';
-import { withSession } from '..';
 
 function EditProfilePage({ onSubmit }) {
   const { userData } = useSession();
@@ -314,4 +313,4 @@ EditProfilePage.propTypes = {
   onSubmit: PropTypes.func,
 };
 
-export default withSession(EditProfilePage);
+export default EditProfilePage;
