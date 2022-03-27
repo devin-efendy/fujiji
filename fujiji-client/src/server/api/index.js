@@ -8,3 +8,4 @@ export { default as getListingByUserId } from './getListingByUserId';
 export { default as deleteListingById } from './deleteListingById';
 export { default as editProfile } from './editProfile';
 export { default as getAllListings } from './getAllListings';
+export { default as uploadImage } from './uploadImage';

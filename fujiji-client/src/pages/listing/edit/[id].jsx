@@ -7,6 +7,7 @@ import {
   updateListing,
   deleteListingById,
   getListingById,
+  uploadImage,
 } from '../../../server/api';
 
 function EditListingPage({ data }) {
@@ -29,6 +30,7 @@ function EditListingPage({ data }) {
         {...data}
         onSubmit={updateListing}
         onDelete={onDelete}
+        onImageUpload={uploadImage}
         isUpdate
       />
     </Center>
