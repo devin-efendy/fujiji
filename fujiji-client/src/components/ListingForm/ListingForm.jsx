@@ -203,7 +203,7 @@ export default function ListingForm({
     } else {
       setUploadedImage(uploadedFile);
       const url = onImageUpload(uploadedFile);
-      url.then((result) => setListingImageUrl(result.data.imageUrl));
+      url.then((result) => setListingImageUrl(result.data.imageUrl)).catch(() => {});
     }
     e.target.value = null; // reset onChange value
   };
