@@ -1,3 +1,3 @@
 const APIError = require('./api');
 
-module.exports = { APIError, ...require('./auth') };
+module.exports = { APIError, ...require('./auth'), ...require('./listing') };

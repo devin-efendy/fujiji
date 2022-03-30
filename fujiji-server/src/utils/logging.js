@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 function logDebug(title, message) {
   if (process.env.NODE_ENV !== 'test') {
     console.log(title);
