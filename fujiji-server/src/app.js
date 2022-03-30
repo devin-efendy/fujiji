@@ -27,6 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/', routes);
 
 // for debugging purposes if you are actually logged in
+/* istanbul ignore next */
 app.get('/authstatus', authentication, async (req, res) => {
   const { userData } = req.locals;
 
@@ -36,15 +37,18 @@ app.get('/authstatus', authentication, async (req, res) => {
 });
 
 // for debugging purposes to check if we able to connect to DB
+/* istanbul ignore next */
 app.get('/appstatus', async (req, res) => {
   const response = {
     message: 'Hello from the server!!!',
   };
   let [allUser] = '';
   let [allListing] = '';
+  let [allComments] = '';
   try {
     [allUser] = await sequelize.query('SELECT * FROM fujiji_user');
     [allListing] = await sequelize.query('SELECT * FROM fujiji_listing');
+    [allComments] = await sequelize.query('SELECT * FROM fujiji_comments');
   } catch (err) {
     console.log(err);
   }
@@ -53,9 +57,11 @@ app.get('/appstatus', async (req, res) => {
     response,
     allUser,
     allListing,
+    allComments,
   });
 });
 
+/* istanbul ignore next */
 app.get('/', async (req, res) => {
   const response = {
     message: 'Test for homepage. This should be showing pls',
@@ -65,6 +71,7 @@ app.get('/', async (req, res) => {
 });
 
 if (process.env.NODE_ENV !== 'test') {
+  /* istanbul ignore next */
   app.listen(port, async () => {
     console.log(`Server is up on port ${appUrl}:${port}`);
 
