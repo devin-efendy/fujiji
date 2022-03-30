@@ -14,11 +14,13 @@ steps:
   inputs:
     versionSpec: '16.x'
   displayName: 'Install Node.js'
+
 - script: |
-    npm install
+    npm ci
   workingDirectory: fujiji-client/
   displayName: 'Install packages'
+
 - script: |
-    npx chromatic --project-token=$(CHROMATIC_PROJECT_TOKEN)
+    npx chromatic --project-token=$(CHROMATIC_PROJECT_TOKEN) --exit-once-uploaded
   workingDirectory: fujiji-client/
   displayName: 'Publish storybook to Chromatic'

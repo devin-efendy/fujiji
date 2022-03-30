@@ -1,4 +1,5 @@
 import React from 'react';
+import { SessionProvider } from '../../context/session';
 import EditProfile from './EditProfile';
 
 export default {
@@ -7,7 +8,13 @@ export default {
 };
 
 function Template({ ...args }) {
-  return <EditProfile {...args} />;
+  return (
+    <SessionProvider
+      value={{ userData: { email: 'test@fujiji.com', name: 'Fujiji Admin' } }}
+    >
+      <EditProfile {...args} />
+    </SessionProvider>
+  );
 }
 
 export const Default = Template.bind({});

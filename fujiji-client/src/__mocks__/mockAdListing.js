@@ -1,10 +1,11 @@
 const mockAdListings = [
   {
-    imageUrl: 'https://source.unsplash.com/gySMaocSdqs/',
-    imageAlt: 'A dog using an iPad on a wooden table',
+    imageUrl: 'https://source.unsplash.com/jb-SMviXCjI/',
+    imageAlt: 'A plant on top of a wooden table',
     title: 'Wooden Table',
     price: 9999,
-    description: 'Does not come with doggo :(',
+    description:
+      'Lorem Ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.',
     city: 'Winnipeg',
     province: 'MB',
     category: 'table',
@@ -12,14 +13,14 @@ const mockAdListings = [
     postingDate: '2022-02-21',
   },
   {
-    imageUrl: 'https://source.unsplash.com/ueJ2oJeEK-U/',
+    imageUrl: 'https://source.unsplash.com/ueJ2oJeEK-U/as',
     imageAlt: 'comfortable sofa',
     title: 'Comfy Sofa',
     price: 123.23,
     description:
       'Lorem Ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum',
     city: 'Vancouver',
-    provinceCode: 'BC',
+    province: 'BC',
     category: 'sofa',
     condition: 'used',
     postingDate: '2022-02-21',
@@ -30,9 +31,22 @@ const mockAdListings = [
     title: 'Antique Chair',
     price: 1900,
     city: 'Toronto',
-    provinceCode: 'ON',
+    province: 'ON',
     category: 'chair',
     condition: 'used',
+    postingDate: '2022-02-21',
+  },
+  {
+    imageUrl: 'https://source.unsplash.com/1P6AnKDw6S8/',
+    imageAlt: 'Antique white chair',
+    title: 'This Title Is Reaaaaaaaaaally Long',
+    price: 1900,
+    description:
+      'Lorem Ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.',
+    city: 'Toronto',
+    province: 'ON',
+    category: 'chair',
+    condition: 'refurbished',
     postingDate: '2022-02-21',
   },
 ];

@@ -75,6 +75,7 @@ export default function AdListingCard({
           lineHeight="tight"
           textAlign="left"
           fontSize="lg"
+          noOfLines={1}
         >
           {title}
         </Box>
