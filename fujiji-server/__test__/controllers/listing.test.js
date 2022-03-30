@@ -13,6 +13,43 @@ describe('Test /listing endpoints', () => {
       await tearDownDB();
     });
 
+    it('successfully get all listings by existing city using search route', async () => {
+      const res = await request(app)
+        .get('/listing/search')
+        .query({ city: 'Winnipeg' });
+      expect(res.statusCode).toEqual(200);
+    });
+
+    it('successfully get all listings by price range city using search route', async () => {
+      const res = await request(app)
+        .get('/listing/search')
+        .query({ startPrice: 70, endPrice: 120 });
+      expect(res.statusCode).toEqual(200);
+    });
+
+    it('return 404 when no listings found when we get all listings by price range city using search route', async () => {
+      const res = await request(app)
+        .get('/listing/search')
+        .query({ startPrice: 100, endPrice: 120 });
+      expect(res.statusCode).toEqual(404);
+    });
+
+    it('successfully get all listings by all filters using search route', async () => {
+      const res = await request(app)
+        .get('/listing/search')
+        .query({
+          title: 'Dummy Title', condition: 'used', category: 'other', city: 'Winnipeg', province: 'MB', startPrice: 70, endPrice: 120,
+        });
+      expect(res.statusCode).toEqual(200);
+    });
+
+    it('successfully get all listings by city and category using search route', async () => {
+      const res = await request(app)
+        .get('/listing/search')
+        .query({ category: 'other', city: 'Winnipeg' });
+      expect(res.statusCode).toEqual(200);
+    });
+
     it('successfully get all listings by existing city', async () => {
       const res = await request(app)
         .get('/listing')
