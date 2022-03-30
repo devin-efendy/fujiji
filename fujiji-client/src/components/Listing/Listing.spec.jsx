@@ -5,11 +5,23 @@ import mockAdListing from '../../__mocks__/mockAdListing';
 
 describe('Listing', () => {
   it('should render properly', () => {
-    const { getByText } = render(<Listing {...mockAdListing[0]} />);
+    const { getByText, getByLabelText, queryByLabelText } = render(<Listing {...mockAdListing[0]} />);
     expect(getByText(mockAdListing[0].title)).toBeInTheDocument();
     expect(getByText(mockAdListing[0].description)).toBeInTheDocument();
     expect(getByText('new')).toBeInTheDocument();
     expect(getByText('21 February 2022')).toBeInTheDocument();
+    expect(getByLabelText('contact-seller-button')).toBeInTheDocument();
+    expect(queryByLabelText('edit-listing-button')).toBeFalsy();
+  });
+
+  it("should render edit button if this listing is seller's", () => {
+    const { getByText, getByLabelText, queryByLabelText } = render(<Listing {...mockAdListing[0]} isSeller />);
+    expect(getByText(mockAdListing[0].title)).toBeInTheDocument();
+    expect(getByText(mockAdListing[0].description)).toBeInTheDocument();
+    expect(getByText('new')).toBeInTheDocument();
+    expect(getByText('21 February 2022')).toBeInTheDocument();
+    expect(getByLabelText('edit-listing-button')).toBeInTheDocument();
+    expect(queryByLabelText('contact-seller-button')).toBeFalsy();
   });
 
   it('should render with empty description', () => {

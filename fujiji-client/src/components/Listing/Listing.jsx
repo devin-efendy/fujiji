@@ -1,17 +1,12 @@
 import PropTypes from 'prop-types';
 import {
-  Box,
-  Button,
-  Flex,
-  Text,
-  Image,
-  Icon,
-  Link,
+  Box, Button, Flex, Text, Image, Icon, Link,
 } from '@chakra-ui/react';
 import { MdLocationOn } from 'react-icons/md';
 import { BsCalendar } from 'react-icons/bs';
 import { BiCategory } from 'react-icons/bi';
 import { format, isValid, parse } from 'date-fns';
+import { useRouter } from 'next/router';
 import ConditionBadge from '../ConditionBadge/ConditionBadge';
 
 function ListingInfoBox({ icon, infoField, infoContent }) {
@@ -41,6 +36,8 @@ function ListingInfoBox({ icon, infoField, infoContent }) {
 }
 
 export default function Listing({
+  isSeller = false,
+  listingID,
   category,
   condition,
   description,
@@ -59,6 +56,11 @@ export default function Listing({
     ? format(new Date(parsedDate), 'dd MMMM yyyy')
     : '';
   const formattedLocation = `${city}, ${province}`;
+  const router = useRouter();
+
+  const onEditClick = () => {
+    router.push(`/listing/edit/${listingID}`);
+  };
 
   return (
     <Flex d="inline-flex" flexDir={['column', null, 'row', 'row']}>
@@ -129,18 +131,29 @@ export default function Listing({
             {' '}
             {formattedPrice}
           </Box>
-          <Link
-            href={`mailto:${contactEmail}`}
-            _hover={{ textDecoration: 'none' }}
-          >
+          {isSeller && (
             <Button
-              aria-label="contact-seller-button"
+              aria-label="edit-listing-button"
               colorScheme="teal"
-              onClick={onContactClick}
+              onClick={onEditClick}
             >
-              Contact
+              Edit
             </Button>
-          </Link>
+          )}
+          {!isSeller && (
+            <Link
+              href={`mailto:${contactEmail}`}
+              _hover={{ textDecoration: 'none' }}
+            >
+              <Button
+                aria-label="contact-seller-button"
+                colorScheme="teal"
+                onClick={onContactClick}
+              >
+                Contact
+              </Button>
+            </Link>
+          )}
         </Box>
       </Flex>
     </Flex>
@@ -154,6 +167,8 @@ ListingInfoBox.propTypes = {
 };
 
 Listing.propTypes = {
+  isSeller: PropTypes.bool,
+  listingID: PropTypes.number,
   imageUrl: PropTypes.string,
   title: PropTypes.string,
   price: PropTypes.number,

@@ -35,3 +35,9 @@ export const EmptyDescription = Template.bind({});
 EmptyDescription.args = {
   ...mockAdListing[2],
 };
+
+export const SellerListing = Template.bind({});
+SellerListing.args = {
+  isSeller: true,
+  ...mockAdListing[0],
+};
