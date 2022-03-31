@@ -198,6 +198,30 @@ describe('Test /comment endpoints', () => {
       expect(getCommentRes.body.comments.length).toEqual(2);
     });
 
+    it('Successfully return empty list when no comment is posted', async () => {
+      const mockPostListingReqBody = {
+        userID: userid,
+        title: 'Dining Table In Good Condition',
+        condition: 'used',
+        category: 'Table',
+        city: 'Winnipeg',
+        provinceCode: 'MB',
+        imageURL: 'https://source.unsplash.com/gySMaocSdqs/',
+        price: 50,
+        description: 'Just used for 3 years',
+      };
+
+      const postListingRes = await request(app)
+        .post('/listing')
+        .set('Authorization', `Bearer ${token}`)
+        .send(mockPostListingReqBody);
+
+      const getCommentRes = await request(app)
+        .get(`/comment/${postListingRes.body.listingId}`);
+      expect(getCommentRes.statusCode).toEqual(200);
+      expect(getCommentRes.body.comments.length).toEqual(0);
+    });
+
     it('Should return 404 error if listing does not exist', async () => {
       const getCommentRes = await request(app)
         .get('/comment/123123');
