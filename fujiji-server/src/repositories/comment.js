@@ -18,6 +18,19 @@ async function createComment(userID, listingID, comment, isAuthor) {
   return result[0];
 }
 
+async function getComments(listingID) {
+  const [result] = await sequelize.query(
+    'SELECT * FROM fujiji_comments WHERE listing_id = ?;',
+    {
+      replacements: [listingID],
+      type: Sequelize.SELECT,
+    },
+  );
+  logDebug('DEBUG-getComments', result);
+  return result;
+}
+
 module.exports = {
   createComment,
+  getComments,
 };

@@ -1,4 +1,7 @@
-const { createComment } = require('../repositories/comment');
+const {
+  createComment,
+  getComments,
+} = require('../repositories/comment');
 const { getListingById } = require('../repositories/listing');
 
 const { APIError, ListingNotFound } = require('../errors');
@@ -37,4 +40,24 @@ async function postComment(req, res, next) {
   }
 }
 
-module.exports = { postComment };
+async function getListingComments(req, res, next) {
+  const { listing_id: listingID } = req.params;
+
+  const listing = await getListingById(parseInt(listingID, 10));
+
+  if (!listing) {
+    return next(
+      new ListingNotFound(`listing with id:${listingID} is not found`),
+    );
+  }
+
+  try {
+    const comments = await getComments(listingID);
+
+    return res.status(200).json({ comments });
+  } catch (err) {
+    return next(new APIError(err, 500));
+  }
+}
+
+module.exports = { postComment, getListingComments };
