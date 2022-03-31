@@ -22,7 +22,11 @@ async function createComment(userID, listingID, comment, isAuthor) {
 // PURPOSE: used to fetch comments from the db based on the listing_id
 async function getComments(listingID) {
   const [result] = await sequelize.query(
-    'SELECT * FROM fujiji_comments WHERE listing_id = ?;',
+    `SELECT fc.*, fu.name 
+      FROM fujiji_comments fc LEFT JOIN fujiji_user fu
+        ON fc.user_id = fu.user_id
+      WHERE listing_id = ? 
+      ORDER BY fc.creation_date DESC;`,
     {
       replacements: [listingID],
       type: Sequelize.SELECT,

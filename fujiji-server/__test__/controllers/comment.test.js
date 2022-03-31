@@ -154,6 +154,7 @@ describe('Test /comment endpoints', () => {
       const getCommentRes = await request(app)
         .get(`/comment/${postListingRes.body.listingId}`);
       expect(getCommentRes.statusCode).toEqual(200);
+      expect(getCommentRes.body.comments[0].name).toEqual('test-user');
     });
 
     it('Successfully fetch >1 comment', async () => {
