@@ -1,21 +1,36 @@
 import { Center } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
-import { Listing, withSession } from '../../components';
+import { Listing } from '../../components';
+import { useSession } from '../../context/session';
 import { getListingById } from '../../server/api';
 
 function IndividualListingPage({ data }) {
+  const session = useSession();
+
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
   if (data.error) {
     return <Center>{data.error}</Center>;
   }
 
+  const listingProps = {
+    ...data,
+    isSeller:
+      typeof window === 'undefined'
+        ? false
+        : parseInt(data.userID, 10) === parseInt(session.userData?.userID, 10),
+  };
+
   return (
     <Center id={`listingContainer-${data.listingID}`} px="1" py="6">
-      <Listing {...data} />
+      <Listing {...listingProps} />
     </Center>
   );
 }
 
-export default withSession(IndividualListingPage);
+export default IndividualListingPage;
 
 export async function getServerSideProps(context) {
   const listingId = context.query.id;
