@@ -6,6 +6,7 @@ const { getListingById } = require('../repositories/listing');
 
 const { APIError, ListingNotFound } = require('../errors');
 
+// PURPOSE: implement the post comment endpoint
 async function postComment(req, res, next) {
   const { comment } = req.body;
   const { listing_id: listingID } = req.params;
@@ -40,6 +41,7 @@ async function postComment(req, res, next) {
   }
 }
 
+// PURPOSE: implement the get comments by listing id endpoint
 async function getListingComments(req, res, next) {
   const { listing_id: listingID } = req.params;
 
