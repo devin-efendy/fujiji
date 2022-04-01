@@ -9,3 +9,4 @@ export { default as PageLayout } from './PageLayout/PageLayout';
 export { default as RequireAuthDialog } from './RequireAuthDialog/RequireAuthDialog';
 export { default as withSession } from './withSession/withSession';
 export { default as EditProfile } from './EditProfile/EditProfile';
+export { default as Comment } from './Comment/Comment';
