@@ -40,3 +40,60 @@ module.exports = {
   createComment,
   getComments,
 };
+
+// PURPOSE: used to fetch a comment from the db based on its id
+async function getCommentById(commentID) {
+  const [result] = await sequelize.query(
+    'SELECT * FROM fujiji_comments WHERE comment_id = ?;',
+    {
+      replacements: [commentID],
+      type: Sequelize.SELECT,
+    },
+  );
+  logDebug('DEBUG-getCommentById', result);
+  return result[0];
+}
+
+module.exports = {
+  createComment,
+  getComments,
+  getCommentById,
+};
+
+// PURPOSE: used to update a comment from the db based on its id
+async function updateCommentById(commentID, comment) {
+  const [result] = await sequelize.query(
+    `UPDATE fujiji_comments 
+      SET comment = ?, modified_date = getutcdate() 
+      WHERE comment_id = ?;`,
+    {
+      replacements: [comment, commentID],
+      type: Sequelize.UPDATE,
+    },
+  );
+  logDebug('DEBUG-updateCommentById', result);
+  return result;
+}
+
+// PURPOSE: used to highlight a comment from the db based on its id
+async function highlightsCommentById(commentID, isHighlighted) {
+  const [result] = await sequelize.query(
+    `UPDATE fujiji_comments 
+      SET isHighlighted = ?
+      WHERE comment_id = ?;`,
+    {
+      replacements: [isHighlighted, commentID],
+      type: Sequelize.UPDATE,
+    },
+  );
+  logDebug('DEBUG-highlightsCommentById', result);
+  return result;
+}
+
+module.exports = {
+  createComment,
+  getComments,
+  getCommentById,
+  updateCommentById,
+  highlightsCommentById,
+};

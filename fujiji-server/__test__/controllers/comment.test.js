@@ -230,4 +230,124 @@ describe('Test /comment endpoints', () => {
       expect(getCommentRes.statusCode).toEqual(404);
     });
   });
+
+  describe('PUT /comment/:comment_id', () => {
+    let token;
+    let userid;
+
+    beforeEach(async () => {
+      await tearDownDB();
+      await seedTestDB();
+      const mockUserReqBody = {
+        email: mockUser.email,
+        password: mockUser.password,
+      };
+      const signinRes = await request(app)
+        .post('/auth/signin')
+        .send(mockUserReqBody);
+      token = signinRes.body.authToken;
+      userid = signinRes.body.userId;
+    });
+
+    afterEach(async () => {
+      await tearDownDB();
+    });
+
+    it('Successfully updated a comment', async () => {
+      const mockPostListingReqBody = {
+        userID: userid,
+        title: 'Dining Table In Good Condition',
+        condition: 'used',
+        category: 'Table',
+        city: 'Winnipeg',
+        provinceCode: 'MB',
+        imageURL: 'https://source.unsplash.com/gySMaocSdqs/',
+        price: 50,
+        description: 'Just used for 3 years',
+      };
+
+      const mockPostCommentReqBody = {
+        comment: 'mock comment',
+      };
+
+      const mockEditCommentReqBody = {
+        comment: 'mock update comment',
+        isHighlighted: 1,
+      };
+
+      const postListingRes = await request(app)
+        .post('/listing')
+        .set('Authorization', `Bearer ${token}`)
+        .send(mockPostListingReqBody);
+
+      const postCommentRes = await request(app)
+        .post(`/comment/${postListingRes.body.listingId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send(mockPostCommentReqBody);
+
+      const putCommentRes = await request(app)
+        .put(`/comment/${postCommentRes.body.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send(mockEditCommentReqBody);
+
+      expect(putCommentRes.statusCode).toEqual(200);
+      expect(putCommentRes.body.updatedComment.comment)
+        .toEqual('mock update comment');
+      expect(putCommentRes.body.updatedComment.modified_date)
+        .not.toBeNull();
+    });
+
+    it('Should return 404 error if comment does not exist', async () => {
+      const mockPostCommentReqBody = {
+        comment: 'mock comment',
+      };
+
+      const putCommentRes = await request(app)
+        .put('/comment/123123')
+        .set('Authorization', `Bearer ${token}`)
+        .send(mockPostCommentReqBody);
+
+      expect(putCommentRes.statusCode).toEqual(404);
+    });
+
+    it('Should return 400 error if the updated comment field is empty', async () => {
+      const mockPostListingReqBody = {
+        userID: userid,
+        title: 'Dining Table In Good Condition',
+        condition: 'used',
+        category: 'Table',
+        city: 'Winnipeg',
+        provinceCode: 'MB',
+        imageURL: 'https://source.unsplash.com/gySMaocSdqs/',
+        price: 50,
+        description: 'Just used for 3 years',
+      };
+
+      const mockPostCommentReqBody = {
+        comment: 'mock comment',
+      };
+
+      const mockEditCommentReqBody = {
+        comment: '',
+        isHighlighted: 1,
+      };
+
+      const postListingRes = await request(app)
+        .post('/listing')
+        .set('Authorization', `Bearer ${token}`)
+        .send(mockPostListingReqBody);
+
+      const postCommentRes = await request(app)
+        .post(`/comment/${postListingRes.body.listingId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send(mockPostCommentReqBody);
+
+      const putCommentRes = await request(app)
+        .put(`/comment/${postCommentRes.body.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send(mockEditCommentReqBody);
+
+      expect(putCommentRes.statusCode).toEqual(400);
+    });
+  });
 });
