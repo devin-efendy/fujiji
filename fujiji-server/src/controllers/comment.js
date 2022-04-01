@@ -99,6 +99,10 @@ async function editComment(req, res, next) {
 
   const isAuthor = userID === parseInt(listing.user_id, 10) ? 1 : 0;
 
+  if (!isCommenter && !isAuthor) {
+    return res.status(400).json({ error: 'User does not own the comment nor is the seller of the listing.' });
+  }
+
   try {
     if (isCommenter) {
       if (!comment) {
