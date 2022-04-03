@@ -26,6 +26,7 @@ const mockIsSellerProps = {
   comment:
     'Lorem Ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
   isSeller: true,
+  isHighlightable: true,
   isEditable: false,
   isHighlighted: false,
   commentDate: '2022-02-21',

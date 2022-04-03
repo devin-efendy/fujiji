@@ -23,6 +23,7 @@ export default function Comment({
   comment,
   isSeller,
   isEditable,
+  isHighlightable,
   isHighlighted,
   commentDate,
   modifiedDate,
@@ -161,7 +162,7 @@ export default function Comment({
               seller
             </Badge>
           )}
-          {isSeller && !isPinned && (
+          {isHighlightable && !isPinned && (
             <Button
               aria-label={`${commentID}-pin-button`}
               ml="3"
@@ -192,7 +193,7 @@ export default function Comment({
               pin
             </Button>
           )}
-          {isSeller && isPinned && (
+          {isHighlightable && isPinned && (
             <Button
               aria-label={`${commentID}-unpin-button`}
               ml="3"
@@ -247,6 +248,7 @@ Comment.propTypes = {
   posterName: PropTypes.string,
   comment: PropTypes.string,
   isSeller: PropTypes.bool,
+  isHighlightable: PropTypes.bool,
   isEditable: PropTypes.bool,
   isHighlighted: PropTypes.bool,
   commentDate: PropTypes.string,

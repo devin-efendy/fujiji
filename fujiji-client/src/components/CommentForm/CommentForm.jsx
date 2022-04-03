@@ -26,7 +26,7 @@ export default function CommentForm({
   return (
     <Flex>
       <FormControl isInvalid={errorMessage !== ''}>
-        <Text mb="1" fontSize="sm">
+        <Text mb="1" fontSize="md">
           Comment as
           {' '}
           <Text d="inline" fontWeight="semibold" color="teal">
