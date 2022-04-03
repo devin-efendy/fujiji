@@ -42,10 +42,13 @@ steps:
   workingDirectory: fujiji-client/
   displayName: 'Build fujiji-client'
 
-- task: CopyFiles@2
+- task: ArchiveFiles@2
   inputs:
-    Contents: 'build/**'
-    targetFolder: '$(Build.ArtifactStagingDirectory)' 
+    rootFolderOrFile: '/fujiji-client/'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    replaceExistingArchive: true
     
 - task: PublishBuildArtifacts@1
   inputs:
