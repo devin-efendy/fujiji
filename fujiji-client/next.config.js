@@ -6,4 +6,9 @@ module.exports = {
     FUJIJI_API_URL: process.env.FUJIJI_API_URL,
     JWT_AUTH_TOKEN: process.env.JWT_AUTH_TOKEN,
   },
+   eslint: {
+    // Warning: This allows production builds to successfully complete even if
+    // your project has ESLint errors.
+    ignoreDuringBuilds: true,
+  },
 };
