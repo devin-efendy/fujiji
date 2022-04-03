@@ -10,6 +10,9 @@ import {
 } from '@chakra-ui/react';
 
 export default function Home() {
+  console.log(process.env.FUJIJI_API_URL);
+  console.log(process.env.REACT_APP_FUJIJI_API_URL);
+
   return (
     <div>
       <Head>
