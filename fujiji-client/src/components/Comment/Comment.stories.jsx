@@ -34,6 +34,19 @@ Seller.args = {
   commentDate: '2022-02-21',
 };
 
+export const Highlightable = Template.bind({});
+Highlightable.args = {
+  commentID: 2,
+  posterName: 'John Doe',
+  comment:
+    'Lorem Ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  isSeller: false,
+  isHighlightable: true,
+  isEditable: false,
+  isHighlighted: false,
+  commentDate: '2022-02-21',
+};
+
 export const Editable = Template.bind({});
 Editable.args = {
   commentID: 3,
@@ -103,6 +116,7 @@ CommentsChain.args = [
     comment:
       'Lorem Ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
     isSeller: true,
+    isHighlightable: true,
     isEditable: true,
     isHighlighted: true,
     commentDate: '2022-02-21',
