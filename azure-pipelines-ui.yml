@@ -44,22 +44,11 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    sourceFolder: fujiji-client/build 
-    Contents: '**/*'
+    Contents: 'build/**'
     targetFolder: '$(Build.ArtifactStagingDirectory)' 
-    CleanTargetFolder: true
-
-- task: ArchiveFiles@2
-  displayName: 'Archive files'
-  inputs:
-    rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
-    includeRootFolder: false
-    archiveType: zip
-    archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-    replaceExistingArchive: true   
-
+    
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
     publishLocation: 'Container'
