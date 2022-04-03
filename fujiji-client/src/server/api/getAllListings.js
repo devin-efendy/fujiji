@@ -1,11 +1,12 @@
 import axios from 'axios';
 import { format } from 'date-fns';
-import config from '../../../config';
+import getConfig from 'next/config';
 
 export default async function getAllListings() {
   try {
+    const { publicRuntimeConfig } = getConfig();
     const result = await axios.get(
-      `${config.FUJIJI_API_URL}/listing`,
+      `${publicRuntimeConfig.FUJIJI_API_URL}/listing`,
       {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',

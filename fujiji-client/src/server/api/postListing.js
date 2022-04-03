@@ -1,5 +1,5 @@
 import axios from 'axios';
-import config from '../../../config';
+import getConfig from 'next/config';
 import getQueryString from '../../utils/getQueryString';
 
 export default async function postListing({
@@ -27,8 +27,9 @@ export default async function postListing({
   });
 
   try {
+    const { publicRuntimeConfig } = getConfig();
     const result = await axios.post(
-      `${config.FUJIJI_API_URL}/listing`,
+      `${publicRuntimeConfig.FUJIJI_API_URL}/listing`,
       queryString,
       {
         headers: {

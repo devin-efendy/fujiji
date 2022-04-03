@@ -1,10 +1,11 @@
 import axios from 'axios';
-import config from '../../../config';
+import getConfig from 'next/config';
 
 export default async function getListingById(listingId) {
   try {
+    const { publicRuntimeConfig } = getConfig();
     const result = await axios.get(
-      `${config.FUJIJI_API_URL}/listing/${listingId}`,
+      `${publicRuntimeConfig.FUJIJI_API_URL}/listing/${listingId}`,
     );
     const { listing } = result.data;
     return {

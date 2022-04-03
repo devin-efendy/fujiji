@@ -1,10 +1,11 @@
 import axios from 'axios';
-import config from '../../../config';
+import getConfig from 'next/config';
 
 export default async function deleteListingById(listingId, authToken) {
   try {
+    const { publicRuntimeConfig } = getConfig();
     const result = await axios.delete(
-      `${config.FUJIJI_API_URL}/listing/${listingId}`,
+      `${publicRuntimeConfig.FUJIJI_API_URL}/listing/${listingId}`,
       {
         headers: {
           Authorization: `Bearer ${authToken}`,

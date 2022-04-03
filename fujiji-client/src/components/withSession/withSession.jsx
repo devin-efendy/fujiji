@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
+import getConfig from 'next/config';
 import RequireAuthDialog from '../RequireAuthDialog/RequireAuthDialog';
 import { useSession } from '../../context/session';
-import config from '../../../config';
 
 const withSession = (WrappedComponent) => function (props) {
   if (typeof window === 'undefined') {
@@ -15,7 +15,8 @@ const withSession = (WrappedComponent) => function (props) {
   let clientSideLogin = true;
 
   try {
-    jwt.verify(authToken, config.JWT_AUTH_TOKEN);
+    const { publicRuntimeConfig } = getConfig();
+    jwt.verify(authToken, publicRuntimeConfig.JWT_AUTH_TOKEN);
   } catch (error) {
     clientSideLogin = false;
   }

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import config from '../../../config';
+import getConfig from 'next/config';
 import getQueryString from '../../utils/getQueryString';
 
 export default async function postComment({
@@ -12,8 +12,9 @@ export default async function postComment({
   });
 
   try {
+    const { publicRuntimeConfig } = getConfig();
     const result = await axios.post(
-      `${config.FUJIJI_API_URL}/comment/${listingID}`,
+      `${publicRuntimeConfig.FUJIJI_API_URL}/comment/${listingID}`,
       queryString,
       {
         headers: {
