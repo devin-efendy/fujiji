@@ -1,4 +1,4 @@
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, act } from '@testing-library/react';
 import { SessionProvider } from '../../context/session';
 
 import ListingForm from './ListingForm';
@@ -218,5 +218,38 @@ describe('ListingForm', () => {
     expect(getByText('Other').selected).toBeFalsy();
 
     expect(getByDisplayValue('2345')).toBeInTheDocument();
+  });
+
+  it('should render city error message when city doesn\'t exist in the province', async () => {
+    const mockOnSubmit = jest.fn();
+
+    mockOnSubmit.mockResolvedValueOnce({
+      error: 'city_error_message',
+      status: 400,
+    });
+
+    const { getByText } = render(
+      <SessionProvider value={mockSessionValue}>
+        <ListingForm {...mockPostProps} onSubmit={mockOnSubmit} />
+      </SessionProvider>,
+    );
+
+    const fileInput = document.querySelector('#image-upload-input');
+
+    fireEvent.change(fileInput, {
+      target: {
+        files: [
+          new File(['(⌐□_□)'], mockValidFile.name, {
+            type: mockValidFile.type,
+          }),
+        ],
+      },
+    });
+
+    await act(async () => {
+      fireEvent.click(getByText('Post'), { bubbles: true });
+    });
+
+    expect(getByText('city_error_message')).toBeInTheDocument();
   });
 });
