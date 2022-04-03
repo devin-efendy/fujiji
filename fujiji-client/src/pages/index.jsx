@@ -12,6 +12,7 @@ import {
 export default function Home() {
   console.log(process.env.FUJIJI_API_URL);
   console.log(process.env.REACT_APP_FUJIJI_API_URL);
+  console.log(process.env.APPSETTING_FUJIJI_API_URL);
 
   return (
     <div>
