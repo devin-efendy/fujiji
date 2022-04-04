@@ -175,6 +175,10 @@ export default function ListingForm({
       );
 
       if (response.error) {
+        if (response.status === 400) {
+          setCityErrorMessage(response.error);
+        }
+
         toast({
           title: 'Oops! Something went wrong...',
           status: 'error',

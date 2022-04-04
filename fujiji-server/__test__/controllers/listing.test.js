@@ -180,6 +180,28 @@ describe('Test /listing endpoints', () => {
       expect(res.statusCode).toEqual(400);
     });
 
+    it('returns error when user try to post invalid city and province', async () => {
+      const mockReqBody = {
+        userID: userid,
+        title: 'Dining Table In Good Condition',
+        condition: 'used',
+        category: 'Table',
+        city: 'Wrong City',
+        provinceCode: 'MB',
+        imageURL: 'https://source.unsplash.com/gySMaocSdqs/',
+        price: 50,
+        description: 'Just used for 3 years',
+      };
+      const res = await request(app)
+        .post('/listing')
+        .set('Authorization', `Bearer ${token}`)
+        .send(mockReqBody);
+      expect(res.statusCode).toEqual(400);
+      expect(res.body.error).toEqual(`
+        No city named Wrong City in the selected province, MB.
+      `);
+    });
+
     it('successfully post a listing when a user is signed in', async () => {
       const mockReqBody = {
         userID: userid,
