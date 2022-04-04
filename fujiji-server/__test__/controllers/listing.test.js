@@ -13,6 +13,43 @@ describe('Test /listing endpoints', () => {
       await tearDownDB();
     });
 
+    it('successfully get all listings by existing city using search route', async () => {
+      const res = await request(app)
+        .get('/listing/search')
+        .query({ city: 'Winnipeg' });
+      expect(res.statusCode).toEqual(200);
+    });
+
+    it('successfully get all listings by price range city using search route', async () => {
+      const res = await request(app)
+        .get('/listing/search')
+        .query({ startPrice: 70, endPrice: 120 });
+      expect(res.statusCode).toEqual(200);
+    });
+
+    it('return 404 when no listings found when we get all listings by price range city using search route', async () => {
+      const res = await request(app)
+        .get('/listing/search')
+        .query({ startPrice: 100, endPrice: 120 });
+      expect(res.statusCode).toEqual(404);
+    });
+
+    it('successfully get all listings by all filters using search route', async () => {
+      const res = await request(app)
+        .get('/listing/search')
+        .query({
+          title: 'Dummy Title', condition: 'used', category: 'other', city: 'Winnipeg', province: 'MB', startPrice: 70, endPrice: 120,
+        });
+      expect(res.statusCode).toEqual(200);
+    });
+
+    it('successfully get all listings by city and category using search route', async () => {
+      const res = await request(app)
+        .get('/listing/search')
+        .query({ category: 'other', city: 'Winnipeg' });
+      expect(res.statusCode).toEqual(200);
+    });
+
     it('successfully get all listings by existing city', async () => {
       const res = await request(app)
         .get('/listing')
@@ -178,28 +215,6 @@ describe('Test /listing endpoints', () => {
       };
       const res = await request(app).post('/listing').send(mockReqBody);
       expect(res.statusCode).toEqual(400);
-    });
-
-    it('returns error when user try to post invalid city and province', async () => {
-      const mockReqBody = {
-        userID: userid,
-        title: 'Dining Table In Good Condition',
-        condition: 'used',
-        category: 'Table',
-        city: 'Wrong City',
-        provinceCode: 'MB',
-        imageURL: 'https://source.unsplash.com/gySMaocSdqs/',
-        price: 50,
-        description: 'Just used for 3 years',
-      };
-      const res = await request(app)
-        .post('/listing')
-        .set('Authorization', `Bearer ${token}`)
-        .send(mockReqBody);
-      expect(res.statusCode).toEqual(400);
-      expect(res.body.error).toEqual(`
-        No city named Wrong City in the selected province, MB.
-      `);
     });
 
     it('successfully post a listing when a user is signed in', async () => {

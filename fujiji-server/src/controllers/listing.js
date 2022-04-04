@@ -12,15 +12,13 @@ const {
   getListingById: queryByListingId,
   deleteListingById,
   getAllListingsDefault,
+  getListingsBySearch,
 } = require('../repositories/listing');
 const { getUserByID } = require('../repositories/user');
 
-const {
-  APIError,
-  ListingNotFound,
-  ListingInvalidPriceRange,
-  ListingInvalidCityProvince,
-} = require('../errors');
+const APIError = require('../errors/api');
+const ListingNotFoundError = require('../errors/listing/listingNotFound');
+const ListingInvalidPriceRangeError = require('../errors/listing/listingInvalidPriceRange');
 
 function validatePriceRange(priceRange) {
   try {
@@ -30,69 +28,6 @@ function validatePriceRange(priceRange) {
       }
     }
     return false;
-  } catch (err) {
-    return err;
-  }
-}
-
-function validateMatchingCityProv(city, province) {
-  try {
-    const dictProvCities = {
-      AB: ['Airdrie', 'Beaumont', 'Brooks',
-        'Calgary', 'Camrose', 'Chestermere', 'Cold Lake',
-        'Edmonton', 'Fort Saskatchewan', 'Grande Prairie', 'Lacombe',
-        'Leduc', 'Lethbridge', 'Lloydminster', 'Medicine Hat',
-        'Red Deer', 'Spruce Grove', 'St. Albert', 'Wetaskiwin',
-      ],
-      BC: ['Abbotsford', 'Armstrong', 'Burnaby', 'Campbell River',
-        'Castlegar', 'Chilliwack', 'Colwood', 'Coquitlam',
-        'Courtenay', 'Cranbrook', 'Dawson Creek', 'Delta',
-        'Duncan', 'Enderby', 'Fernie', 'Fort St. John',
-        'Grand Forks', 'Greenwood', 'Kamloops', 'Kelowna',
-        'Kimberley', 'Langford', 'Langley', 'Maple Ridge',
-        'Merritt', 'Mission', 'Nanaimo', 'Nelson', 'New Westminster',
-        'North Vancouver', 'Parksville', 'Penticton', 'Pitt Meadows',
-        'Port Alberni', 'Port Coquitlam', 'Port Moody', 'Powell River',
-        'Prince George', 'Prince Rupert', 'Quesnel', 'Revelstoke',
-        'Richmond', 'Rossland', 'Salmon Arm', 'Surrey', 'Terrace',
-        'Trail', 'Vancouver', 'Vernon', 'Victoria', 'West Kelowna',
-        'White Rock', 'Williams Lake',
-      ],
-      MB: ['Brandon', 'Dauphin', 'Flin Flon', 'Morden',
-        'Portage la Prairie', 'Selkirk', 'Steinbach',
-        'Thompson', 'Winkler', 'Winnipeg',
-      ],
-      NB: ['Bathurst', 'Campbellton', 'Dieppe', 'Edmundston',
-        'Fredericton', 'Miramichi', 'Moncton', 'Saint John',
-      ],
-      NL: ['Corner Brook', 'Mount Pearl', "St. John's"],
-      NS: ['Amherst', 'Bridgewater', 'Cape Breton', 'Halifax',
-        'Kentville', 'New Glasgow', 'Truro', 'Yarmouth',
-      ],
-      ON: ['Barrie', 'Belleville', 'Brampton', 'Brant',
-        'Brantford', 'Brockville', 'Burlington', 'Cambridge',
-        'Clarence-Rockland', 'Cornwall', 'Dryden', 'Elliot Lake',
-        'Greater Sudbury', 'Hamilton', 'Kenora', 'Kingston',
-        'Kitchener', 'London', 'Markham', 'Mississauga',
-        'Niagara Falls', 'Oshawa', 'Ottawa', 'Thunder Bay',
-        'Toronto', 'Vaughan', 'Waterloo',
-      ],
-      PE: ['Charlottetown', 'Summerside'],
-      QC: ['Acton Vale', 'Alma', 'Amos', 'Amqui', 'Barkmere',
-        'Beauceville', 'Bedford', 'Blainville', 'Boucherville',
-        'Carignan', 'Chandler', 'Clermont', 'Danville', 'Dunham',
-        'Fermont', 'Hudson', 'Laval', 'Mercier', 'Montmagny',
-        'Montreal', 'New Richmond', 'Richmond', 'Windsor',
-      ],
-      SK: ['Estevan', 'Flin Flon', 'Humboldt', 'Lloydminster',
-        'Martensville', 'Meadow Lake', 'Melfort', 'Melville',
-        'Moose Jaw', 'North Battleford', 'Prince Albert',
-        'Regina', 'Saskatoon', 'Swift Current', 'Warman',
-        'Weyburn', 'Yorkton',
-      ],
-    };
-
-    return (dictProvCities[province].includes(city));
   } catch (err) {
     return err;
   }
@@ -114,7 +49,7 @@ async function getListingsByCity(req) {
       );
     } else if (req.query.priceRange) {
       if (!validatePriceRange(req.query.priceRange)) {
-        return new ListingInvalidPriceRange();
+        return new ListingInvalidPriceRangeError();
       }
       listings = await getAllListingsByCityPriceRange(
         req.query.city,
@@ -147,7 +82,7 @@ async function getListingsByProvince(req) {
       );
     } else if (req.query.priceRange) {
       if (!validatePriceRange(req.query.priceRange)) {
-        return new ListingInvalidPriceRange();
+        return new ListingInvalidPriceRangeError();
       }
       listings = await getAllListingsByProvincePriceRange(
         req.query.provinceCode,
@@ -164,6 +99,36 @@ async function getListingsByProvince(req) {
   }
 }
 
+async function getAllListingsBySearch(req, res, next) {
+  try {
+    let listings = {};
+    const searchParameters = {
+      title: req.query.title,
+      condition: req.query.condition,
+      category: req.query.category,
+      city: req.query.city,
+      province: req.query.province,
+      startPrice: req.query.startPrice,
+      endPrice: req.query.endPrice,
+    };
+
+    listings = await getListingsBySearch(searchParameters);
+
+    if (listings.length === 0) {
+      next(new ListingNotFoundError());
+      return;
+    }
+
+    if (listings instanceof APIError) {
+      next(listings);
+      return;
+    }
+    res.status(200).json({ listings });
+  } catch (err) {
+    next(new APIError());
+  }
+}
+
 async function getAllListings(req, res, next) {
   try {
     let listings = {};
@@ -177,7 +142,7 @@ async function getAllListings(req, res, next) {
     }
 
     if (listings.length === 0) {
-      next(new ListingNotFound());
+      next(new ListingNotFoundError());
       return;
     }
 
@@ -199,7 +164,7 @@ async function getByListingId(req, res, next) {
 
     if (!listing) {
       return next(
-        new ListingNotFound(`Listing with id: ${listingID} is not found.`),
+        new ListingNotFoundError(`Listing with id: ${listingID} is not found.`),
       );
     }
 
@@ -226,14 +191,6 @@ async function postListing(req, res, next) {
       price,
       description,
     } = req.body;
-
-    if (!validateMatchingCityProv(city, provinceCode)) {
-      next(new ListingInvalidCityProvince(`
-        No city named ${city} in the selected province, ${provinceCode}.
-      `));
-      return;
-    }
-
     const newListing = await createListing(
       userID,
       title,
@@ -269,12 +226,6 @@ async function editListing(req, res, next) {
       description,
     } = req.body;
 
-    if (!validateMatchingCityProv(city, provinceCode)) {
-      return next(new ListingInvalidCityProvince(`
-        No city named ${city} in the selected province, ${provinceCode}.
-      `));
-    }
-
     await updateListing(
       userID,
       listingID,
@@ -304,7 +255,7 @@ async function deleteListing(req, res, next) {
 
     if (listing === 0) {
       return next(
-        new ListingNotFound(`Listing with id: ${listingID} is not found.`),
+        new ListingNotFoundError(`Listing with id: ${listingID} is not found.`),
       );
     }
 
@@ -317,6 +268,7 @@ async function deleteListing(req, res, next) {
 module.exports = {
   getAllListings,
   getByListingId,
+  getAllListingsBySearch,
   postListing,
   editListing,
   deleteListing,
