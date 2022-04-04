@@ -1,13 +1,14 @@
 import axios from 'axios';
-import config from '../../../config';
+import getConfig from 'next/config';
 import getQueryString from '../../utils/getQueryString';
 
 export default async function signIn({ email, password }) {
   const queryString = getQueryString({ email, password });
 
   try {
+    const { publicRuntimeConfig } = getConfig();
     const result = await axios.post(
-      `${config.FUJIJI_API_URL}/auth/signin`,
+      `${publicRuntimeConfig.FUJIJI_API_URL}/auth/signin`,
       queryString,
       {
         headers: {

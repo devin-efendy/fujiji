@@ -1,5 +1,5 @@
 import axios from 'axios';
-import config from '../../../config';
+import getConfig from 'next/config';
 import getQueryString from '../../utils/getQueryString';
 
 export default async function editProfile({
@@ -21,8 +21,9 @@ export default async function editProfile({
   });
 
   try {
+    const { publicRuntimeConfig } = getConfig();
     const result = await axios.put(
-      `${config.FUJIJI_API_URL}/user/${userID}`,
+      `${publicRuntimeConfig.FUJIJI_API_URL}/user/${userID}`,
       queryString,
       {
         headers: {

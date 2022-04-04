@@ -1,5 +1,5 @@
 import axios from 'axios';
-import config from '../../../config';
+import getConfig from 'next/config';
 import getQueryString from '../../utils/getQueryString';
 
 export default async function signUp({
@@ -18,8 +18,9 @@ export default async function signUp({
   });
 
   try {
+    const { publicRuntimeConfig } = getConfig();
     const result = await axios.post(
-      `${config.FUJIJI_API_URL}/auth/signup`,
+      `${publicRuntimeConfig.FUJIJI_API_URL}/auth/signup`,
       queryString,
       {
         headers: {
