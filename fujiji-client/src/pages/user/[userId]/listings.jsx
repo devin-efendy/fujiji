@@ -35,7 +35,7 @@ function UserListingsPage() {
     // There are listings that exist for this user
     const listOfListings = listings.map((listing) => {
       const onSubmit = () => {
-        router.push(`/listing/edit/${listing.listingID}`);
+        router.push(`/listing/${listing.listingID}`);
       };
       return (
         <Box id={`listing=${listing.listingID}`} key={listing.listingID}>
