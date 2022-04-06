@@ -64,9 +64,7 @@ CREATE TABLE fujiji_comments
     creation_date DATETIME NOT NULL,
     modified_date DATETIME,
     CONSTRAINT PK_fujiji_comments PRIMARY KEY NONCLUSTERED (comment_id),
-    CONSTRAINT FK_fujiji_comments_user FOREIGN KEY (user_id) REFERENCES fujiji_user(user_id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
+    CONSTRAINT FK_fujiji_comments_user FOREIGN KEY (user_id) REFERENCES fujiji_user(user_id),
     CONSTRAINT FK_fujiji_comments_listing FOREIGN KEY (listing_id) REFERENCES fujiji_listing(listing_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
