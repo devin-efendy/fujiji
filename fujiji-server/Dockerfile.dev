@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # bash for debugging with `docker exec`
-RUN apk update && apk add bash 
+RUN apk update && apk add make gcc g++ python3
 RUN npm install && npm i -g nodemon
 
 COPY . .
