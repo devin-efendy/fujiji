@@ -49,3 +49,31 @@ INSERT INTO fujiji_listing
 VALUES
     (1, 'Dummy Title', 'used', 'Other', 'Winnipeg', 'MB', 'https://source.unsplash.com/gySMaocSdqs/', 80.90, 'Some description here', GETUTCDATE());
 GO
+
+DROP TABLE IF EXISTS 
+fujiji_comments;
+
+CREATE TABLE fujiji_comments
+(
+    user_id bigint NOT NULL,
+    listing_id bigint NOT NULL,
+    comment_id bigint NOT NULL IDENTITY(1,1),
+    comment text NOT NULL,
+    isHighlighted int NOT NULL,
+    isAuthor int NOT NULL,
+    creation_date DATETIME NOT NULL,
+    modified_date DATETIME,
+    CONSTRAINT PK_fujiji_comments PRIMARY KEY NONCLUSTERED (comment_id),
+    CONSTRAINT FK_fujiji_comments_user FOREIGN KEY (user_id) REFERENCES fujiji_user(user_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    CONSTRAINT FK_fujiji_comments_listing FOREIGN KEY (listing_id) REFERENCES fujiji_listing(listing_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+INSERT INTO fujiji_comments
+    (user_id, listing_id, comment, isHighlighted, isAuthor, creation_date)
+VALUES
+    (1, 1, 'This furniture is limited', 0, 1, GETUTCDATE());
+GO
