@@ -350,4 +350,67 @@ describe('Test /comment endpoints', () => {
       expect(putCommentRes.statusCode).toEqual(400);
     });
   });
+
+  describe('DEL /comment/:comment_id', () => {
+    let token;
+    let userid;
+
+    beforeEach(async () => {
+      await tearDownDB();
+      await seedTestDB();
+      const mockUserReqBody = {
+        email: mockUser.email,
+        password: mockUser.password,
+      };
+      const signinRes = await request(app)
+        .post('/auth/signin')
+        .send(mockUserReqBody);
+      token = signinRes.body.authToken;
+      userid = signinRes.body.userId;
+    });
+
+    afterEach(async () => {
+      await tearDownDB();
+    });
+
+    it('Successfully deleted a comment', async () => {
+      const mockPostListingReqBody = {
+        userID: userid,
+        title: 'Dining Table In Good Condition',
+        condition: 'used',
+        category: 'Table',
+        city: 'Winnipeg',
+        provinceCode: 'MB',
+        imageURL: 'https://source.unsplash.com/gySMaocSdqs/',
+        price: 50,
+        description: 'Just used for 3 years',
+      };
+
+      const mockPostCommentReqBody = {
+        comment: 'mock comment',
+      };
+
+      const postListingRes = await request(app)
+        .post('/listing')
+        .set('Authorization', `Bearer ${token}`)
+        .send(mockPostListingReqBody);
+
+      const postCommentRes = await request(app)
+        .post(`/comment/${postListingRes.body.listingId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send(mockPostCommentReqBody);
+
+      const delCommentRes = await request(app)
+        .delete(`/comment/${postCommentRes.body.id}`)
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(delCommentRes.statusCode).toEqual(200);
+    });
+    it('Should return 404 error if comment does not exist', async () => {
+      const delCommentRes = await request(app)
+        .delete('/comment/123123')
+        .set('Authorization', `Bearer ${token}`);
+      expect(delCommentRes.statusCode).toEqual(404);
+    });
+  });
 });

@@ -4,6 +4,7 @@ const {
   postComment,
   getListingComments,
   editComment,
+  deleteComment,
 } = require('../controllers/comment');
 
 const router = express.Router();
@@ -16,5 +17,8 @@ router.get('/:listing_id', getListingComments);
 
 // PUT /comment/comment_id
 router.put('/:comment_id', authentication, editComment);
+
+// DEL /comment/comment_id
+router.delete('/:comment_id', authentication, deleteComment);
 
 module.exports = router;
