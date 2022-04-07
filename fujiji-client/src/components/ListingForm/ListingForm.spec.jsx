@@ -121,8 +121,10 @@ describe('ListingForm', () => {
 
   it('should not give errors when submitting a valid file format', () => {
     global.URL.createObjectURL = jest.fn(() => 'url');
+    const mockOnImageUpload = jest.fn();
+    mockOnImageUpload.mockResolvedValueOnce({ imageUrl: 'https://google.com' });
     const { queryByText, getByLabelText } = render(
-      <ListingForm {...mockUpdateProps} />,
+      <ListingForm {...mockUpdateProps} onImageUpload={mockOnImageUpload} />,
     );
 
     const fileInput = document.querySelector('#image-upload-input');
@@ -144,10 +146,11 @@ describe('ListingForm', () => {
   it('should submit the POST form if all fields are valid', () => {
     const mockOnSubmit = jest.fn();
     mockOnSubmit.mockResolvedValueOnce({ status: 200 });
-
+    const mockOnImageUpload = jest.fn();
+    mockOnImageUpload.mockResolvedValueOnce({ imageUrl: 'https://google.com' });
     const { getByText, getByDisplayValue } = render(
       <SessionProvider value={mockSessionValue}>
-        <ListingForm {...mockPostProps} onSubmit={mockOnSubmit} />
+        <ListingForm {...mockPostProps} onSubmit={mockOnSubmit} onImageUpload={mockOnImageUpload} />
       </SessionProvider>,
     );
 
@@ -177,9 +180,10 @@ describe('ListingForm', () => {
 
   it('should change the input value properly', () => {
     const mockOnSubmit = jest.fn();
+    const mockOnImageUpload = jest.fn();
 
     const { getByText, getByLabelText, getByDisplayValue } = render(
-      <ListingForm {...mockPostProps} onSubmit={mockOnSubmit} />,
+      <ListingForm {...mockPostProps} onSubmit={mockOnSubmit} onImageUpload={mockOnImageUpload} />,
     );
 
     fireEvent.change(getByLabelText('listing-title'), {
@@ -222,6 +226,7 @@ describe('ListingForm', () => {
 
   it('should render city error message when city doesn\'t exist in the province', async () => {
     const mockOnSubmit = jest.fn();
+    const mockOnImageUpload = jest.fn();
 
     mockOnSubmit.mockResolvedValueOnce({
       error: 'city_error_message',
@@ -230,7 +235,7 @@ describe('ListingForm', () => {
 
     const { getByText } = render(
       <SessionProvider value={mockSessionValue}>
-        <ListingForm {...mockPostProps} onSubmit={mockOnSubmit} />
+        <ListingForm {...mockPostProps} onSubmit={mockOnSubmit} onImageUpload={mockOnImageUpload} />
       </SessionProvider>,
     );
 

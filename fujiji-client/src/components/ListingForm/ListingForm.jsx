@@ -86,6 +86,7 @@ export default function ListingForm({
   isUpdate = false,
   onSubmit,
   onDelete,
+  onImageUpload,
 }) {
   const { userData, authToken } = useSession();
   const router = useRouter();
@@ -163,8 +164,7 @@ export default function ListingForm({
         category: listingCategory,
         city: listingCity,
         provinceCode: listingProvince,
-        // imageURL: listingImageUrl,
-        imageURL: 'https://source.unsplash.com/ueJ2oJeEK-U/',
+        imageURL: listingImageUrl,
         price: listingPrice,
         description: listingDescription,
         authToken,
@@ -206,7 +206,15 @@ export default function ListingForm({
       setUploadErrorMessage('Allowed files: .png, .jpg, .jpeg');
     } else {
       setUploadedImage(uploadedFile);
-      setListingImageUrl(URL.createObjectURL(uploadedFile));
+      const url = onImageUpload(uploadedFile);
+      url.then((result) => setListingImageUrl(result.data.imageUrl)).catch(() => {
+        toast({
+          title: 'Oops! Unable to upload the picture, We are working on it!',
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+        });
+      });
     }
     e.target.value = null; // reset onChange value
   };
@@ -425,4 +433,5 @@ ListingForm.propTypes = {
   isUpdate: PropTypes.bool,
   onSubmit: PropTypes.func,
   onDelete: PropTypes.func,
+  onImageUpload: PropTypes.func,
 };
