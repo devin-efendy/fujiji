@@ -199,7 +199,7 @@ export default function ListingForm({
     }
   };
 
-  const handleOnImageUpload = (e) => {
+  const handleOnImageUpload = async (e) => {
     setUploadErrorMessage('');
     const uploadedFile = e.target.files[0] || undefined;
     if (!uploadedFile || !validateImage(uploadedFile)) {
@@ -214,15 +214,8 @@ export default function ListingForm({
           duration: 9000,
           isClosable: true,
         });
-      } else {
-        url.then((result) => setListingImageUrl(result.data.imageUrl)).catch(() => {
-          toast({
-            title: 'Oops! Unable to upload the picture, We are working on it!',
-            status: 'error',
-            duration: 9000,
-            isClosable: true,
-          });
-        });
+      } else if (url?.data?.imageUrl) {
+        setListingImageUrl(url.data.imageUrl);
       }
     }
     e.target.value = null; // reset onChange value

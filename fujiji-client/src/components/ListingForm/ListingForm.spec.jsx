@@ -101,72 +101,93 @@ describe('ListingForm', () => {
     ).toBeInTheDocument();
   });
 
-  it('should give errors when uploading incorrect file format', () => {
-    const { getByText } = render(<ListingForm {...mockUpdateProps} />);
+  it('should give errors when uploading incorrect file format', async () => {
+    const mockOnImageUpload = jest.fn();
+    mockOnImageUpload.mockResolvedValueOnce({
+      data: { imageUrl: 'https://google.com' },
+    });
+
+    const { getByText } = render(<ListingForm {...mockUpdateProps} onImageUpload={mockOnImageUpload} />);
 
     const fileInput = document.querySelector('#image-upload-input');
 
-    fireEvent.change(fileInput, {
-      target: {
-        files: [
-          new File(['(⌐□_□)'], mockInvalidFile.name, {
-            type: mockInvalidFile.type,
-          }),
-        ],
-      },
+    await act(async () => {
+      fireEvent.change(fileInput, {
+        target: {
+          files: [
+            new File(['(⌐□_□)'], mockInvalidFile.name, {
+              type: mockInvalidFile.type,
+            }),
+          ],
+        },
+      });
     });
 
     expect(getByText('Allowed files: .png, .jpg, .jpeg')).toBeInTheDocument();
   });
 
-  it('should not give errors when submitting a valid file format', () => {
+  it('should not give errors when submitting a valid file format', async () => {
     global.URL.createObjectURL = jest.fn(() => 'url');
     const mockOnImageUpload = jest.fn();
-    mockOnImageUpload.mockResolvedValueOnce({ imageUrl: 'https://google.com' });
+    mockOnImageUpload.mockResolvedValueOnce({
+      data: { imageUrl: 'https://google.com' },
+    });
     const { queryByText, getByLabelText } = render(
       <ListingForm {...mockUpdateProps} onImageUpload={mockOnImageUpload} />,
     );
 
     const fileInput = document.querySelector('#image-upload-input');
 
-    fireEvent.change(fileInput, {
-      target: {
-        files: [
-          new File(['(⌐□_□)'], mockValidFile.name, {
-            type: mockValidFile.type,
-          }),
-        ],
-      },
+    await act(async () => {
+      fireEvent.change(fileInput, {
+        target: {
+          files: [
+            new File(['(⌐□_□)'], mockValidFile.name, {
+              type: mockValidFile.type,
+            }),
+          ],
+        },
+      });
     });
 
     expect(queryByText('Allowed files: .png, .jpg, .jpeg')).toBeFalsy();
     expect(getByLabelText('listing-image')).toBeInTheDocument();
   });
 
-  it('should submit the POST form if all fields are valid', () => {
+  it('should submit the POST form if all fields are valid', async () => {
     const mockOnSubmit = jest.fn();
     mockOnSubmit.mockResolvedValueOnce({ status: 200 });
     const mockOnImageUpload = jest.fn();
-    mockOnImageUpload.mockResolvedValueOnce({ imageUrl: 'https://google.com' });
+    mockOnImageUpload.mockResolvedValueOnce({
+      data: { imageUrl: 'https://google.com' },
+    });
     const { getByText, getByDisplayValue } = render(
       <SessionProvider value={mockSessionValue}>
-        <ListingForm {...mockPostProps} onSubmit={mockOnSubmit} onImageUpload={mockOnImageUpload} />
+        <ListingForm
+          {...mockPostProps}
+          onSubmit={mockOnSubmit}
+          onImageUpload={mockOnImageUpload}
+        />
       </SessionProvider>,
     );
 
     const fileInput = document.querySelector('#image-upload-input');
 
-    fireEvent.change(fileInput, {
-      target: {
-        files: [
-          new File(['(⌐□_□)'], mockValidFile.name, {
-            type: mockValidFile.type,
-          }),
-        ],
-      },
+    await act(async () => {
+      fireEvent.change(fileInput, {
+        target: {
+          files: [
+            new File(['(⌐□_□)'], mockValidFile.name, {
+              type: mockValidFile.type,
+            }),
+          ],
+        },
+      });
     });
 
-    fireEvent.click(getByText('Post'), { bubbles: true });
+    await act(async () => {
+      fireEvent.click(getByText('Post'), { bubbles: true });
+    });
 
     expect(getByDisplayValue(mockPostProps.title)).toBeInTheDocument();
     expect(getByDisplayValue(mockPostProps.description)).toBeInTheDocument();
@@ -183,7 +204,11 @@ describe('ListingForm', () => {
     const mockOnImageUpload = jest.fn();
 
     const { getByText, getByLabelText, getByDisplayValue } = render(
-      <ListingForm {...mockPostProps} onSubmit={mockOnSubmit} onImageUpload={mockOnImageUpload} />,
+      <ListingForm
+        {...mockPostProps}
+        onSubmit={mockOnSubmit}
+        onImageUpload={mockOnImageUpload}
+      />,
     );
 
     fireEvent.change(getByLabelText('listing-title'), {
@@ -224,10 +249,12 @@ describe('ListingForm', () => {
     expect(getByDisplayValue('2345')).toBeInTheDocument();
   });
 
-  it('should render city error message when city doesn\'t exist in the province', async () => {
+  it("should render city error message when city doesn't exist in the province", async () => {
     const mockOnSubmit = jest.fn();
     const mockOnImageUpload = jest.fn();
-    mockOnImageUpload.mockResolvedValueOnce({ imageUrl: 'https://google.com' });
+    mockOnImageUpload.mockResolvedValueOnce({
+      data: { imageUrl: 'https://google.com' },
+    });
 
     mockOnSubmit.mockResolvedValueOnce({
       error: 'city_error_message',
@@ -242,14 +269,16 @@ describe('ListingForm', () => {
 
     const fileInput = document.querySelector('#image-upload-input');
 
-    fireEvent.change(fileInput, {
-      target: {
-        files: [
-          new File(['(⌐□_□)'], mockValidFile.name, {
-            type: mockValidFile.type,
-          }),
-        ],
-      },
+    await act(async () => {
+      fireEvent.change(fileInput, {
+        target: {
+          files: [
+            new File(['(⌐□_□)'], mockValidFile.name, {
+              type: mockValidFile.type,
+            }),
+          ],
+        },
+      });
     });
 
     await act(async () => {
