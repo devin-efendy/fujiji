@@ -90,10 +90,28 @@ async function highlightsCommentById(commentID, isHighlighted) {
   return result;
 }
 
+// PURPOSE: used to delete a comment from the db based on its id
+async function deleteCommentById(commentId) {
+  try {
+    const comment = await sequelize.query(
+      'DELETE FROM fujiji_comments WHERE comment_id = ?',
+      {
+        replacements: [commentId],
+        type: Sequelize.SELECT,
+      },
+    );
+    logDebug('DEBUG-deleteCommentById', comment);
+    return comment[1];
+  } catch (err) {
+    return err;
+  }
+}
+
 module.exports = {
   createComment,
   getComments,
   getCommentById,
   updateCommentById,
   highlightsCommentById,
+  deleteCommentById,
 };

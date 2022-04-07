@@ -4,6 +4,7 @@ const {
   getCommentById,
   updateCommentById,
   highlightsCommentById,
+  deleteCommentById,
 } = require('../repositories/comment');
 const { getListingById } = require('../repositories/listing');
 
@@ -126,4 +127,45 @@ async function editComment(req, res, next) {
   }
 }
 
-module.exports = { postComment, getListingComments, editComment };
+// PURPOSE: implement the del comment endpoint
+async function deleteComment(req, res, next) {
+  const { comment_id: commentID } = req.params;
+  const { id } = req.locals.userData;
+  const userID = parseInt(id, 10);
+  const intCommentId = parseInt(commentID, 10);
+
+  const existingComment = await getCommentById(intCommentId);
+
+  if (!existingComment) {
+    return next(
+      new CommentNotFoundError(`comment with id:${commentID} is not found`),
+    );
+  }
+
+  const listingID = existingComment.listing_id;
+  const listing = await getListingById(parseInt(listingID, 10));
+
+  if (!listing) {
+    return next(
+      new ListingNotFound(`listing with id:${listingID} is not found`),
+    );
+  }
+
+  const isCommenter = userID === parseInt(existingComment.user_id, 10) ? 1 : 0;
+
+  if (!isCommenter) {
+    return res.status(400).json({ error: 'User does not own the comment.' });
+  }
+
+  try {
+    const comment = await deleteCommentById(intCommentId);
+
+    return res.status(200).json({ comment });
+  } catch (err) {
+    return next(new APIError(err, 500));
+  }
+}
+
+module.exports = {
+  postComment, getListingComments, editComment, deleteComment,
+};
