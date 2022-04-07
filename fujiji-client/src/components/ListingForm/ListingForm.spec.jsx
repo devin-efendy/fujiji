@@ -227,6 +227,7 @@ describe('ListingForm', () => {
   it('should render city error message when city doesn\'t exist in the province', async () => {
     const mockOnSubmit = jest.fn();
     const mockOnImageUpload = jest.fn();
+    mockOnImageUpload.mockResolvedValueOnce({ imageUrl: 'https://google.com' });
 
     mockOnSubmit.mockResolvedValueOnce({
       error: 'city_error_message',

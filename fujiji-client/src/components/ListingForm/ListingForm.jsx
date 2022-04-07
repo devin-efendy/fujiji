@@ -207,14 +207,23 @@ export default function ListingForm({
     } else {
       setUploadedImage(uploadedFile);
       const url = onImageUpload(uploadedFile);
-      url.then((result) => setListingImageUrl(result.data.imageUrl)).catch(() => {
+      if (!url) {
         toast({
           title: 'Oops! Unable to upload the picture, We are working on it!',
           status: 'error',
           duration: 9000,
           isClosable: true,
         });
-      });
+      } else {
+        url.then((result) => setListingImageUrl(result.data.imageUrl)).catch(() => {
+          toast({
+            title: 'Oops! Unable to upload the picture, We are working on it!',
+            status: 'error',
+            duration: 9000,
+            isClosable: true,
+          });
+        });
+      }
     }
     e.target.value = null; // reset onChange value
   };
