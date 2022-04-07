@@ -206,7 +206,7 @@ export default function ListingForm({
       setUploadErrorMessage('Allowed files: .png, .jpg, .jpeg');
     } else {
       setUploadedImage(uploadedFile);
-      const url = onImageUpload(uploadedFile);
+      const url = await onImageUpload(uploadedFile);
       if (url.error) {
         toast({
           title: 'Oops! Unable to upload the picture, We are working on it!',
