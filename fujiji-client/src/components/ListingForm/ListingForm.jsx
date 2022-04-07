@@ -207,7 +207,7 @@ export default function ListingForm({
     } else {
       setUploadedImage(uploadedFile);
       const url = onImageUpload(uploadedFile);
-      if (!url) {
+      if (url.error) {
         toast({
           title: 'Oops! Unable to upload the picture, We are working on it!',
           status: 'error',
