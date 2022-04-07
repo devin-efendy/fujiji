@@ -12,6 +12,7 @@ const {
   getListingById: queryByListingId,
   deleteListingById,
   getAllListingsDefault,
+  getListingsBySearch,
 } = require('../repositories/listing');
 const { getUserByID } = require('../repositories/user');
 
@@ -95,6 +96,36 @@ function validateMatchingCityProv(city, province) {
     return (dictProvCities[province].includes(city));
   } catch (err) {
     return err;
+  }
+}
+
+async function getAllListingsBySearch(req, res, next) {
+  try {
+    let listings = {};
+    const searchParameters = {
+      title: req.query.title,
+      condition: req.query.condition,
+      category: req.query.category,
+      city: req.query.city,
+      province: req.query.province,
+      startPrice: req.query.startPrice,
+      endPrice: req.query.endPrice,
+    };
+
+    listings = await getListingsBySearch(searchParameters);
+
+    if (listings.length === 0) {
+      next(new ListingNotFound());
+      return;
+    }
+
+    if (listings instanceof APIError) {
+      next(listings);
+      return;
+    }
+    res.status(200).json({ listings });
+  } catch (err) {
+    next(new APIError());
   }
 }
 
@@ -320,4 +351,5 @@ module.exports = {
   postListing,
   editListing,
   deleteListing,
+  getAllListingsBySearch,
 };

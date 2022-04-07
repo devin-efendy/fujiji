@@ -236,6 +236,62 @@ async function getListingById(listingID) {
   }
 }
 
+async function getListingsBySearch(searchParameters) {
+  try {
+    const conditions = [];
+    const values = [];
+
+    if (typeof searchParameters.title !== 'undefined') {
+      conditions.push('title LIKE ?');
+      values.push(`%${searchParameters.title}%`);
+    }
+
+    if (typeof searchParameters.condition !== 'undefined') {
+      conditions.push('condition = ?');
+      values.push(searchParameters.condition);
+    }
+
+    if (typeof searchParameters.category !== 'undefined') {
+      conditions.push('category = ?');
+      values.push(searchParameters.category);
+    }
+
+    if (typeof searchParameters.city !== 'undefined') {
+      conditions.push('city = ?');
+      values.push(searchParameters.city);
+    }
+
+    if (typeof searchParameters.province !== 'undefined') {
+      conditions.push('province_code = ?');
+      values.push(searchParameters.province);
+    }
+
+    if (typeof searchParameters.startPrice !== 'undefined' && typeof searchParameters.endPrice !== 'undefined') {
+      conditions.push('price BETWEEN ? AND ?');
+      values.push(parseInt(searchParameters.startPrice, 10));
+      values.push(parseInt(searchParameters.endPrice, 10));
+    }
+
+    const conditionsStr = {
+      where: conditions.length
+        ? conditions.join(' AND ') : '1',
+      values,
+    };
+
+    const [listingsBySearch] = await sequelize.query(
+      `SELECT * FROM fujiji_listing WHERE ${conditionsStr.where} ORDER BY creation_date DESC`,
+      {
+        replacements: conditionsStr.values,
+        type: Sequelize.SELECT,
+      },
+    );
+    logDebug('DEBUG-listingsBySearch', listingsBySearch);
+    return listingsBySearch;
+  } catch (err) {
+    return err;
+  }
+}
+
 async function deleteListingById(listingId, userId) {
   try {
     const listing = await sequelize.query(
@@ -266,4 +322,5 @@ module.exports = {
   updateListing,
   getListingById,
   deleteListingById,
+  getListingsBySearch,
 };
