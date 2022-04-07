@@ -279,7 +279,7 @@ async function getListingsBySearch(searchParameters) {
     };
 
     const [listingsBySearch] = await sequelize.query(
-      `SELECT * FROM fujiji_listing WHERE ${conditionsStr.where}`,
+      `SELECT * FROM fujiji_listing WHERE ${conditionsStr.where} ORDER BY creation_date DESC`,
       {
         replacements: conditionsStr.values,
         type: Sequelize.SELECT,
