@@ -241,6 +241,10 @@ async function getListingsBySearch(searchParameters) {
     const conditions = [];
     const values = [];
 
+    if (typeof searchParameters.title == 'undefined' && typeof searchParameters.condition == 'undefined' && typeof searchParameters.category == 'undefined' && typeof searchParameters.city == 'undefined' && typeof searchParameters.province == 'undefined' && typeof searchParameters.startPrice == 'undefined' && typeof searchParameters.endPrice == 'undefined') {
+      return getAllListingsDefault();
+    }
+
     if (typeof searchParameters.title !== 'undefined') {
       conditions.push('title LIKE ?');
       values.push(`%${searchParameters.title}%`);
