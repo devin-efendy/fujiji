@@ -2,7 +2,7 @@ import { Center } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { ListingForm, withSession } from '../../components';
 import { useSession } from '../../context/session';
-import { postListing } from '../../server/api';
+import { postListing, uploadImage } from '../../server/api';
 
 function CreateListingPage() {
   const router = useRouter();
@@ -14,7 +14,7 @@ function CreateListingPage() {
 
   return (
     <Center id="listingFormContainer" px="1" py="6">
-      <ListingForm onSubmit={postListing} onDelete={onDelete} />
+      <ListingForm onSubmit={postListing} onDelete={onDelete} onImageUpload={uploadImage} />
     </Center>
   );
 }
