@@ -1,12 +1,21 @@
-import {
-  render, fireEvent, act,
-} from '@testing-library/react';
-import { updateComment } from '../../server/api';
+import { render, fireEvent, act } from '@testing-library/react';
+import { updateComment, deleteCommentById } from '../../server/api';
 
 import Comment from './Comment';
 
+const mockRouterReload = jest.fn();
+
+jest.mock('next/router', () => ({
+  __esModule: true, // Use it when dealing with esModules
+  ...jest.requireActual('next/router'),
+  useRouter: jest.fn().mockImplementation(() => ({
+    reload: mockRouterReload,
+  })),
+}));
+
 jest.mock('../../server/api', () => ({
   updateComment: jest.fn(),
+  deleteCommentById: jest.fn(),
 }));
 
 const mockDefaultProps = {
@@ -210,5 +219,58 @@ describe('Comment', () => {
     expect(
       getByLabelText(`${mockIsEditableProps.commentID}-save-button`),
     ).toBeInTheDocument();
+  });
+
+  test('successfully deleted a comment', async () => {
+    deleteCommentById.mockResolvedValue({
+      data: {},
+      status: 200,
+    });
+
+    const { getByLabelText } = render(<Comment {...mockIsEditableProps} />);
+
+    // Click the edit button
+    fireEvent.click(
+      getByLabelText(`${mockIsEditableProps.commentID}-edit-button`),
+      { bubbles: true },
+    );
+
+    // Click the save button
+    await act(async () => {
+      fireEvent.click(
+        getByLabelText(`${mockIsEditableProps.commentID}-delete-button`),
+        { bubbles: true },
+      );
+    });
+
+    expect(mockRouterReload).toHaveBeenCalled();
+  });
+
+  test('failed to delete a comment', async () => {
+    deleteCommentById.mockResolvedValue({
+      error: {},
+      status: 400,
+    });
+
+    const { getByLabelText } = render(<Comment {...mockIsEditableProps} />);
+
+    // Click the edit button
+    fireEvent.click(
+      getByLabelText(`${mockIsEditableProps.commentID}-edit-button`),
+      { bubbles: true },
+    );
+
+    // Click the save button
+    await act(async () => {
+      fireEvent.click(
+        getByLabelText(`${mockIsEditableProps.commentID}-delete-button`),
+        { bubbles: true },
+      );
+    });
+
+    expect(mockRouterReload).toHaveBeenCalledTimes(0);
+    expect(
+      document.querySelector('#comment-delete-failure-toast'),
+    ).not.toBeNull();
   });
 });
