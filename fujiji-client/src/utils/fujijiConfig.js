@@ -1,4 +1,5 @@
 export const furnitureCategories = [
+  'Select',
   'Bed',
   'Cabinet',
   'Chair',
@@ -9,6 +10,10 @@ export const furnitureCategories = [
 ];
 
 export const provinces = [
+  {
+    name: 'Select',
+    code: 'Select',
+  },
   {
     name: 'Alberta',
     code: 'AB',
@@ -52,4 +57,4 @@ export const provinces = [
   },
 ];
 
-export const conditions = ['New', 'Used', 'Refurbished'];
+export const conditions = ['Select', 'New', 'Used', 'Refurbished'];

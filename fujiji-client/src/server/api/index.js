@@ -13,3 +13,4 @@ export { default as editProfile } from './editProfile';
 export { default as getAllListings } from './getAllListings';
 export { default as getCommentsByListingId } from './getCommentsByListingId';
 export { default as uploadImage } from './uploadImage';
+export { default as searchListings } from './searchListings';
