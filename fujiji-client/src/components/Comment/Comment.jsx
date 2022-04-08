@@ -9,12 +9,15 @@ import {
   Textarea,
   useToast,
 } from '@chakra-ui/react';
-import { CheckIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
+import {
+  CheckIcon, DeleteIcon, EditIcon, CloseIcon,
+} from '@chakra-ui/icons';
 import { BsFillPinAngleFill } from 'react-icons/bs';
 import { format, isValid, parse } from 'date-fns';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { updateComment } from '../../server/api';
+import { useRouter } from 'next/router';
+import { deleteCommentById, updateComment } from '../../server/api';
 import { useSession } from '../../context/session';
 
 export default function Comment({
@@ -30,6 +33,7 @@ export default function Comment({
 }) {
   const { authToken } = useSession();
   const toast = useToast();
+  const router = useRouter();
 
   const [editCommentText, setEdittedComment] = useState(comment);
   const [commentText, saveCommentText] = useState(comment);
@@ -84,6 +88,7 @@ export default function Comment({
           if (!saveRes.error) {
             saveCommentText(editCommentText);
             setEditting(!isEditting);
+            router.reload(window.location.pathname);
           } else {
             toast({
               title: 'Oops! Something went wrong...',
@@ -99,8 +104,8 @@ export default function Comment({
       <Button
         aria-label={`${commentID}-discard-button`}
         ml="3"
-        leftIcon={<DeleteIcon />}
-        colorScheme="red"
+        leftIcon={<CloseIcon />}
+        colorScheme="gray"
         variant="link"
         size="sm"
         onClick={() => {
@@ -110,6 +115,37 @@ export default function Comment({
         }}
       >
         discard
+      </Button>
+      <Button
+        aria-label={`${commentID}-delete-button`}
+        ml="3"
+        leftIcon={<DeleteIcon />}
+        colorScheme="red"
+        variant="link"
+        size="sm"
+        onClick={async () => {
+          const res = await deleteCommentById(commentID, authToken);
+          if (res.error) {
+            toast({
+              id: 'comment-delete-failure-toast',
+              title: 'Oops! Something went wrong...',
+              status: 'error',
+              duration: 9000,
+              isClosable: true,
+            });
+          } else {
+            router.reload(window.location.pathname);
+            toast({
+              id: 'comment-deleted-toast',
+              title: 'Comment is deleted',
+              status: 'error',
+              duration: 9000,
+              isClosable: true,
+            });
+          }
+        }}
+      >
+        delete
       </Button>
     </Flex>
   );
