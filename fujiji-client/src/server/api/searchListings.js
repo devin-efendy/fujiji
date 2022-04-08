@@ -52,7 +52,7 @@ export default async function searchListings({
       };
     }
     return {
-      error: 'Something went wrong... Try changing your filters',
+      error: 'Something went wrong... Check if Fujiji API is running or Try changing your filters',
       status: 500,
     };
   }

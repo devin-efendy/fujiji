@@ -72,6 +72,8 @@ function SearchPage({
     setListingCity('');
     setMaxListingPrice('');
     setMinListingPrice('');
+
+    onClose();
   };
 
   // for this page we are using client-side rendering
