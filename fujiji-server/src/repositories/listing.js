@@ -140,7 +140,7 @@ async function getAllListingsByProvincePriceRange(
 async function getAllListingsDefault() {
   try {
     const [listingsByCity] = await sequelize.query(
-      'SELECT * FROM fujiji_listing',
+      'SELECT * FROM fujiji_listing ORDER BY creation_date DESC',
     );
     return listingsByCity;
   } catch (err) {
