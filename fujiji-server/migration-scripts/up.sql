@@ -75,3 +75,40 @@ INSERT INTO fujiji_comments
 VALUES
     (1, 1, 'This furniture is limited', 0, 1, GETUTCDATE());
 GO
+
+DROP TABLE IF EXISTS 
+fujiji_boost_package;
+
+CREATE TABLE fujiji_boost_package
+(
+    package_id int NOT NULL,
+    name varchar(100) NOT NULL,
+    duration int NOT NULL,
+    price float NOT NULL,
+    CONSTRAINT PK_fujiji_boost_package PRIMARY KEY NONCLUSTERED (package_id)
+);
+
+INSERT INTO fujiji_boost_package
+    (package_id, name, duration, price)
+VALUES
+    (1, 'Gold', 30, 20.00),
+    (2, 'Silver', 7, 10.00),
+    (3, 'Bronze', 3, 5.00);
+GO
+
+DROP TABLE IF EXISTS 
+fujiji_boost;
+
+CREATE TABLE fujiji_boost
+(
+    listing_id bigint NOT NULL,
+    package_id int NOT NULL,
+    score int NOT NULL,
+    creation_date DATETIME NOT NULL,
+    CONSTRAINT PK_fujiji_boost PRIMARY KEY NONCLUSTERED (listing_id),
+    CONSTRAINT FK_fujiji_boost_boost_package FOREIGN KEY (package_id) REFERENCES fujiji_boost_package(package_id),
+    CONSTRAINT FK_fujiji_boost_listing FOREIGN KEY (listing_id) REFERENCES fujiji_listing(listing_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+GO
