@@ -35,8 +35,8 @@ steps:
 
   - task: Docker@2
     inputs:
-      containerRegistry: "fujijicontainer"
-      repository: "Azure Container Registry"
+      containerRegistry: "fujijiServerConnection"
+      repository: "jishanarora1997/fujijiServer"
       command: "buildAndPush"
       Dockerfile: "**/Dockerfile.prod"
       tags: $(Build.BuildNumber)
