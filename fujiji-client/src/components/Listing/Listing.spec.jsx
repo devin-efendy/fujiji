@@ -5,7 +5,9 @@ import mockAdListing from '../../__mocks__/mockAdListing';
 
 describe('Listing', () => {
   it('should render properly', () => {
-    const { getByText, getByLabelText, queryByLabelText } = render(<Listing {...mockAdListing[0]} />);
+    const { getByText, getByLabelText, queryByLabelText } = render(
+      <Listing {...mockAdListing[0]} />,
+    );
     expect(getByText(mockAdListing[0].title)).toBeInTheDocument();
     expect(getByText(mockAdListing[0].description)).toBeInTheDocument();
     expect(getByText('new')).toBeInTheDocument();
@@ -15,7 +17,9 @@ describe('Listing', () => {
   });
 
   it("should render edit button if this listing is seller's", () => {
-    const { getByText, getByLabelText, queryByLabelText } = render(<Listing {...mockAdListing[0]} isSeller />);
+    const { getByText, getByLabelText, queryByLabelText } = render(
+      <Listing {...mockAdListing[0]} isSeller />,
+    );
     expect(getByText(mockAdListing[0].title)).toBeInTheDocument();
     expect(getByText(mockAdListing[0].description)).toBeInTheDocument();
     expect(getByText('new')).toBeInTheDocument();
@@ -28,9 +32,7 @@ describe('Listing', () => {
     const mockPropsWithoutDescription = {
       ...mockAdListing[2],
     };
-    const { getByText } = render(
-      <Listing {...mockPropsWithoutDescription} />,
-    );
+    const { getByText } = render(<Listing {...mockPropsWithoutDescription} />);
     expect(getByText(mockPropsWithoutDescription.title)).toBeInTheDocument();
     expect(
       getByText('No description provided by the seller.'),
@@ -65,5 +67,19 @@ describe('Listing', () => {
 
     fireEvent.click(getByLabelText('contact-seller-button'), { bubbles: true });
     expect(mockOnContactClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('should show boosted days remaining', () => {
+    const mockBoostedListingProps = {
+      ...mockAdListing[0],
+      boostDayLeft: 3,
+      isSeller: true,
+    };
+
+    const { getByText } = render(<Listing {...mockBoostedListingProps} />);
+
+    expect(
+      getByText('This listing is boosted. 3 days remaining.'),
+    ).toBeInTheDocument();
   });
 });

@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import {
   Box, Button, Flex, Text, Image, Icon, Link,
 } from '@chakra-ui/react';
+import { TriangleUpIcon } from '@chakra-ui/icons';
 import { MdLocationOn } from 'react-icons/md';
 import { BsCalendar } from 'react-icons/bs';
 import { BiCategory } from 'react-icons/bi';
@@ -37,6 +38,7 @@ function ListingInfoBox({ icon, infoField, infoContent }) {
 
 export default function Listing({
   isSeller = false,
+  boostDayLeft,
   listingID,
   category,
   condition,
@@ -89,6 +91,17 @@ export default function Listing({
         <Text fontSize="3xl" fontWeight="bold">
           {title}
         </Text>
+
+        {isSeller && boostDayLeft > 0 && (
+          <Text my="2" color="grey">
+            <TriangleUpIcon mr="2" color="yellow.400" fontSize="20" />
+            This listing is boosted.
+            {' '}
+            {boostDayLeft}
+            {' '}
+            days remaining.
+          </Text>
+        )}
 
         <Box mt="2">
           <ConditionBadge condition={condition} />
@@ -168,6 +181,7 @@ ListingInfoBox.propTypes = {
 
 Listing.propTypes = {
   isSeller: PropTypes.bool,
+  boostDayLeft: PropTypes.number,
   listingID: PropTypes.number,
   imageUrl: PropTypes.string,
   title: PropTypes.string,

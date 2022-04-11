@@ -5,6 +5,7 @@ import {
 import { MdLocationOn } from 'react-icons/md';
 import { BsCalendar } from 'react-icons/bs';
 import { format, isValid, parse } from 'date-fns';
+import { TriangleUpIcon } from '@chakra-ui/icons';
 import ConditionBadge from '../ConditionBadge/ConditionBadge';
 
 function ListingInfoBox({ children }) {
@@ -23,6 +24,7 @@ function ListingInfoBox({ children }) {
   );
 }
 export default function AdListingCard({
+  isBoosted = false,
   imageUrl,
   imageAlt,
   title,
@@ -46,7 +48,8 @@ export default function AdListingCard({
     <Box
       as="button"
       w="xs"
-      borderWidth="1px"
+      borderWidth={isBoosted ? '2px' : '1px'}
+      borderColor={isBoosted ? 'teal.400' : ''}
       rounded="lg"
       onClick={onClick}
       _hover={{ boxShadow: 'lg' }}
@@ -99,7 +102,17 @@ export default function AdListingCard({
           alignItems="center"
           justifyContent="space-between"
         >
-          <ConditionBadge condition={condition} />
+          <Box>
+            {isBoosted && (
+              <TriangleUpIcon
+                data-testid="TEST_BOOST_ICON"
+                color="teal"
+                mr="3"
+                fontSize="20"
+              />
+            )}
+            <ConditionBadge condition={condition} />
+          </Box>
           <Box
             textAlign="right"
             fontSize="lg"
@@ -121,6 +134,7 @@ ListingInfoBox.propTypes = {
 };
 
 AdListingCard.propTypes = {
+  isBoosted: PropTypes.bool,
   imageUrl: PropTypes.string,
   imageAlt: PropTypes.string,
   title: PropTypes.string,
