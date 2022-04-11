@@ -37,4 +37,17 @@ describe('AdListingCard', () => {
 
     expect(queryByText('21 Feb 2022')).toBeFalsy();
   });
+
+  it('should not render boosted badge', () => {
+    const mockBoostedListingProps = {
+      ...mockAdListing[0],
+      isBoosted: true,
+    };
+
+    const { getByTestId } = render(
+      <AdListingCard {...mockBoostedListingProps} />,
+    );
+
+    expect(getByTestId('TEST_BOOST_ICON')).toBeInTheDocument();
+  });
 });

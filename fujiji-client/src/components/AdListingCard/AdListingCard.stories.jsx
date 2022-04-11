@@ -40,3 +40,9 @@ export const TruncatedTitle = Template.bind({});
 TruncatedTitle.args = {
   ...mockAdListing[3],
 };
+
+export const BoostedListing = Template.bind({});
+BoostedListing.args = {
+  ...mockAdListing[0],
+  isBoosted: true,
+};

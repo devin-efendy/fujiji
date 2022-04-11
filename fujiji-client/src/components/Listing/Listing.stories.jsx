@@ -41,3 +41,10 @@ SellerListing.args = {
   isSeller: true,
   ...mockAdListing[0],
 };
+
+export const BoostedListing = Template.bind({});
+BoostedListing.args = {
+  isSeller: true,
+  boostDayLeft: 3,
+  ...mockAdListing[0],
+};

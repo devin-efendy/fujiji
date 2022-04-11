@@ -26,10 +26,14 @@ import { SettingsIcon, Search2Icon } from '@chakra-ui/icons';
 import { BsCurrencyDollar } from 'react-icons/bs';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { AdListingCard } from '../../components';
 import { searchListings } from '../../server/api';
-import { provinces, furnitureCategories, conditions } from '../../utils/fujijiConfig';
+import {
+  provinces,
+  furnitureCategories,
+  conditions,
+} from '../../utils/fujijiConfig';
 
 function SearchPage({
   condition = '',
@@ -51,7 +55,7 @@ function SearchPage({
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const getSearchListings = async () => {
+  const getSearchListings = useCallback(async () => {
     const payload = {
       title: searchText,
       condition: listingCondition,
@@ -62,7 +66,15 @@ function SearchPage({
       endPrice: maxListingPrice,
     };
     return searchListings(payload);
-  };
+  }, [
+    searchText,
+    listingCondition,
+    listingCategory,
+    listingCity,
+    listingProvince,
+    minListingPrice,
+    maxListingPrice,
+  ]);
 
   const clearFilters = () => {
     setSearchText('');
@@ -89,7 +101,7 @@ function SearchPage({
     }
 
     fetchData();
-  });
+  }, [getSearchListings]);
 
   let renderListings;
 
@@ -147,7 +159,6 @@ function SearchPage({
   };
 
   return (
-
     <Center px="1" py="6" flexDir="column">
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -157,7 +168,10 @@ function SearchPage({
           <ModalBody>
             <FormControl>
               <Box flex="1">
-                <FormLabel htmlFor="listingCdondition" id="listing-condition-label">
+                <FormLabel
+                  htmlFor="listingCdondition"
+                  id="listing-condition-label"
+                >
                   Condition
                 </FormLabel>
                 <Select
@@ -174,7 +188,10 @@ function SearchPage({
                 </Select>
               </Box>
               <Box flex="1" mt={4}>
-                <FormLabel htmlFor="listingCategory" id="listing-category-label">
+                <FormLabel
+                  htmlFor="listingCategory"
+                  id="listing-category-label"
+                >
                   Category
                 </FormLabel>
                 <Select
@@ -204,7 +221,10 @@ function SearchPage({
                 />
               </Box>
               <Box mt={4}>
-                <FormLabel htmlFor="listingProvince" id="listing-province-label">
+                <FormLabel
+                  htmlFor="listingProvince"
+                  id="listing-province-label"
+                >
                   Province
                 </FormLabel>
                 <Select
@@ -262,7 +282,9 @@ function SearchPage({
           </ModalBody>
 
           <ModalFooter>
-            <Button variant="ghost" mr={3} onClick={clearFilters}>clear</Button>
+            <Button variant="ghost" mr={3} onClick={clearFilters}>
+              clear
+            </Button>
             <Button colorScheme="teal" onClick={handleOnSubmit}>
               Apply
             </Button>
