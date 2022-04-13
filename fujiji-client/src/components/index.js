@@ -11,3 +11,4 @@ export { default as withSession } from './withSession/withSession';
 export { default as EditProfile } from './EditProfile/EditProfile';
 export { default as Comment } from './Comment/Comment';
 export { default as CommentForm } from './CommentForm/CommentForm';
+export { default as BoostPackageSelection } from './BoostPackageSelection/BoostPackageSelection';

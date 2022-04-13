@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import {
   Box, Button, Flex, Text, Image, Icon, Link,
 } from '@chakra-ui/react';
-import { TriangleUpIcon } from '@chakra-ui/icons';
+import { StarIcon, TriangleUpIcon } from '@chakra-ui/icons';
 import { MdLocationOn } from 'react-icons/md';
 import { BsCalendar } from 'react-icons/bs';
 import { BiCategory } from 'react-icons/bi';
@@ -145,13 +145,29 @@ export default function Listing({
             {formattedPrice}
           </Box>
           {isSeller && (
-            <Button
-              aria-label="edit-listing-button"
-              colorScheme="teal"
-              onClick={onEditClick}
-            >
-              Edit
-            </Button>
+            <Box>
+              <Button
+                aria-label="edit-listing-button"
+                colorScheme="teal"
+                onClick={onEditClick}
+              >
+                Edit
+              </Button>
+              {!boostDayLeft && (
+                <Button
+                  leftIcon={<StarIcon />}
+                  ml="3"
+                  variant="outline"
+                  aria-label="boost-listing-button"
+                  colorScheme="yellow"
+                  onClick={() => {
+                    // TODO: implement this
+                  }}
+                >
+                  Boost
+                </Button>
+              )}
+            </Box>
           )}
           {!isSeller && (
             <Link
