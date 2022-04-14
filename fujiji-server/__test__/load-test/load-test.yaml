@@ -1,0 +1,89 @@
+config:
+  target: "http://localhost:8000"
+  phases:
+    - duration: 1
+      arrivalRate: 1
+      name: "Phase 1"
+  processor: "./processor.js"
+# For more information: https://artillery.io/docs/script-reference/
+
+scenarios:
+  - name: Post a listing as a new user
+    flow:
+      - post:
+          beforeRequest: ["generateSignUpData"]
+          url: "/auth/signup"
+          form:
+            name: "{{ name }}"
+            email: "{{ email }}"
+            password: "{{ password }}"
+            phoneNumber: "{{ phoneNumber }}"
+          capture:
+            - json: "$.authToken"
+              as: "authToken"
+            - json: "$.userId"
+              as: "userID"
+      - post:
+          beforeRequest: ["generateListingData"]
+          url: "/listing"
+          headers:
+            authorization: "Bearer {{ authToken }}"
+          form:
+            userID: "{{ userID }}"
+            title: "{{ title }}"
+            condition: "{{ condition }}"
+            category: "{{ category }}"
+            city: "{{ city }}"
+            provinceCode: "{{ provinceCode }}"
+            imageURL: "{{ imageURL }}"
+            price: "{{ price }}"
+            description: "{{ description }}"
+          capture:
+            - json: "$.listingId"
+              as: "listingID"
+      - get:
+          url: "/user/{{ userID }}/listings"
+          headers:
+            authorization: "Bearer {{ authToken }}"
+      - get:
+          url: "/listing/{{ listingID }}"
+
+  - name: Update a listing
+    flow:
+      - post:
+          beforeRequest: ["generateSignUpData"]
+          url: "/auth/signup"
+          form:
+            name: "{{ name }}"
+            email: "{{ email }}"
+            password: "{{ password }}"
+            phoneNumber: "{{ phoneNumber }}"
+          capture:
+            - json: "$.authToken"
+              as: "authToken"
+            - json: "$.userId"
+              as: "userID"
+      - post:
+          beforeRequest: ["generateListingData"]
+          url: "/listing"
+          headers:
+            authorization: "Bearer {{ authToken }}"
+          form:
+            userID: "{{ userID }}"
+            title: "{{ title }}"
+            condition: "{{ condition }}"
+            category: "{{ category }}"
+            city: "{{ city }}"
+            provinceCode: "{{ provinceCode }}"
+            imageURL: "{{ imageURL }}"
+            price: "{{ price }}"
+            description: "{{ description }}"
+          capture:
+            - json: "$.listingId"
+              as: "listingID"
+      - get:
+          url: "/user/{{ userID }}/listings"
+          headers:
+            authorization: "Bearer {{ authToken }}"
+      - get:
+          url: "/listing/{{ listingID }}"
