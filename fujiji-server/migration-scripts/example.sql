@@ -1,4 +1,4 @@
-USe fujiji
+USE fujiji
 
 -- -- To fetch all attributes from the fujiji_user table in the fujiji db:
 SELECT *
