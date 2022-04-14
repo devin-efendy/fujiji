@@ -11,4 +11,7 @@ FROM fujiji_listing;
 SELECT *
 FROM fujiji_boost_package;
 
+SELECT *
+FROM fujiji_boost;
+
 GO
