@@ -21,18 +21,6 @@ steps:
   displayName: "npm install and build"
 
 - script: |
-    npm run test
-  workingDirectory: fujiji-server/
-  displayName: "Tests"
-  env: 
-    DB_TEST_HOST: $(DB_TEST_HOST)
-    DB_TEST_PASSWORD: $(DB_TEST_PASSWORD)
-    DB_TEST_USERNAME: $(DB_TEST_USERNAME)
-    DB_TEST_PORT: $(DB_TEST_PORT)
-    DB_TEST_NAME: $(DB_TEST_NAME)
-    JWT_AUTH_TOKEN: $(JWT_AUTH_TOKEN)
-
-- script: |
     wget https://github.com/github/codeql-action/releases/download/codeql-bundle-20200826/codeql-runner-linux
     chmod +x codeql-runner-linux
   displayName: 'Get latest CodeQL package. Install on Agent.'
