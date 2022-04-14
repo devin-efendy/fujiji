@@ -87,5 +87,3 @@ Now we are inside the mssql server with bash environment. So, now, we can run th
 ```
 /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "Fujiji123" -i scripts/up.sql
 ```
-
-//test1

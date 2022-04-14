@@ -21,14 +21,14 @@ steps:
   displayName: 'npm install and test'
 
 - script: |
-   wget https://github.com/github/codeql-action/releases/download/codeql-bundle-20200826/codeql-runner-linux
-   chmod +x codeql-runner-linux
- displayName: 'Get latest CodeQL package. Install on Agent.'
+    wget https://github.com/github/codeql-action/releases/download/codeql-bundle-20200826/codeql-runner-linux
+    chmod +x codeql-runner-linux
+  displayName: 'Get latest CodeQL package. Install on Agent.'
  
 - script: |
-   ./codeql-runner-linux init --repository devin-efendy/fujiji --github-url https://github.com --github-auth $(GITHUB_PAT)
- displayName: 'Initialize CodeQ Executable and create a CodeQL database'
+    ./codeql-runner-linux init --repository devin-efendy/fujiji --github-url https://github.com --github-auth $(GITHUB_PAT)
+  displayName: 'Initialize CodeQ Executable and create a CodeQL database'
  
 - script: |
-   ./codeql-runner-linux analyze --repository devin-efendy/fujiji --github-url https://github.com --github-auth $(GITHUB_PAT) --commit 92065de8b22bbfeda511d12571b66c9969ff593b --ref refs/heads/main
- displayName: 'Populate the CodeQL runner databases, analyze them, and upload the results to GitHub.'
+    ./codeql-runner-linux analyze --repository devin-efendy/fujiji --github-url https://github.com --github-auth $(GITHUB_PAT) --commit 92065de8b22bbfeda511d12571b66c9969ff593b --ref refs/heads/main
+  displayName: 'Populate the CodeQL runner databases, analyze them, and upload the results to GitHub.'
