@@ -30,5 +30,5 @@ steps:
   displayName: 'Initialize CodeQ Executable and create a CodeQL database'
 
 - script: |
-    ./codeql-runner-linux analyze --repository devin-efendy/fujiji --github-url https://github.com --github-auth $(GITHUB_PAT) --commit 92065de8b22bbfeda511d12571b66c9969ff593b --ref refs/heads/main
+    ./codeql-runner-linux analyze --repository devin-efendy/fujiji --github-url https://github.com --github-auth $(GITHUB_PAT) --commit $(Build.SourceVersion) --ref $(Build.SourceBranch)
   displayName: 'Populate the CodeQL runner databases, analyze them, and upload the results to GitHub.'
