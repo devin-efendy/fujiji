@@ -9,6 +9,9 @@ SELECT *
 FROM fujiji_listing;
 
 SELECT *
+FROM fujiji_comments;
+
+SELECT *
 FROM fujiji_boost_package;
 
 SELECT *

@@ -61,6 +61,7 @@ CREATE TABLE fujiji_comments
     comment text NOT NULL,
     isHighlighted int NOT NULL,
     isAuthor int NOT NULL,
+    reply text,
     creation_date DATETIME NOT NULL,
     modified_date DATETIME,
     CONSTRAINT PK_fujiji_comments PRIMARY KEY NONCLUSTERED (comment_id),

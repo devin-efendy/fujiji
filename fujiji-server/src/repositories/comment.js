@@ -75,6 +75,21 @@ async function updateCommentById(commentID, comment) {
   return result;
 }
 
+// PURPOSE: used to update a comment's reply based on its id
+async function replyCommentById(commentID, reply) {
+  const [result] = await sequelize.query(
+    `UPDATE fujiji_comments 
+      SET reply = ? 
+      WHERE comment_id = ?;`,
+    {
+      replacements: [reply, commentID],
+      type: Sequelize.UPDATE,
+    },
+  );
+  logDebug('DEBUG-replyCommentById', result);
+  return result;
+}
+
 // PURPOSE: used to highlight a comment from the db based on its id
 async function highlightsCommentById(commentID, isHighlighted) {
   const [result] = await sequelize.query(
@@ -107,6 +122,23 @@ async function deleteCommentById(commentId) {
   }
 }
 
+// PURPOSE: used to delete a comment from the db based on its id
+async function deleteCommentReplyById(commentId) {
+  try {
+    const result = await sequelize.query(
+      'UPDATE fujiji_comments SET reply = NULL WHERE comment_id = ?;',
+      {
+        replacements: [commentId],
+        type: Sequelize.UPDATE,
+      },
+    );
+    logDebug('DEBUG-deleteCommentReplyById', result);
+    return result;
+  } catch (err) {
+    return err;
+  }
+}
+
 module.exports = {
   createComment,
   getComments,
@@ -114,4 +146,6 @@ module.exports = {
   updateCommentById,
   highlightsCommentById,
   deleteCommentById,
+  replyCommentById,
+  deleteCommentReplyById,
 };
