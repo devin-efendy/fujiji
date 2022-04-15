@@ -5,6 +5,8 @@ const {
   updateCommentById,
   highlightsCommentById,
   deleteCommentById,
+  replyCommentById,
+  deleteCommentReplyById,
 } = require('../repositories/comment');
 const { getListingById } = require('../repositories/listing');
 
@@ -127,6 +129,92 @@ async function editComment(req, res, next) {
   }
 }
 
+// PURPOSE: implement the replying to a comment endpoint
+async function replyComment(req, res, next) {
+  const { reply } = req.body;
+  const { comment_id: commentID } = req.params;
+  const { id } = req.locals.userData;
+  const userID = parseInt(id, 10);
+  const intCommentId = parseInt(commentID, 10);
+
+  if (!reply) {
+    return next(new EmptyCommentError());
+  }
+
+  const existingComment = await getCommentById(intCommentId);
+
+  if (!existingComment) {
+    return next(
+      new CommentNotFoundError(`comment with id:${commentID} is not found`),
+    );
+  }
+
+  const listingID = existingComment.listing_id;
+  const listing = await getListingById(parseInt(listingID, 10));
+
+  if (!listing) {
+    return next(
+      new ListingNotFound(`listing with id:${listingID} is not found`),
+    );
+  }
+
+  const isAuthor = userID === parseInt(listing.user_id, 10) ? 1 : 0;
+
+  if (!isAuthor) {
+    return res.status(400).json({ error: 'Only the listing owner can reply to a comment.' });
+  }
+
+  try {
+    if (reply != existingComment.reply) {
+      await replyCommentById(intCommentId, reply);
+    }
+    const updatedComment = await getCommentById(intCommentId);
+    return res.status(200).json({ updatedComment });
+  } catch (err) {
+    return next(new APIError(err, 500));
+  }
+}
+
+// PURPOSE: implement the del comment's reply endpoint
+async function deleteCommentReply(req, res, next) {
+  const { comment_id: commentID } = req.params;
+  const { id } = req.locals.userData;
+  const userID = parseInt(id, 10);
+  const intCommentId = parseInt(commentID, 10);
+
+  const existingComment = await getCommentById(intCommentId);
+
+  if (!existingComment) {
+    return next(
+      new CommentNotFoundError(`comment with id:${commentID} is not found`),
+    );
+  }
+
+  const listingID = existingComment.listing_id;
+  const listing = await getListingById(parseInt(listingID, 10));
+
+  if (!listing) {
+    return next(
+      new ListingNotFound(`listing with id:${listingID} is not found`),
+    );
+  }
+
+  const isAuthor = userID === parseInt(listing.user_id, 10) ? 1 : 0;
+
+  if (!isAuthor) {
+    return res.status(400).json({ error: 'Only the listing owner can delete a comment\'s reply.' });
+  }
+
+  try {
+    await deleteCommentReplyById(intCommentId);
+
+    const updatedComment = await getCommentById(intCommentId);
+    return res.status(200).json({ updatedComment });
+  } catch (err) {
+    return next(new APIError(err, 500));
+  }
+}
+
 // PURPOSE: implement the del comment endpoint
 async function deleteComment(req, res, next) {
   const { comment_id: commentID } = req.params;
@@ -167,5 +255,10 @@ async function deleteComment(req, res, next) {
 }
 
 module.exports = {
-  postComment, getListingComments, editComment, deleteComment,
+  postComment,
+  getListingComments,
+  editComment,
+  deleteComment,
+  replyComment,
+  deleteCommentReply,
 };

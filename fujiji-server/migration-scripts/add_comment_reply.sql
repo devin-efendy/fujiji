@@ -1,0 +1,1 @@
+ALTER TABLE fujiji_comments ADD reply text;

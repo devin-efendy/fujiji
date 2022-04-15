@@ -60,8 +60,10 @@ async function seedTestDB() {
 }
 
 async function tearDownDB() {
-  await sequelize.query('DELETE FROM fujiji_user');
+  await sequelize.query('DELETE FROM fujiji_comments');
+  await sequelize.query('DELETE FROM fujiji_boost');
   await sequelize.query('DELETE FROM fujiji_listing');
+  await sequelize.query('DELETE FROM fujiji_user');
 }
 
 module.exports = {
