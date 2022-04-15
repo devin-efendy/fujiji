@@ -33,25 +33,42 @@ function ListingComments({
   comments,
   userID = undefined,
   sellerID = undefined,
+  sellerName = '',
 }) {
   if (!comments || comments.length === 0 || comments.error) {
     return null;
   }
 
-  const isHighlightable = parseInt(userID, 10) === parseInt(sellerID, 10);
+  const showSellerOptions = parseInt(userID, 10) === parseInt(sellerID, 10);
 
   return comments.map((comment) => {
     const commentProps = {
       ...comment,
-      isHighlightable,
+      showSellerOptions,
       isEditable: userID
         ? parseInt(userID, 10) === parseInt(comment.userID, 10)
         : false,
     };
 
+    const replyProps = {
+      commentID: comment.commentID,
+      listingID: comment.listingID,
+      posterName: sellerName,
+      comment: comment.reply,
+      showSellerOptions: false,
+      isEditable: showSellerOptions,
+      isHighlighted: false,
+      isSeller: true,
+      isReply: true,
+    };
+
+    const commentReply = comment.reply ? (
+      <Comment {...replyProps} />
+    ) : undefined;
+
     return (
       <Box key={`comment-${comment.commentID}`}>
-        <Comment {...commentProps} />
+        <Comment {...commentProps} reply={commentReply} />
       </Box>
     );
   });
@@ -115,6 +132,7 @@ function IndividualListingPage({ listingData, commentsData }) {
             comments: listingComments,
             userID: session.userData?.userID,
             sellerID: listingData.userID,
+            sellerName: listingData.sellerName,
           })}
         </Box>
       </Flex>
@@ -142,6 +160,7 @@ IndividualListingPage.propTypes = {
   listingData: PropTypes.shape({
     userID: PropTypes.number,
     listingID: PropTypes.number,
+    sellerName: PropTypes.string,
     title: PropTypes.string,
     condition: PropTypes.string,
     category: PropTypes.string,
@@ -160,8 +179,9 @@ IndividualListingPage.propTypes = {
       userID: PropTypes.number,
       posterName: PropTypes.string,
       comment: PropTypes.string,
-      isHighlighted: PropTypes.bool,
+      reply: PropTypes.elementType,
       isSeller: PropTypes.bool,
+      isHighlighted: PropTypes.bool,
       commentDate: PropTypes.string,
       modifiedDate: PropTypes.string,
     }),
@@ -183,4 +203,5 @@ ListingComments.propTypes = {
   ),
   userID: PropTypes.number,
   sellerID: PropTypes.number,
+  sellerName: PropTypes.string,
 };

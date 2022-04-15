@@ -16,6 +16,13 @@ Default.args = {
   onSubmit: () => ({ status: 200 }),
 };
 
+export const Reply = Template.bind({});
+Reply.args = {
+  userName: '',
+  isReply: true,
+  onSubmit: () => ({ status: 200 }),
+};
+
 export const ApiError = Template.bind({});
 ApiError.args = {
   userName: 'John Doe',
