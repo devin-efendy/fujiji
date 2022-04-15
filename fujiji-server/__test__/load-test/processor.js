@@ -27,7 +27,7 @@ const locations = [
   },
 ];
 
-function generateSignUpData(req, ctx, ee, next) {
+function generateSignUpData(requestParams, ctx, ee, next) {
   ctx.vars.email = faker.internet.email();
   ctx.vars.password = faker.internet.password(10);
   ctx.vars.name = faker.name.findName();
@@ -35,7 +35,7 @@ function generateSignUpData(req, ctx, ee, next) {
   return next();
 }
 
-function generateListingData(req, ctx, ee, next) {
+function generateListingData(requestParams, ctx, ee, next) {
   const location = locations[Math.floor(Math.random() * locations.length)];
   ctx.vars.userID = parseInt(ctx.vars.userID, 10);
   ctx.vars.title = `Posting for ${ctx.vars.name}`;
@@ -49,9 +49,21 @@ function generateListingData(req, ctx, ee, next) {
   return next();
 }
 
-function testFunc(req, ctx, ee, next) {
-  console.log(ctx.vars);
+function generateCommentData(requestParams, ctx, ee, next) {
+  ctx.vars.comment = faker.lorem.text();
   return next();
 }
 
-module.exports = { generateSignUpData, generateListingData, testFunc };
+function getRandomListingId(requestParams, response, ctx, ee, next) {
+  const resBody = JSON.parse(response.body);
+  const { listings } = resBody;
+  ctx.vars.randListingID = listings[Math.floor(Math.random() * listings.length)].listing_id;
+  return next();
+}
+
+module.exports = {
+  generateSignUpData,
+  generateListingData,
+  generateCommentData,
+  getRandomListingId,
+};
