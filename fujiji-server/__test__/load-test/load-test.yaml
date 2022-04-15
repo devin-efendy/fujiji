@@ -1,0 +1,226 @@
+config:
+  target: "http://localhost:8000"
+  phases:
+    - duration: 60 # run for 60 seconds
+      arrivalRate: 2 # add 2 virutal users every second
+      name: "Phase 1"
+  processor: "./processor.js"
+
+# This scenarios reflect how the front-end calls the APIs
+scenarios:
+  - name: Post, update, and delete listings
+    # This simulates posting, updating, and deleting listings
+    # 1. Create the listing
+    # 2. Visit the "My Listing" page
+    # 3. Choose the listing that we just created, and visit the edit page
+    # 4. Update the listing
+    # 5. Visit the "My Listing" page
+    # 6. Choose the listing that we just created, and visit the edit page
+    # 7. Delete the listing
+    flow:
+      - post:
+          # create a new user
+          beforeRequest: ["generateSignUpData"]
+          url: "/auth/signup"
+          form:
+            name: "{{ name }}"
+            email: "{{ email }}"
+            password: "{{ password }}"
+            phoneNumber: "{{ phoneNumber }}"
+          capture:
+            - json: "$.authToken"
+              as: "authToken"
+            - json: "$.userId"
+              as: "userID"
+      - loop:
+          - post:
+              # post a listing
+              beforeRequest: ["generateListingData"]
+              url: "/listing"
+              headers:
+                authorization: "Bearer {{ authToken }}"
+              form:
+                userID: "{{ userID }}"
+                title: "{{ title }}"
+                condition: "{{ condition }}"
+                category: "{{ category }}"
+                city: "{{ city }}"
+                provinceCode: "{{ provinceCode }}"
+                imageURL: "{{ imageURL }}"
+                price: "{{ price }}"
+                description: "{{ description }}"
+              capture:
+                - json: "$.listingId"
+                  as: "listingID"
+          - get:
+              # visit the "My Listing" page
+              url: "/user/{{ userID }}/listings"
+              headers:
+                authorization: "Bearer {{ authToken }}"
+          - get:
+              # visit the listing/{listingID} edit page
+              url: "/listing/{{ listingID }}"
+          - put:
+              # update the existing listing
+              beforeRequest: ["generateListingData"]
+              url: "/listing"
+              headers:
+                authorization: "Bearer {{ authToken }}"
+              form:
+                userID: "{{ userID }}"
+                listingID: "{{ listingID }}"
+                title: "{{ title }}"
+                condition: "{{ condition }}"
+                category: "{{ category }}"
+                city: "{{ city }}"
+                provinceCode: "{{ provinceCode }}"
+                imageURL: "{{ imageURL }}"
+                price: "{{ price }}"
+                description: "{{ description }}"
+              capture:
+                - json: "$.listingId"
+                  as: "listingID"
+          - get:
+              # visit the "My Listing" page
+              url: "/user/{{ userID }}/listings"
+              headers:
+                authorization: "Bearer {{ authToken }}"
+          - get:
+              # visit the listing/{listingID} edit page
+              url: "/listing/{{ listingID }}"
+          # delete the listing
+          - delete:
+              url: "/listing/{{ listingID }}"
+              headers:
+                authorization: "Bearer {{ authToken }}"
+        count: 10
+
+  - name: Search listings
+    flow:
+      # This simulates a user when they are browsing and visiting the listing
+      # - Setup and populte the listing table
+      # 1. Visit the "/search" page
+      # 2. Pick a random listingID, and visit the /listing/listingID individual page
+      # - repeat `count` times
+      - post:
+          # create a new user
+          beforeRequest: ["generateSignUpData"]
+          url: "/auth/signup"
+          form:
+            name: "{{ name }}"
+            email: "{{ email }}"
+            password: "{{ password }}"
+            phoneNumber: "{{ phoneNumber }}"
+          capture:
+            - json: "$.authToken"
+              as: "authToken"
+            - json: "$.userId"
+              as: "userID"
+      - loop:
+          - post:
+              # setup the listings to query
+              beforeRequest: ["generateListingData"]
+              url: "/listing"
+              headers:
+                authorization: "Bearer {{ authToken }}"
+              form:
+                userID: "{{ userID }}"
+                title: "{{ title }}"
+                condition: "{{ condition }}"
+                category: "{{ category }}"
+                city: "{{ city }}"
+                provinceCode: "{{ provinceCode }}"
+                imageURL: "{{ imageURL }}"
+                price: "{{ price }}"
+                description: "{{ description }}"
+              capture:
+                - json: "$.listingId"
+                  as: "listingID"
+        count: 10
+      - loop:
+          - get:
+              url: "/listing"
+              afterResponse: ["getRandomListingId"]
+          - get:
+              url: "/listing/{{ randListingID }}"
+        count: 10
+
+  - name: Post, update, and delete comments on a listing
+    flow:
+      # This simulates posting, updating, and deleting listings
+      # - Setup a listing
+      # 1. Post a comment
+      # 2. Visit the /listing/listingID page + we also fetch all the comments for this listing
+      # 3. Update the existing comment
+      # 4. Visit the /listing/listingID page + we also fetch all the comments for this listing
+      # 5. Delete the existing comment
+      - post:
+          # create a new user
+          beforeRequest: ["generateSignUpData"]
+          url: "/auth/signup"
+          form:
+            name: "{{ name }}"
+            email: "{{ email }}"
+            password: "{{ password }}"
+            phoneNumber: "{{ phoneNumber }}"
+          capture:
+            - json: "$.authToken"
+              as: "authToken"
+            - json: "$.userId"
+              as: "userID"
+      - post:
+          # post a listing for setup
+          beforeRequest: ["generateListingData"]
+          url: "/listing"
+          headers:
+            authorization: "Bearer {{ authToken }}"
+          form:
+            userID: "{{ userID }}"
+            title: "{{ title }}"
+            condition: "{{ condition }}"
+            category: "{{ category }}"
+            city: "{{ city }}"
+            provinceCode: "{{ provinceCode }}"
+            imageURL: "{{ imageURL }}"
+            price: "{{ price }}"
+            description: "{{ description }}"
+          capture:
+            - json: "$.listingId"
+              as: "listingID"
+      - loop:
+          # post a comment
+          - post:
+              beforeRequest: ["generateCommentData"]
+              url: "/comment/{{ listingID }}"
+              headers:
+                authorization: "Bearer {{ authToken }}"
+              form:
+                comment: "{{ comment }}"
+              capture:
+                - json: "$.id"
+                  as: "commentID"
+          # visit the listing/listingID page and retrieve all the comments
+          - get:
+              url: "/listing/{{ listingID }}"
+          - get:
+              url: "/comment/{{ listingID }}"
+          # update the comment
+          - put:
+              beforeRequest: ["generateCommentData"]
+              url: "/comment/{{ commentID }}"
+              headers:
+                authorization: "Bearer {{ authToken }}"
+              form:
+                comment: "{{ comment }}"
+                isHighlighted: "0"
+          # visit the listing/listingID page and retrieve all the comments
+          - get:
+              url: "/listing/{{ listingID }}"
+          - get:
+              url: "/comment/{{ listingID }}"
+          # delete the comment
+          - delete:
+              url: "/comment/{{ commentID }}"
+              headers:
+                authorization: "Bearer {{ authToken }}"
+        count: 10
