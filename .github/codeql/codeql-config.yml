@@ -1,0 +1,5 @@
+name: "Fujiji CodeQL config"
+
+paths-ignore:
+  - codeql-runner-linux
+  - codeql-runner

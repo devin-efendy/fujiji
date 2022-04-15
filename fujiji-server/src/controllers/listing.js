@@ -25,7 +25,11 @@ const {
 
 function validatePriceRange(priceRange) {
   try {
-    if (priceRange.length == 2) {
+    if (priceRange.length == 2
+      && typeof priceRange[0] === 'string'
+      && typeof priceRange[1] === 'string'
+      && priceRange[0].indexOf('..') === -1
+      && priceRange[1].indexOf('..') === -1) {
       if (priceRange[0] <= priceRange[1]) {
         return true;
       }
