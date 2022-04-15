@@ -16,18 +16,13 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
-    npm install
-  workingDirectory: fujiji-server/
-  displayName: "npm install and build"
-
-- script: |
     wget https://github.com/github/codeql-action/releases/download/codeql-bundle-20200826/codeql-runner-linux
     chmod +x codeql-runner-linux
   displayName: 'Get latest CodeQL package. Install on Agent.'
 
 - script: |
-    ./codeql-runner-linux init --repository devin-efendy/fujiji --github-url https://github.com --github-auth $(GITHUB_PAT) --config-file .github/codeql/codeql-config.yml
-  displayName: 'Initialize CodeQ Executable and create a CodeQL database'
+    ./codeql-runner-linux init --repository devin-efendy/fujiji --github-url https://github.com --github-auth $(GITHUB_PAT) --config-file .github/codeql/codeql-config.yml --languages javascript
+  displayName: 'Initialize CodeQL Executable and create a CodeQL database'
 
 - script: |
     ./codeql-runner-linux analyze --repository devin-efendy/fujiji --github-url https://github.com --github-auth $(GITHUB_PAT) --commit $(Build.SourceVersion) --ref $(Build.SourceBranch)
