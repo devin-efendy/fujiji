@@ -26,7 +26,7 @@ steps:
   displayName: 'Get latest CodeQL package. Install on Agent.'
 
 - script: |
-    ./codeql-runner-linux init --repository devin-efendy/fujiji --github-url https://github.com --github-auth $(GITHUB_PAT)
+    ./codeql-runner-linux init --repository devin-efendy/fujiji --github-url https://github.com --github-auth $(GITHUB_PAT) --config-file .github/codeql/codeql-config.yml
   displayName: 'Initialize CodeQ Executable and create a CodeQL database'
 
 - script: |
