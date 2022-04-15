@@ -34,14 +34,14 @@ Seller.args = {
   commentDate: '2022-02-21',
 };
 
-export const Highlightable = Template.bind({});
-Highlightable.args = {
+export const SellerOptions = Template.bind({});
+SellerOptions.args = {
   commentID: 2,
   posterName: 'John Doe',
   comment:
     'Lorem Ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
   isSeller: false,
-  isHighlightable: true,
+  showSellerOptions: true,
   isEditable: false,
   isHighlighted: false,
   commentDate: '2022-02-21',
@@ -96,6 +96,41 @@ Modified.args = {
   modifiedDate: '2022-02-21',
 };
 
+function ReplyStory({ ...args }) {
+  const reply = <Comment {...args.reply} />;
+  return <Comment {...args.comment} reply={reply} />;
+}
+
+export const Reply = ReplyStory.bind({});
+Reply.args = {
+  comment: {
+    commentID: 6,
+    posterName: 'John Doe',
+    comment:
+      'Lorem Ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    reply:
+      'Lorem Ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    isSeller: false,
+    showSellerOptions: true,
+    isEditable: false,
+    isHighlighted: false,
+    commentDate: '2022-02-21',
+    modifiedDate: undefined,
+  },
+  reply: {
+    commentID: 6,
+    posterName: 'The Seller',
+    comment:
+      'Lorem Ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    isSeller: true,
+    showSellerOptions: false,
+    isEditable: true,
+    isHighlighted: false,
+    commentDate: '2022-02-21',
+    modifiedDate: undefined,
+  },
+};
+
 function CommentsChainStory({ ...args }) {
   return (
     <div>
@@ -116,7 +151,7 @@ CommentsChain.args = [
     comment:
       'Lorem Ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
     isSeller: true,
-    isHighlightable: true,
+    showSellerOptions: true,
     isEditable: true,
     isHighlighted: true,
     commentDate: '2022-02-21',

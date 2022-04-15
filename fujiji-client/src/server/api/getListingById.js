@@ -8,9 +8,15 @@ export default async function getListingById(listingId) {
       `${publicRuntimeConfig.FUJIJI_API_URL}/listing/${listingId}`,
     );
     const { listing } = result.data;
+
+    const { data } = await axios.get(
+      `${publicRuntimeConfig.FUJIJI_API_URL}/user/${listing.user_id}`,
+    );
+
     return {
       userID: parseInt(listing.user_id, 10),
       listingID: parseInt(listing.listing_id, 10),
+      sellerName: data.user.name,
       title: listing.title,
       condition: listing.condition,
       category: listing.category,

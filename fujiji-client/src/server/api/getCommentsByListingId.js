@@ -34,6 +34,7 @@ export default async function getCommentsByListingId(listingID) {
         isSeller: commentObj.isAuthor === 1,
         commentDate: formattedDate,
         modifiedDate: formattedModifiedDate,
+        reply: commentObj.reply,
       };
     });
   } catch (error) {

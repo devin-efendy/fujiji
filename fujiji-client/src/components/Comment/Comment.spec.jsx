@@ -1,5 +1,9 @@
 import { render, fireEvent, act } from '@testing-library/react';
-import { updateComment, deleteCommentById } from '../../server/api';
+import {
+  updateComment,
+  deleteCommentById,
+  deleteCommentReplyById,
+} from '../../server/api';
 
 import Comment from './Comment';
 
@@ -16,6 +20,8 @@ jest.mock('next/router', () => ({
 jest.mock('../../server/api', () => ({
   updateComment: jest.fn(),
   deleteCommentById: jest.fn(),
+  deleteCommentReplyById: jest.fn(),
+  replyComment: jest.fn(),
 }));
 
 const mockDefaultProps = {
@@ -29,13 +35,24 @@ const mockDefaultProps = {
   commentDate: '2022-02-21',
 };
 
+const mockReplyProps = {
+  commentID: 1,
+  posterName: 'The Seller',
+  comment: 'reply from seller',
+  isSeller: true,
+  isReply: true,
+  isEditable: true,
+  isHighlighted: false,
+  commentDate: '2022-02-21',
+};
+
 const mockIsSellerProps = {
   commentID: 2,
   posterName: 'John Doe',
   comment:
     'Lorem Ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
   isSeller: true,
-  isHighlightable: true,
+  showSellerOptions: true,
   isEditable: false,
   isHighlighted: false,
   commentDate: '2022-02-21',
@@ -67,6 +84,7 @@ const mockModifiedDateProps = {
 describe('Comment', () => {
   afterEach(() => {
     jest.clearAllMocks();
+    document.getElementsByTagName('html')[0].innerHTML = '';
   });
 
   it('should render properly', () => {
@@ -269,8 +287,58 @@ describe('Comment', () => {
     });
 
     expect(mockRouterReload).toHaveBeenCalledTimes(0);
-    expect(
-      document.querySelector('#comment-delete-failure-toast'),
-    ).not.toBeNull();
+  });
+
+  it('should render reply correctly', () => {
+    const replyComponent = <Comment {...mockReplyProps} />;
+    const { getByText } = render(
+      <Comment {...mockIsSellerProps} reply={replyComponent} />,
+    );
+    expect(getByText(mockReplyProps.comment)).toBeInTheDocument();
+  });
+
+  it('should open CommentForm if reply button is clicked', async () => {
+    const { getByLabelText, getByText } = render(
+      <Comment {...mockIsSellerProps} />,
+    );
+
+    // Click the reply button
+    await act(async () => {
+      fireEvent.click(
+        getByLabelText(`${mockIsSellerProps.commentID}-reply-button`),
+        { bubbles: true },
+      );
+    });
+
+    expect(getByText('Reply as seller')).toBeInTheDocument();
+  });
+
+  it('should execute deleteCommentReplyById when deleting reply', async () => {
+    deleteCommentReplyById.mockResolvedValue({
+      data: {},
+      status: 200,
+    });
+
+    const { getByLabelText } = render(
+      <Comment {...mockReplyProps} />,
+    );
+
+    // Click the edit button
+    await act(async () => {
+      fireEvent.click(
+        getByLabelText(`${mockReplyProps.commentID}-edit-button`),
+        { bubbles: true },
+      );
+    });
+
+    // Click the delete button
+    await act(async () => {
+      fireEvent.click(
+        getByLabelText(`${mockReplyProps.commentID}-delete-button`),
+        { bubbles: true },
+      );
+    });
+
+    expect(deleteCommentReplyById).toHaveBeenCalled();
   });
 });

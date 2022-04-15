@@ -10,15 +10,19 @@ import {
   Text,
   useToast,
 } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 import { useSession } from '../../context/session';
 
 export default function CommentForm({
   listingID,
+  commentID,
   userName,
   onSubmit,
+  isReply,
 }) {
   const [comment, setComment] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const router = useRouter();
 
   const { authToken } = useSession();
   const toast = useToast();
@@ -27,15 +31,14 @@ export default function CommentForm({
     <Flex>
       <FormControl isInvalid={errorMessage !== ''}>
         <Text mb="1" fontSize="md">
-          Comment as
-          {' '}
+          {isReply ? 'Reply as seller' : 'Comment as '}
           <Text d="inline" fontWeight="semibold" color="teal">
             {userName}
           </Text>
         </Text>
         <Textarea
           mt="1"
-          aria-label="comment-input"
+          aria-label={isReply ? 'reply-input' : 'comment-input'}
           value={comment}
           onChange={(e) => {
             setErrorMessage('');
@@ -47,7 +50,9 @@ export default function CommentForm({
         <FormErrorMessage>{errorMessage}</FormErrorMessage>
         <Box mt="2">
           <Button
-            aria-label="submit-comment-button"
+            aria-label={
+              isReply ? 'submit-reply-button' : 'submit-comment-button'
+            }
             size="sm"
             float="right"
             colorScheme="teal"
@@ -58,11 +63,13 @@ export default function CommentForm({
                 return;
               }
 
-              const payload = {
-                comment,
-                listingID,
-                authToken,
-              };
+              const payload = isReply
+                ? { commentID, reply: comment, authToken }
+                : {
+                  comment,
+                  listingID,
+                  authToken,
+                };
 
               const response = await onSubmit(payload);
 
@@ -77,10 +84,11 @@ export default function CommentForm({
                   duration: 9000,
                   isClosable: true,
                 });
+                router.reload(window.location.pathname);
               }
             }}
           >
-            Comment
+            {isReply ? 'Reply' : 'Comment'}
           </Button>
         </Box>
       </FormControl>
@@ -90,6 +98,8 @@ export default function CommentForm({
 
 CommentForm.propTypes = {
   listingID: PropTypes.number,
+  commentID: PropTypes.number,
   userName: PropTypes.string,
   onSubmit: PropTypes.func,
+  isReply: PropTypes.bool,
 };

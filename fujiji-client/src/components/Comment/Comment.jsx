@@ -10,36 +10,49 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import {
-  CheckIcon, DeleteIcon, EditIcon, CloseIcon,
+  CheckIcon,
+  DeleteIcon,
+  EditIcon,
+  CloseIcon,
+  ChatIcon,
 } from '@chakra-ui/icons';
 import { BsFillPinAngleFill } from 'react-icons/bs';
 import { format, isValid, parse } from 'date-fns';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { deleteCommentById, updateComment } from '../../server/api';
+import {
+  deleteCommentById,
+  deleteCommentReplyById,
+  replyComment,
+  updateComment,
+} from '../../server/api';
 import { useSession } from '../../context/session';
+import CommentForm from '../CommentForm/CommentForm';
 
 export default function Comment({
   commentID = undefined,
   posterName,
   comment,
+  isReply,
+  reply = undefined,
   isSeller,
   isEditable,
-  isHighlightable,
+  showSellerOptions,
   isHighlighted,
   commentDate,
   modifiedDate,
 }) {
-  const { authToken } = useSession();
   const toast = useToast();
   const router = useRouter();
+  const { authToken } = useSession();
 
   const [editCommentText, setEdittedComment] = useState(comment);
   const [commentText, saveCommentText] = useState(comment);
   const [isEditting, setEditting] = useState(false);
   const [isPinned, setPinned] = useState(isHighlighted);
   const [editErrorMsg, setEditErrorMsg] = useState('');
+  const [showReplyInput, setShowReplyInput] = useState(false);
   const parsedDate = parse(commentDate, 'yyyy-MM-dd', new Date());
 
   const formattedDate = isValid(parsedDate)
@@ -78,12 +91,18 @@ export default function Comment({
             return;
           }
 
-          const saveRes = await updateComment({
-            commentID,
-            comment: editCommentText,
-            isHighlighted: isPinned ? 1 : 0,
-            authToken,
-          });
+          const payload = isReply
+            ? { commentID, reply: editCommentText, authToken }
+            : {
+              commentID,
+              comment: editCommentText,
+              isHighlighted: isPinned ? 1 : 0,
+              authToken,
+            };
+
+          const apiReq = isReply ? replyComment : updateComment;
+
+          const saveRes = await apiReq(payload);
 
           if (!saveRes.error) {
             saveCommentText(editCommentText);
@@ -124,7 +143,12 @@ export default function Comment({
         variant="link"
         size="sm"
         onClick={async () => {
-          const res = await deleteCommentById(commentID, authToken);
+          let res;
+          if (isReply) {
+            res = await deleteCommentReplyById(commentID, authToken);
+          } else {
+            res = await deleteCommentById(commentID, authToken);
+          }
           if (res.error) {
             toast({
               id: 'comment-delete-failure-toast',
@@ -155,7 +179,6 @@ export default function Comment({
   ) : (
     <Button
       aria-label={`${commentID}-edit-button`}
-      ml="3"
       leftIcon={<EditIcon />}
       colorScheme="teal"
       variant="link"
@@ -169,14 +192,26 @@ export default function Comment({
     </Button>
   );
 
-  return (
-    <Flex
-      id={`comment-${commentID}`}
-      flexDir="column"
-      bg={isPinned ? 'yellow.50' : 'none'}
+  const ReplyButton = (
+    <Button
+      aria-label={`${commentID}-reply-button`}
+      ml="3"
+      leftIcon={<ChatIcon />}
+      colorScheme="gray"
+      variant="link"
+      size="sm"
+      onClick={() => {
+        setShowReplyInput(!showReplyInput);
+      }}
     >
+      reply
+    </Button>
+  );
+
+  return (
+    <Flex id={`comment-${commentID}`} flexDir="column">
       <Divider />
-      <Box p="3">
+      <Box p="3" bg={isPinned ? 'yellow.50' : 'none'}>
         <Flex alignItems="center">
           {isPinned && (
             <Icon
@@ -186,10 +221,12 @@ export default function Comment({
               color="teal"
             />
           )}
-          <Text fontWeight="bold">{posterName}</Text>
+          <Text fontWeight="bold" mr="3">
+            {posterName}
+          </Text>
+
           {isSeller && (
             <Badge
-              ml="3"
               borderRadius="full"
               px="2"
               colorScheme="teal"
@@ -198,7 +235,7 @@ export default function Comment({
               seller
             </Badge>
           )}
-          {isHighlightable && !isPinned && (
+          {showSellerOptions && !isPinned && (
             <Button
               aria-label={`${commentID}-pin-button`}
               ml="3"
@@ -229,7 +266,7 @@ export default function Comment({
               pin
             </Button>
           )}
-          {isHighlightable && isPinned && (
+          {showSellerOptions && isPinned && (
             <Button
               aria-label={`${commentID}-unpin-button`}
               ml="3"
@@ -262,19 +299,34 @@ export default function Comment({
         </Flex>
         {renderComment}
         <Flex mt="4">
-          <Text
-            color="gray.500"
-            fontWeight="semibold"
-            letterSpacing="wide"
-            textTransform="uppercase"
-            fontSize="xs"
-          >
-            {formattedModifiedDate && `(Updated, ${formattedModifiedDate})`}
-            {!formattedModifiedDate && `Posted on, ${formattedDate}`}
-          </Text>
+          {!isReply && (
+            <Text
+              color="gray.500"
+              fontWeight="semibold"
+              letterSpacing="wide"
+              textTransform="uppercase"
+              fontSize="xs"
+              mr="3"
+            >
+              {formattedModifiedDate && `(Updated, ${formattedModifiedDate})`}
+              {!formattedModifiedDate && `Posted on, ${formattedDate}`}
+            </Text>
+          )}
+
           {isEditable && EditButtonGroup}
+          {!reply && showSellerOptions && ReplyButton}
         </Flex>
       </Box>
+      {showReplyInput && (
+        <Box ml="10">
+          <CommentForm
+            isReply
+            commentID={commentID}
+            onSubmit={replyComment}
+          />
+        </Box>
+      )}
+      {reply && <Box ml="10">{reply}</Box>}
     </Flex>
   );
 }
@@ -283,8 +335,10 @@ Comment.propTypes = {
   commentID: PropTypes.number,
   posterName: PropTypes.string,
   comment: PropTypes.string,
+  isReply: PropTypes.bool,
+  reply: PropTypes.elementType,
   isSeller: PropTypes.bool,
-  isHighlightable: PropTypes.bool,
+  showSellerOptions: PropTypes.bool,
   isEditable: PropTypes.bool,
   isHighlighted: PropTypes.bool,
   commentDate: PropTypes.string,
