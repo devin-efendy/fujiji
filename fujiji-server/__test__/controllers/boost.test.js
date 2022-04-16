@@ -43,8 +43,6 @@ describe('Test /boost endpoints', () => {
         .set('Authorization', `Bearer ${token}`)
         .send(mockPostListingReqBody);
 
-      console.log(postListingRes.body.listingId);
-
       const postBoostRes = await request(app)
         .post(`/boost/${postListingRes.body.listingId}`)
         .query({ packageID: 1 })

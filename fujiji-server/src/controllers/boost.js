@@ -20,7 +20,6 @@ async function postBoost(req, res, next) {
   const listing = await getListingById(parseInt(listingID, 10));
 
   if (!listing) {
-    console.log(`listing with id:${listingID} is not found`);
     return next(
       new ListingNotFound(`listing with id:${listingID} is not found`),
     );
@@ -29,7 +28,6 @@ async function postBoost(req, res, next) {
   const boostPackage = await getBoostPackageById(packageID);
 
   if (!boostPackage) {
-    console.log(`boost package with id:${packageID} is not found`);
     return next(
       new PackageNotFound(`boost package with id:${packageID} is not found`),
     );
@@ -38,7 +36,6 @@ async function postBoost(req, res, next) {
   const boost = await getBoostByListingID(listingID);
 
   if (boost) {
-    console.log(`boost for listing id: ${listingID} already exists`);
     return next(
       new BoostAlreadyExists(`boost for listing id: ${listingID} already exists`),
     );

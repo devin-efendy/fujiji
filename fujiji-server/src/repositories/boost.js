@@ -4,7 +4,6 @@ const sequelize = require("./db");
 
 // PURPOSE: used to insert a new comment to the db
 async function createBoost(listingID, packageid, score) {
-  console.log("I am In boost");
   const [result] = await sequelize.query(
     `INSERT INTO fujiji_boost
             (listing_id, package_id, score, creation_date)
