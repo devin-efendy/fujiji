@@ -1,9 +1,10 @@
-const { Sequelize } = require('sequelize');
-const { logDebug } = require('../utils/logging');
-const sequelize = require('./db');
+const { Sequelize } = require("sequelize");
+const { logDebug } = require("../utils/logging");
+const sequelize = require("./db");
 
 // PURPOSE: used to insert a new comment to the db
 async function createBoost(listingID, packageid, score) {
+  console.log("I am In boost");
   const [result] = await sequelize.query(
     `INSERT INTO fujiji_boost
             (listing_id, package_id, score, creation_date)
@@ -13,28 +14,26 @@ async function createBoost(listingID, packageid, score) {
     {
       bind: [listingID, packageid, score],
       type: Sequelize.INSERT,
-    },
+    }
   );
-  logDebug('DEBUG-createBoost', result);
+  console.log(result);
+  logDebug("DEBUG-createBoost", result);
   return result[0];
 }
 
-async function getBoostByListingId(listingID) {
-  try {
-    const [boost] = await sequelize.query(
-      'SELECT * FROM fujiji_boost WHERE listing_id = ?',
-      {
-        replacements: [listingID],
-        type: Sequelize.SELECT,
-      },
-    );
-    logDebug('DEBUG-getBoostByListingId', boost);
-    return boost[0];
-  } catch (err) {
-    return err;
-  }
+async function getBoostByListingID(listingID) {
+  const [result] = await sequelize.query(
+    "SELECT * FROM fujiji_boost WHERE listing_id = ?;",
+    {
+      replacements: [listingID],
+      type: Sequelize.SELECT,
+    }
+  );
+  logDebug("DEBUG-getBoostPackageById", result);
+  return result[0];
 }
 
 module.exports = {
-  createBoost, getBoostByListingId,
+  createBoost,
+  getBoostByListingID,
 };
