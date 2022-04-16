@@ -47,7 +47,6 @@ describe('Test /boost endpoints', () => {
         .post(`/boost/${postListingRes.body.listingId}`)
         .query({ packageID: 1 })
         .set('Authorization', `Bearer ${token}`);
-
       expect(postBoostRes.statusCode).toEqual(200);
     });
 
@@ -82,7 +81,6 @@ describe('Test /boost endpoints', () => {
         .post(`/boost/${postListingRes.body.listingId}`)
         .query({ packageID: 4 })
         .set('Authorization', `Bearer ${token}`);
-
       expect(postBoostRes.statusCode).toEqual(404);
     });
   });
