@@ -15,6 +15,7 @@ const {
   getListingsBySearch,
 } = require('../repositories/listing');
 const { getUserByID } = require('../repositories/user');
+const { getBoostByListingId } = require('../repositories/boost');
 
 const {
   APIError,
@@ -127,6 +128,15 @@ async function getAllListingsBySearch(req, res, next) {
       next(listings);
       return;
     }
+    for (let index = 0; index < listings.length; index += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      const boost = await getBoostByListingId(listings[index].listing_id);
+      if (!boost) {
+        listings[index].score = -1;
+      } else {
+        listings[index].score = boost.score;
+      }
+    }
     res.status(200).json({ listings });
   } catch (err) {
     next(new APIError());
@@ -220,6 +230,15 @@ async function getAllListings(req, res, next) {
       next(listings);
       return;
     }
+    for (let index = 0; index < listings.length; index += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      const boost = await getBoostByListingId(listings[index].listing_id);
+      if (!boost) {
+        listings[index].score = -1;
+      } else {
+        listings[index].score = boost.score;
+      }
+    }
     res.status(200).json({ listings });
   } catch (err) {
     next(new APIError());
@@ -239,10 +258,18 @@ async function getByListingId(req, res, next) {
     }
 
     const user = await getUserByID(listing.user_id);
+    const boost = await getBoostByListingId(listingID);
+    let boostScore = 0;
+
+    if (!boost) {
+      boostScore = -1;
+    } else {
+      boostScore = boost.score;
+    }
 
     return res
       .status(200)
-      .json({ listing: { ...listing, contact_email: user.email_address } });
+      .json({ listing: { ...listing, contact_email: user.email_address, score: boostScore } });
   } catch (err) {
     return next(new APIError());
   }

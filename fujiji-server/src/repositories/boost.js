@@ -19,6 +19,22 @@ async function createBoost(listingID, packageid, score) {
   return result[0];
 }
 
+async function getBoostByListingId(listingID) {
+  try {
+    const [boost] = await sequelize.query(
+      'SELECT * FROM fujiji_boost WHERE listing_id = ?',
+      {
+        replacements: [listingID],
+        type: Sequelize.SELECT,
+      },
+    );
+    logDebug('DEBUG-getBoostByListingId', boost);
+    return boost[0];
+  } catch (err) {
+    return err;
+  }
+}
+
 module.exports = {
-  createBoost,
+  createBoost, getBoostByListingId,
 };

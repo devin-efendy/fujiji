@@ -170,8 +170,13 @@ describe('Test /listing endpoints', () => {
         .post('/listing')
         .set('Authorization', `Bearer ${token}`)
         .send(mockReqBody);
+      await request(app)
+        .post(`/boost/${postRes.body.listingId}`)
+        .query({ packageID: 1 })
+        .set('Authorization', `Bearer ${token}`);
       const res = await request(app).get(`/listing/${postRes.body.listingId}`);
       expect(res.statusCode).toEqual(200);
+      expect(res.body.listing.score).toEqual(150);
     });
 
     it('returns 404 with non-existent listingID', async () => {
