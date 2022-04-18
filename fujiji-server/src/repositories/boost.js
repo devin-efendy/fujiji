@@ -1,6 +1,6 @@
-const { Sequelize } = require("sequelize");
-const { logDebug } = require("../utils/logging");
-const sequelize = require("./db");
+const { Sequelize } = require('sequelize');
+const { logDebug } = require('../utils/logging');
+const sequelize = require('./db');
 
 // PURPOSE: used to insert a new comment to the db
 async function createBoost(listingID, packageid, score) {
@@ -13,22 +13,22 @@ async function createBoost(listingID, packageid, score) {
     {
       bind: [listingID, packageid, score],
       type: Sequelize.INSERT,
-    }
+    },
   );
   console.log(result);
-  logDebug("DEBUG-createBoost", result);
+  logDebug('DEBUG-createBoost', result);
   return result[0];
 }
 
 async function getBoostByListingID(listingID) {
   const [result] = await sequelize.query(
-    "SELECT * FROM fujiji_boost WHERE listing_id = ?;",
+    'SELECT * FROM fujiji_boost WHERE listing_id = ?;',
     {
       replacements: [listingID],
       type: Sequelize.SELECT,
-    }
+    },
   );
-  logDebug("DEBUG-getBoostPackageById", result);
+  logDebug('DEBUG-getBoostPackageById', result);
   return result[0];
 }
 
