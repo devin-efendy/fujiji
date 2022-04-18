@@ -15,12 +15,11 @@ async function createBoost(listingID, packageid, score) {
       type: Sequelize.INSERT,
     },
   );
-  console.log(result);
   logDebug('DEBUG-createBoost', result);
   return result[0];
 }
 
-async function getBoostByListingID(listingID) {
+async function getBoostByListingId(listingID) {
   const [result] = await sequelize.query(
     'SELECT * FROM fujiji_boost WHERE listing_id = ?;',
     {
@@ -34,5 +33,5 @@ async function getBoostByListingID(listingID) {
 
 module.exports = {
   createBoost,
-  getBoostByListingID,
+  getBoostByListingId,
 };

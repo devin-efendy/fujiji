@@ -3,7 +3,7 @@ const {
 } = require('../repositories/boost');
 const { getListingById } = require('../repositories/listing');
 const { getBoostPackageById } = require('../repositories/boost_package');
-const { getBoostByListingID } = require('../repositories/boost');
+const { getBoostByListingId } = require('../repositories/boost');
 
 const {
   APIError,
@@ -15,7 +15,7 @@ const {
 // PURPOSE: implement the post boost endpoint
 async function postBoost(req, res, next) {
   const { listing_id: listingID } = req.params;
-  const { packageID } = req.body;
+  const { packageID } = req.query;
 
   const listing = await getListingById(parseInt(listingID, 10));
 
@@ -33,7 +33,7 @@ async function postBoost(req, res, next) {
     );
   }
 
-  const boost = await getBoostByListingID(listingID);
+  const boost = await getBoostByListingId(listingID);
 
   if (boost) {
     return next(
