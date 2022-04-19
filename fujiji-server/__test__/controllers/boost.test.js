@@ -46,7 +46,9 @@ describe('Test /boost endpoints', () => {
       const postBoostRes = await request(app)
         .post(`/boost/${postListingRes.body.listingId}`)
         .query({ packageID: 1 })
-        .set('Authorization', `Bearer ${token}`);
+        .set('Authorization', `Bearer ${token}`)
+        .send({ packageID: 1 });
+
       expect(postBoostRes.statusCode).toEqual(200);
     });
 

@@ -23,6 +23,11 @@ steps:
   displayName: 'Running ESLint and unit tests'
 
 - script: |
+    npm run build
+  workingDirectory: fujiji-client/
+  displayName: 'Build front-end'
+
+- script: |
     pwd
     ls
     cd fujiji-client/
