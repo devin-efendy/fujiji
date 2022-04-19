@@ -21,6 +21,7 @@ function PackageButton({
 }) {
   return (
     <Button
+      key={packageId}
       d="flex"
       flexDir="row"
       justifyContent="space-between"
@@ -69,7 +70,11 @@ export default function BoostPackageSelection() {
         ))}
       </Flex>
       <Flex mt="5" ml={300}>
-        <StripeCheckoutButton boostPackageName={packages[selectedId].name} boostPackagePrice={packages[selectedId].price} boostPackageID={packages[selectedId].id + 1} />
+        <StripeCheckoutButton
+          boostPackageName={packages[selectedId].name}
+          boostPackagePrice={packages[selectedId].price}
+          boostPackageID={packages[selectedId].id + 1}
+        />
       </Flex>
     </Box>
   );

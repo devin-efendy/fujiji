@@ -1,6 +1,12 @@
 import PropTypes from 'prop-types';
 import {
-  Box, Button, Flex, Text, Image, Icon, Link,
+  Box,
+  Button,
+  Flex,
+  Text,
+  Image,
+  Icon,
+  Link,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -81,7 +87,11 @@ export default function Listing({
         const response = await postBoost(payload);
         if (response.error) {
           let errorText = '';
-          if (response.status === '500') { errorText = 'Something went wrong... Check if Fujiji API is running'; } else if (response.status === '404') { errorText = 'Payment was successful but there was error fetching your boost package, please refresh or contact support'; }
+          if (response.status === '500') {
+            errorText = 'Something went wrong... Check if Fujiji API is running';
+          } else if (response.status === '404') {
+            errorText = 'Payment was successful but there was error fetching your boost package, please refresh or contact support';
+          }
 
           toast({
             title: errorText,
@@ -173,14 +183,14 @@ export default function Listing({
           </Text>
 
           {isSeller && boostDayLeft > 0 && (
-          <Text my="2" color="grey">
-            <TriangleUpIcon mr="2" color="yellow.400" fontSize="20" />
-            This listing is boosted.
-            {' '}
-            {boostDayLeft}
-            {' '}
-            days remaining.
-          </Text>
+            <Text my="2" color="grey">
+              <TriangleUpIcon mr="2" color="yellow.400" fontSize="20" />
+              This listing is boosted.
+              {' '}
+              {boostDayLeft}
+              {' '}
+              days remaining.
+            </Text>
           )}
 
           <Box mt="2">
@@ -199,11 +209,11 @@ export default function Listing({
             />
 
             {formattedDate && (
-            <ListingInfoBox
-              icon={BsCalendar}
-              infoField="Posted On"
-              infoContent={formattedDate}
-            />
+              <ListingInfoBox
+                icon={BsCalendar}
+                infoField="Posted On"
+                infoContent={formattedDate}
+              />
             )}
 
             <ListingInfoBox
@@ -225,42 +235,41 @@ export default function Listing({
               {formattedPrice}
             </Box>
             {isSeller && (
-            <Box>
-
-              <Button
-                aria-label="edit-listing-button"
-                colorScheme="teal"
-                onClick={onEditClick}
-              >
-                Edit
-              </Button>
-              {!boostDayLeft && (
+              <Box>
                 <Button
-                  leftIcon={<StarIcon />}
-                  ml="3"
-                  variant="outline"
-                  aria-label="boost-listing-button"
-                  colorScheme="yellow"
-                  onClick={openModal}
+                  aria-label="edit-listing-button"
+                  colorScheme="teal"
+                  onClick={onEditClick}
                 >
-                  Boost
+                  Edit
                 </Button>
-              )}
-            </Box>
+                {!boostDayLeft && (
+                  <Button
+                    leftIcon={<StarIcon />}
+                    ml="3"
+                    variant="outline"
+                    aria-label="boost-listing-button"
+                    colorScheme="yellow"
+                    onClick={openModal}
+                  >
+                    Boost
+                  </Button>
+                )}
+              </Box>
             )}
             {!isSeller && (
-            <Link
-              href={`mailto:${contactEmail}`}
-              _hover={{ textDecoration: 'none' }}
-            >
-              <Button
-                aria-label="contact-seller-button"
-                colorScheme="teal"
-                onClick={onContactClick}
+              <Link
+                href={`mailto:${contactEmail}`}
+                _hover={{ textDecoration: 'none' }}
               >
-                Contact
-              </Button>
-            </Link>
+                <Button
+                  aria-label="contact-seller-button"
+                  colorScheme="teal"
+                  onClick={onContactClick}
+                >
+                  Contact
+                </Button>
+              </Link>
             )}
           </Box>
         </Flex>
