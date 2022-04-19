@@ -33,6 +33,7 @@ export default async function getListingByUserId(userId, authToken) {
         price: listing.price,
         description: listing.description,
         postingDate: formattedDate,
+        isBoosted: parseInt(listing.score, 10) > 0,
       };
     });
   } catch (error) {
