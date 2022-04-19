@@ -1,25 +1,18 @@
 import axios from 'axios';
 import getConfig from 'next/config';
-import getQueryString from '../../utils/getQueryString';
 
-export default async function postBoost({
-  listingID,
-  packageID,
-  authToken,
-}) {
-  const queryString = getQueryString({
-    listingID,
-    packageID,
-  });
-
+export default async function postBoost({ listingID, packageID, authToken }) {
   try {
     const { publicRuntimeConfig } = getConfig();
     const result = await axios.post(
-      `${publicRuntimeConfig.FUJIJI_API_URL}/boost/${listingID}`,
-      queryString,
+      `${publicRuntimeConfig.FUJIJI_API_URL}/boost/${listingID}?packageID=${packageID}`,
+      {
+        params: {
+          packageID,
+        },
+      },
       {
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
           Authorization: `Bearer ${authToken}`,
         },
       },
