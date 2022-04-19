@@ -98,5 +98,6 @@ UserListingsPage.propTypes = {
     description: PropTypes.string,
     creationDate: PropTypes.string,
     error: PropTypes.string,
+    isBoosted: PropTypes.bool,
   }),
 };

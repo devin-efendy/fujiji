@@ -54,7 +54,8 @@
   "jest": {
     "testEnvironment": "node",
     "coveragePathIgnorePatterns": [
-      "/node_modules/"
+      "/node_modules/",
+      "/src/errors/"
     ],
     "collectCoverageFrom": [
       "src/**/*.js"

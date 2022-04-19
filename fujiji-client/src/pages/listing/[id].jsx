@@ -95,6 +95,7 @@ function IndividualListingPage({ listingData, commentsData }) {
         ? false
         : parseInt(listingData.userID, 10)
           === parseInt(session.userData?.userID, 10),
+    boostDayLeft: listingData.score > 0 ? listingData.score / 5 : 0,
   };
 
   const handleSubmitComment = async (payload) => {
@@ -171,6 +172,7 @@ IndividualListingPage.propTypes = {
     description: PropTypes.string,
     creationDate: PropTypes.string,
     contactEmail: PropTypes.string,
+    score: PropTypes.number,
     error: PropTypes.string,
   }),
   commentsData: PropTypes.arrayOf(
