@@ -5,7 +5,12 @@ const sequelize = require('./db');
 async function getAllListingsByCity(city) {
   try {
     const [listingsByCity] = await sequelize.query(
-      'SELECT * FROM fujiji_listing WHERE city = ?',
+      `SELECT fl.*, Case when boost.score is null Then -1
+                    Else boost.score END as score
+         FROM fujiji_listing fl 
+         LEFT JOIN fujiji_boost boost
+           ON fl.listing_id = boost.listing_id WHERE city = ?
+        ORDER BY score DESC, fl.creation_date DESC;`,
       {
         replacements: [city],
         type: Sequelize.SELECT,
@@ -21,7 +26,13 @@ async function getAllListingsByCity(city) {
 async function getAllListingsByCityCategory(city, category) {
   try {
     const [listingsByCityCategory] = await sequelize.query(
-      'SELECT * FROM fujiji_listing WHERE city = ? AND category = ?',
+      `SELECT fl.*, Case when boost.score is null Then -1
+                    Else boost.score END as score
+         FROM fujiji_listing fl 
+         LEFT JOIN fujiji_boost boost
+           ON fl.listing_id = boost.listing_id 
+        WHERE city = ? AND category = ?
+        ORDER BY score DESC, fl.creation_date DESC;`,
       {
         replacements: [city, category],
         type: Sequelize.SELECT,
@@ -37,7 +48,13 @@ async function getAllListingsByCityCategory(city, category) {
 async function getAllListingsByCityCondition(city, condition) {
   try {
     const [listingsByCityCondition] = await sequelize.query(
-      'SELECT * FROM fujiji_listing WHERE city = ? AND condition = ?',
+      `SELECT fl.*, Case When boost.score is null Then -1
+                    Else boost.score END as score
+         FROM fujiji_listing fl 
+         LEFT JOIN fujiji_boost boost
+           ON fl.listing_id = boost.listing_id
+        WHERE city = ? AND condition = ?
+        ORDER BY score DESC, fl.creation_date DESC;`,
       {
         replacements: [city, condition],
         type: Sequelize.SELECT,
@@ -53,7 +70,13 @@ async function getAllListingsByCityCondition(city, condition) {
 async function getAllListingsByCityPriceRange(city, startPrice, endPrice) {
   try {
     const [listingsByCityPriceRange] = await sequelize.query(
-      'SELECT * FROM fujiji_listing WHERE city = ? AND price BETWEEN ? AND ?',
+      `SELECT fl.*, Case When boost.score is null Then -1
+                    Else boost.score END as score
+         FROM fujiji_listing fl 
+         LEFT JOIN fujiji_boost boost
+           ON fl.listing_id = boost.listing_id
+        WHERE city = ? AND price BETWEEN ? AND ?
+        ORDER BY score DESC, fl.creation_date DESC;`,
       {
         replacements: [city, startPrice, endPrice],
         type: Sequelize.SELECT,
@@ -69,7 +92,12 @@ async function getAllListingsByCityPriceRange(city, startPrice, endPrice) {
 async function getAllListingsByProvince(provinceCode) {
   try {
     const [listingsByProvince] = await sequelize.query(
-      'SELECT * FROM fujiji_listing WHERE province_code = ?',
+      `SELECT fl.*, Case When boost.score is null Then -1
+                    Else boost.score END as score
+         FROM fujiji_listing fl 
+         LEFT JOIN fujiji_boost boost
+           ON fl.listing_id = boost.listing_id WHERE province_code = ?
+        ORDER BY score DESC, fl.creation_date DESC;`,
       {
         replacements: [provinceCode],
         type: Sequelize.SELECT,
@@ -85,7 +113,13 @@ async function getAllListingsByProvince(provinceCode) {
 async function getAllListingsByProvinceCategory(provinceCode, category) {
   try {
     const [listingsByProvinceCategory] = await sequelize.query(
-      'SELECT * FROM fujiji_listing WHERE province_code = ? AND category = ?',
+      `SELECT fl.*, Case When boost.score is null Then -1
+                    Else boost.score END as score
+         FROM fujiji_listing fl 
+         LEFT JOIN fujiji_boost boost
+           ON fl.listing_id = boost.listing_id
+        WHERE province_code = ? AND category = ?
+        ORDER BY score DESC, fl.creation_date DESC;`,
       {
         replacements: [provinceCode, category],
         type: Sequelize.SELECT,
@@ -101,7 +135,13 @@ async function getAllListingsByProvinceCategory(provinceCode, category) {
 async function getAllListingsByProvinceCondition(provinceCode, condition) {
   try {
     const [listingsByProvinceCondition] = await sequelize.query(
-      'SELECT * FROM fujiji_listing WHERE province_code = ? AND condition = ?',
+      `SELECT fl.*, Case When boost.score is null Then -1
+                    Else boost.score END as score
+         FROM fujiji_listing fl 
+         LEFT JOIN fujiji_boost boost
+           ON fl.listing_id = boost.listing_id 
+        WHERE province_code = ? AND condition = ?
+        ORDER BY score DESC, fl.creation_date DESC;`,
       {
         replacements: [provinceCode, condition],
         type: Sequelize.SELECT,
@@ -121,7 +161,13 @@ async function getAllListingsByProvincePriceRange(
 ) {
   try {
     const [listingsByProvincePriceRange] = await sequelize.query(
-      'SELECT * FROM fujiji_listing WHERE province_code = ? AND price BETWEEN ? AND ?',
+      `SELECT fl.*, Case When boost.score is null Then -1
+                    Else boost.score END as score
+         FROM fujiji_listing fl 
+         LEFT JOIN fujiji_boost boost
+           ON fl.listing_id = boost.listing_id 
+        WHERE province_code = ? AND price BETWEEN ? AND ?
+        ORDER BY score DESC, fl.creation_date DESC;`,
       {
         replacements: [provinceCode, startPrice, endPrice],
         type: Sequelize.SELECT,
@@ -140,7 +186,15 @@ async function getAllListingsByProvincePriceRange(
 async function getAllListingsDefault() {
   try {
     const [listingsByCity] = await sequelize.query(
-      'SELECT * FROM fujiji_listing ORDER BY creation_date DESC',
+      `SELECT fl.*, Case When boost.score is null Then -1
+         Else boost.score END as score
+         FROM fujiji_listing fl 
+         LEFT JOIN fujiji_boost boost
+           ON fl.listing_id = boost.listing_id
+        ORDER BY score DESC, fl.creation_date DESC;`,
+      {
+        type: Sequelize.SELECT,
+      },
     );
     return listingsByCity;
   } catch (err) {
@@ -283,7 +337,13 @@ async function getListingsBySearch(searchParameters) {
     };
 
     const [listingsBySearch] = await sequelize.query(
-      `SELECT * FROM fujiji_listing WHERE ${conditionsStr.where} ORDER BY creation_date DESC`,
+      `SELECT fl.*, Case When boost.score is null Then -1
+                    Else boost.score END as score
+        FROM fujiji_listing fl 
+        LEFT JOIN fujiji_boost boost
+          ON fl.listing_id = boost.listing_id 
+       WHERE ${conditionsStr.where} 
+       ORDER BY score DESC, fl.creation_date DESC;`,
       {
         replacements: conditionsStr.values,
         type: Sequelize.SELECT,

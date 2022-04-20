@@ -182,6 +182,7 @@ describe('Test /listing endpoints', () => {
         .post(`/boost/${postRes.body.listingId}`)
         .query({ packageID: 1 })
         .set('Authorization', `Bearer ${token}`);
+
       const res = await request(app).get(`/listing/${postRes.body.listingId}`);
       expect(res.statusCode).toEqual(200);
       expect(res.body.listing.score).toEqual(150);
