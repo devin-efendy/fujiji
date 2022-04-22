@@ -72,8 +72,8 @@ export default function Listing({
 }) {
   const router = useRouter();
   const toast = useToast();
-  const { query } = useRouter();
-  const { result, packageID } = query;
+  const query = router?.query;
+  const { result, packageID } = query || {};
   const { authToken } = useSession();
 
   useEffect(() => {
