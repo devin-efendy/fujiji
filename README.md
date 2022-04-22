@@ -10,13 +10,11 @@ Sellers can post an ad and choose to boost their ad by purchasing an extra fee. 
 2. Posting ad listings
 3. Listings filter/catalog/sort
 4. Making a purchase
-5. Comments and reviews
+5. Comments
 6. Chat between users
 
-Core features and their user stories breakdown (for first 3 features): https://github.com/devin-efendy/fujiji/wiki/Core-Features
-
 ## Technologies
-- Front-end: Next.js
+- Front-end: React, Next.js
 - Back-end: Node.js, Express
 - Database: Azure SQL
 
