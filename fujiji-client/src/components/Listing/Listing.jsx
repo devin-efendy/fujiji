@@ -6,7 +6,6 @@ import {
   Text,
   Image,
   Icon,
-  Link,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -24,8 +23,8 @@ import { BiCategory } from 'react-icons/bi';
 import { format, isValid, parse } from 'date-fns';
 import { useRouter } from 'next/router';
 import BoostPackageSelection from '../BoostPackageSelection/BoostPackageSelection';
-import { postBoost } from '../../server/api';
 import ConditionBadge from '../ConditionBadge/ConditionBadge';
+import { postMessage, postConversation, postBoost } from '../../server/api';
 import { useSession } from '../../context/session';
 
 function ListingInfoBox({ icon, infoField, infoContent }) {
@@ -67,8 +66,8 @@ export default function Listing({
   postingDate,
   price,
   title,
-  onContactClick = () => {},
-  contactEmail,
+  userID,
+  currentUserID,
 }) {
   const router = useRouter();
   const toast = useToast();
@@ -138,6 +137,35 @@ export default function Listing({
     router.push(`/listing/edit/${listingID}`);
   };
 
+  const postCon = async () => {
+    const payload1 = {
+      senderID: currentUserID,
+      receiverID: userID,
+      listingID,
+      authToken,
+    };
+
+    const response = await postConversation(payload1);
+
+    const payload2 = {
+      senderID: currentUserID,
+      conversationID: response,
+      message: 'Is this available?',
+      authToken,
+    };
+    await postMessage(payload2);
+
+    if (response.error) {
+      toast({
+        title: 'Oops! Something went wrong...',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
+    } else {
+      router.push(`/conversation/${response}`);
+    }
+  };
   const openModal = () => {
     router.replace(`/listing/${listingID}`, undefined, { shallow: true });
     onOpen();
@@ -258,18 +286,14 @@ export default function Listing({
               </Box>
             )}
             {!isSeller && (
-              <Link
-                href={`mailto:${contactEmail}`}
-                _hover={{ textDecoration: 'none' }}
+              <Button
+                aria-label="contact-seller-button"
+                colorScheme="teal"
+                onClick={postCon}
+                ml={4}
               >
-                <Button
-                  aria-label="contact-seller-button"
-                  colorScheme="teal"
-                  onClick={onContactClick}
-                >
-                  Contact
-                </Button>
-              </Link>
+                Start Conversation
+              </Button>
             )}
           </Box>
         </Flex>
@@ -296,7 +320,7 @@ Listing.propTypes = {
   city: PropTypes.string,
   province: PropTypes.string,
   condition: PropTypes.string,
-  onContactClick: PropTypes.func,
   postingDate: PropTypes.string,
-  contactEmail: PropTypes.string,
+  userID: PropTypes.number,
+  currentUserID: PropTypes.number,
 };

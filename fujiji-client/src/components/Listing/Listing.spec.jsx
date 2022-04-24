@@ -1,7 +1,7 @@
 import { render, fireEvent } from '@testing-library/react';
 
 import { useRouter } from 'next/router';
-import { postBoost } from '../../server/api';
+import { postBoost, postConversation, postMessage } from '../../server/api';
 
 import Listing from './Listing';
 import mockAdListing from '../../__mocks__/mockAdListing';
@@ -28,6 +28,8 @@ jest.mock('next/router', () => ({
 
 jest.mock('../../server/api', () => ({
   postBoost: jest.fn(),
+  postConversation: jest.fn(),
+  postMessage: jest.fn(),
 }));
 
 describe('Listing', () => {
@@ -82,24 +84,6 @@ describe('Listing', () => {
     expect(queryByText('21 February 2022')).toBeFalsy();
   });
 
-  it('should execute onContactClick callback when clicking the contact button', () => {
-    const mockPropsWithInvalidDate = {
-      ...mockAdListing[0],
-    };
-
-    const mockOnContactClick = jest.fn();
-
-    const { getByLabelText } = render(
-      <Listing
-        {...mockPropsWithInvalidDate}
-        onContactClick={mockOnContactClick}
-      />,
-    );
-
-    fireEvent.click(getByLabelText('contact-seller-button'), { bubbles: true });
-    expect(mockOnContactClick).toHaveBeenCalledTimes(1);
-  });
-
   it('should show boosted days remaining', () => {
     const mockBoostedListingProps = {
       ...mockAdListing[0],
@@ -128,6 +112,12 @@ describe('Listing', () => {
     }));
 
     postBoost.mockResolvedValueOnce({ status: 200 });
+    postConversation.mockResolvedValueOnce('2');
+    postMessage.mockResolvedValueOnce({
+      conversationID: '2',
+      senderID: '2',
+      message: 'hello',
+    });
 
     const { getByLabelText } = render(
       <Listing {...mockAdListing[0]} isSeller />,
@@ -175,6 +165,12 @@ describe('Listing', () => {
     }));
 
     postBoost.mockResolvedValueOnce({ status: 200 });
+    postConversation.mockResolvedValueOnce('2');
+    postMessage.mockResolvedValueOnce({
+      conversationID: '2',
+      senderID: '2',
+      message: 'hello',
+    });
 
     render(<Listing {...mockAdListing[0]} />);
 
@@ -195,6 +191,12 @@ describe('Listing', () => {
     }));
 
     postBoost.mockResolvedValueOnce({ error: 'some error', status: '404' });
+    postConversation.mockResolvedValueOnce('2');
+    postMessage.mockResolvedValueOnce({
+      conversationID: '2',
+      senderID: '2',
+      message: 'hello',
+    });
 
     render(<Listing {...mockAdListing[0]} />);
 
@@ -215,6 +217,12 @@ describe('Listing', () => {
     }));
 
     postBoost.mockResolvedValueOnce({ error: 'some error', status: '500' });
+    postConversation.mockResolvedValueOnce('2');
+    postMessage.mockResolvedValueOnce({
+      conversationID: '2',
+      senderID: '2',
+      message: 'hello',
+    });
 
     render(<Listing {...mockAdListing[0]} />);
 
