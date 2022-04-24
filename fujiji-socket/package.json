@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=develop nodemon src/app.js",
+    "dev": "NODE_ENV=develop nodemon src/app.js",
     "start": "NODE_ENV=production node src/app.js"
   },
   "repository": {
