@@ -25,6 +25,6 @@ steps:
       containerRegistry: "fujijiServerConnection"
       repository: "jishanarora1997/fujijiSocket"
       command: "buildAndPush"
-      Dockerfile: "**/Dockerfile.prod"
+      Dockerfile: "**/fujiji-socket/Dockerfile.prod"
       tags: $(Build.BuildNumber)
     displayName: "Docker image build"

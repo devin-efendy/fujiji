@@ -19,7 +19,7 @@ function ConversationPage({ params }) {
   const [receiverID, setReceiverID] = useState('');
   const scrollRef = useRef();
   const socket = useRef();
-  const URL = 'http://localhost:8001';
+  const URL = 'https://fujiji-socket.azurewebsites.net';
   socket.current = io(URL, { autoConnect: false, transports: ['websocket'] });
   const toast = useToast();
 
