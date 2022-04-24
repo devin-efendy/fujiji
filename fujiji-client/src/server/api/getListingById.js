@@ -27,6 +27,7 @@ export default async function getListingById(listingId) {
       description: listing.description,
       postingDate: listing.creation_date,
       contactEmail: listing.contact_email,
+      score: parseInt(listing.score, 10),
     };
   } catch (error) {
     if (error.response) {

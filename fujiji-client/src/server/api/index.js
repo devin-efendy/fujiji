@@ -21,3 +21,4 @@ export { default as postConversation } from './postConversation';
 export { default as postMessage } from './postMessage';
 export { default as getMessagesByConversationId } from './getMessagesByConversationId';
 export { default as getConversationsByConversationId } from './getConversationsByConversationId';
+export { default as postBoost } from './postBoost';

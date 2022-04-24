@@ -128,15 +128,7 @@ async function getAllListingsBySearch(req, res, next) {
       next(listings);
       return;
     }
-    for (let index = 0; index < listings.length; index += 1) {
-      // eslint-disable-next-line no-await-in-loop
-      const boost = await getBoostByListingId(listings[index].listing_id);
-      if (!boost) {
-        listings[index].score = -1;
-      } else {
-        listings[index].score = boost.score;
-      }
-    }
+
     res.status(200).json({ listings });
   } catch (err) {
     next(new APIError());
@@ -230,15 +222,7 @@ async function getAllListings(req, res, next) {
       next(listings);
       return;
     }
-    for (let index = 0; index < listings.length; index += 1) {
-      // eslint-disable-next-line no-await-in-loop
-      const boost = await getBoostByListingId(listings[index].listing_id);
-      if (!boost) {
-        listings[index].score = -1;
-      } else {
-        listings[index].score = boost.score;
-      }
-    }
+
     res.status(200).json({ listings });
   } catch (err) {
     next(new APIError());

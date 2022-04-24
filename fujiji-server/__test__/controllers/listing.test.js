@@ -1,6 +1,10 @@
 const request = require('supertest');
 const app = require('../../src/app');
-const { mockUser, seedTestDB, tearDownDB } = require('../dbSetup');
+const {
+  mockUser,
+  seedTestDB,
+  tearDownDB,
+} = require('../dbSetup');
 
 describe('Test /listing endpoints', () => {
   describe('GET /listing', () => {
@@ -35,11 +39,15 @@ describe('Test /listing endpoints', () => {
     });
 
     it('successfully get all listings by all filters using search route', async () => {
-      const res = await request(app)
-        .get('/listing/search')
-        .query({
-          title: 'Dummy Title', condition: 'used', category: 'other', city: 'Winnipeg', province: 'MB', startPrice: 70, endPrice: 120,
-        });
+      const res = await request(app).get('/listing/search').query({
+        title: 'Dummy Title',
+        condition: 'used',
+        category: 'other',
+        city: 'Winnipeg',
+        province: 'MB',
+        startPrice: 70,
+        endPrice: 120,
+      });
       expect(res.statusCode).toEqual(200);
     });
 
@@ -174,6 +182,7 @@ describe('Test /listing endpoints', () => {
         .post(`/boost/${postRes.body.listingId}`)
         .query({ packageID: 1 })
         .set('Authorization', `Bearer ${token}`);
+
       const res = await request(app).get(`/listing/${postRes.body.listingId}`);
       expect(res.statusCode).toEqual(200);
       expect(res.body.listing.score).toEqual(150);

@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { getUserByID, getUserListingsByID, updateUser } = require('../repositories/user');
+const { getBoostByListingId } = require('../repositories/boost');
 const APIError = require('../errors/api');
 const UserNotFoundError = require('../errors/user/userNotFound');
 const UserListingsNotFoundError = require('../errors/user/userListingsNotFound');
@@ -52,6 +53,17 @@ async function getUserListings(req, res, next) {
       next(new UserListingsNotFoundError());
       return;
     }
+
+    for (let index = 0; index < userListings.length; index += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      const boost = await getBoostByListingId(userListings[index].listing_id);
+      if (!boost) {
+        userListings[index].score = -1;
+      } else {
+        userListings[index].score = boost.score;
+      }
+    }
+
     res.status(200).json({ userListings });
   } catch (err) {
     next(new APIError());

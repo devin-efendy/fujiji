@@ -4,7 +4,7 @@ import {
 } from '@chakra-ui/react';
 
 import { useState } from 'react';
-import { ArrowForwardIcon } from '@chakra-ui/icons';
+import StripeCheckoutButton from '../Stripe/Stripe';
 
 const packages = [
   { id: 0, name: '3 Days Boost', price: 5 },
@@ -21,6 +21,7 @@ function PackageButton({
 }) {
   return (
     <Button
+      key={packageId}
       d="flex"
       flexDir="row"
       justifyContent="space-between"
@@ -41,7 +42,7 @@ function PackageButton({
   );
 }
 
-export default function BoostPackageSelection({ onContinue }) {
+export default function BoostPackageSelection() {
   const [selectedId, setSelectedId] = useState(0);
 
   return (
@@ -68,26 +69,16 @@ export default function BoostPackageSelection({ onContinue }) {
           />
         ))}
       </Flex>
-      <Flex mt="5">
-        <Button
-          colorScheme="blue"
-          rightIcon={<ArrowForwardIcon />}
-          ml="auto"
-          aria-label="continue-to-payment-buttons"
-          onClick={() => {
-            onContinue(selectedId);
-          }}
-        >
-          Continue
-        </Button>
+      <Flex mt="5" ml={300}>
+        <StripeCheckoutButton
+          boostPackageName={packages[selectedId].name}
+          boostPackagePrice={packages[selectedId].price}
+          boostPackageID={packages[selectedId].id + 1}
+        />
       </Flex>
     </Box>
   );
 }
-
-BoostPackageSelection.propTypes = {
-  onContinue: PropTypes.func,
-};
 
 PackageButton.propTypes = {
   isSelected: PropTypes.bool,
