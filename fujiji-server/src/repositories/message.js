@@ -2,11 +2,11 @@ const { Sequelize } = require('sequelize');
 const { logDebug } = require('../utils/logging');
 const sequelize = require('./db');
 
-// PURPOSE: used to insert a new comment to the db
+// PURPOSE: used to insert a new message to the db
 async function createMessage(senderID, conversationID, message) {
-  console.log('I am creating');
   const [result] = await sequelize.query(
-    'INSERT INTO fujiji_messages (sender_id, conversation_id, message, creation_date) OUTPUT INSERTED.* VALUES ($1, $2, $3, getutcdate());',
+    `INSERT INTO fujiji_messages (sender_id, conversation_id, message, creation_date) 
+      OUTPUT INSERTED.* VALUES ($1, $2, $3, getutcdate());`,
     {
       bind: [senderID, conversationID, message],
       type: Sequelize.INSERT,
@@ -17,7 +17,7 @@ async function createMessage(senderID, conversationID, message) {
   return result[0];
 }
 
-// PURPOSE: used to fetch comments from the db based on the listing_id
+// PURPOSE: used to fetch messages from the db based on the conversation_id
 async function getMessagesByConversationId(conversationID) {
   const [result] = await sequelize.query(
     'SELECT * FROM fujiji_messages WHERE conversation_id = ? ORDER BY creation_date ASC',
