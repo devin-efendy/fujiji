@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
 import { Box, Center, useToast } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
+import getConfig from 'next/config';
 import { useSession } from '../../../context/session';
 import { Message, withSession } from '../../../components';
 import {
@@ -19,7 +20,8 @@ function ConversationPage({ params }) {
   const [receiverID, setReceiverID] = useState('');
   const scrollRef = useRef();
   const socket = useRef();
-  const URL = 'https://fujiji-socket.azurewebsites.net';
+  const { publicRuntimeConfig } = getConfig();
+  const URL = publicRuntimeConfig.SOCKET_URL;
   socket.current = io(URL, { autoConnect: false, transports: ['websocket'] });
   const toast = useToast();
 
@@ -51,7 +53,7 @@ function ConversationPage({ params }) {
     socket.current.on('getMessage', (data) => {
       setArrivalMessage({
         receiverID: data?.receiverID,
-        conversationID: params.conversationId,
+        conversationID: data?.conversationID,
         senderID: data?.senderID,
         message: data?.text,
       });
@@ -60,8 +62,8 @@ function ConversationPage({ params }) {
 
   useEffect(() => {
     if (
-      (arrivalMessage && Number(userData?.userID) === Number(arrivalMessage?.senderID))
-      || Number(userData?.userID) === Number(arrivalMessage?.receiverID)
+      arrivalMessage && (Number(userData?.userID) === Number(arrivalMessage?.senderID)
+      || Number(userData?.userID) === Number(arrivalMessage?.receiverID)) && (Number(params.conversationId) === Number(arrivalMessage?.conversationID))
     ) {
       const message = {
         conversationID: arrivalMessage.conversationID,
@@ -109,6 +111,7 @@ function ConversationPage({ params }) {
     socket.current.emit('sendMessage', {
       senderID: userData?.userID,
       receiverID,
+      conversationID: params.conversationId,
       text: newMessage,
     });
 
