@@ -121,7 +121,7 @@ function IndividualListingPage({ listingData, commentsData }) {
   return (
     <Center id={`listingContainer-${listingData.listingID}`} px="1" py="6">
       <Flex flexDir="column">
-        <Listing {...listingProps} />
+        <Listing {...listingProps} currentUserID={session.userData?.userID} />
 
         <Box mt="6" p="3">
           <Divider mb="3" />

@@ -16,3 +16,8 @@ export { default as uploadImage } from './uploadImage';
 export { default as searchListings } from './searchListings';
 export { default as replyComment } from './replyComment';
 export { default as deleteCommentReplyById } from './deleteCommentReplyById';
+export { default as getConversationsByUserId } from './getConversationsByUserId';
+export { default as postConversation } from './postConversation';
+export { default as postMessage } from './postMessage';
+export { default as getMessagesByConversationId } from './getMessagesByConversationId';
+export { default as getConversationsByConversationId } from './getConversationsByConversationId';

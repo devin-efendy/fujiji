@@ -11,7 +11,7 @@ import {
   Avatar,
   MenuItem,
 } from '@chakra-ui/react';
-import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
+import { HamburgerIcon, CloseIcon, ChatIcon } from '@chakra-ui/icons';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { useSession } from '../../context/session';
@@ -69,7 +69,7 @@ function UserGroup({ signOutUser, userData }) {
       <Item to="/search">Search</Item>
       <Item to="/listing/create">Post</Item>
       <Item to={`/user/${userData.userID}/listings`}>My Listings</Item>
-      <Item to="/favourites">Favourites</Item>
+      <Item to={`/chat/${userData.userID}`}><Button colorScheme="teal"><ChatIcon /></Button></Item>
       <Menu>
         <MenuButton alignContent="center">
           <Avatar src="https://broken-link.com" name={userData.name} />

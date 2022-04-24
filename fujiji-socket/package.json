@@ -1,0 +1,29 @@
+{
+  "name": "fujiji-socket",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=develop nodemon src/app.js",
+    "start": "NODE_ENV=production node src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devin-efendy/fujiji.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/devin-efendy/fujiji/issues"
+  },
+  "homepage": "https://github.com/devin-efendy/fujiji#readme",
+  "keywords": [],
+  "dependencies": {
+    "nodemon": "^2.0.15",
+    "socket.io": "^4.4.1",
+    "dotenv": "^10.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "cross-env": "^7.0.3"
+  }
+}
