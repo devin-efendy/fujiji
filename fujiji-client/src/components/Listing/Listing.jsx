@@ -15,7 +15,7 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { StarIcon, TriangleUpIcon } from '@chakra-ui/icons';
 import { MdLocationOn } from 'react-icons/md';
 import { BsCalendar } from 'react-icons/bs';
@@ -24,7 +24,9 @@ import { format, isValid, parse } from 'date-fns';
 import { useRouter } from 'next/router';
 import BoostPackageSelection from '../BoostPackageSelection/BoostPackageSelection';
 import ConditionBadge from '../ConditionBadge/ConditionBadge';
-import { postMessage, postConversation, postBoost } from '../../server/api';
+import {
+  postMessage, postConversation, postBoost, getConversationsBetweenUsers,
+} from '../../server/api';
 import { useSession } from '../../context/session';
 
 function ListingInfoBox({ icon, infoField, infoContent }) {
@@ -74,9 +76,10 @@ export default function Listing({
   const query = router?.query;
   const { result, packageID } = query || {};
   const { authToken } = useSession();
+  const [conversationID, setConversationID] = useState('');
 
   useEffect(() => {
-    async function handleBoost() {
+    async function pageSetup() {
       if (result === 'success') {
         const payload = {
           listingID,
@@ -119,9 +122,20 @@ export default function Listing({
       }
 
       router.replace(`/listing/${listingID}`, undefined, { shallow: true });
+      try {
+        const getConversationIDResponse = await getConversationsBetweenUsers(currentUserID, userID, listingID, authToken);
+
+        if (getConversationIDResponse.error) {
+          // we dont want to do anything here but this can be used to debug
+        } else {
+          setConversationID(getConversationIDResponse);
+        }
+      } catch (error) {
+        // debug purpose
+      }
     }
 
-    handleBoost();
+    pageSetup();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -137,6 +151,9 @@ export default function Listing({
     router.push(`/listing/edit/${listingID}`);
   };
 
+  const goToConversation = () => {
+    router.push(`/conversation/${conversationID}`);
+  };
   const postCon = async () => {
     const payload1 = {
       senderID: currentUserID,
@@ -170,7 +187,6 @@ export default function Listing({
     router.replace(`/listing/${listingID}`, undefined, { shallow: true });
     onOpen();
   };
-
   return (
     <div>
       <Flex d="inline-flex" flexDir={['column', null, 'row', 'row']}>
@@ -285,16 +301,27 @@ export default function Listing({
                 )}
               </Box>
             )}
-            {!isSeller && (
-              <Button
-                aria-label="contact-seller-button"
-                colorScheme="teal"
-                onClick={postCon}
-                ml={4}
-              >
-                Start Conversation
-              </Button>
-            )}
+            {!isSeller && conversationID === ''
+              ? (
+                <Button
+                  aria-label="contact-seller-button"
+                  colorScheme="teal"
+                  onClick={postCon}
+                  ml={4}
+                >
+                  Start Conversation
+                </Button>
+              )
+              : (
+                <Button
+                  aria-label="go-to-chat"
+                  colorScheme="teal"
+                  onClick={goToConversation}
+                  ml={4}
+                >
+                  Go to Chat
+                </Button>
+              )}
           </Box>
         </Flex>
       </Flex>
