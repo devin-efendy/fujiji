@@ -14,6 +14,6 @@ router.get('/:id', authentication, getConversationsByConversationId);
 router.get('/user/:id', authentication, getConversations);
 
 // require senderID and receiverID as query parameters
-router.get('/:listing_id', authentication, getConversationId);
+router.get('/listing/:listing_id', authentication, getConversationId);
 
 module.exports = router;
