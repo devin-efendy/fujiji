@@ -25,7 +25,10 @@ import { useRouter } from 'next/router';
 import BoostPackageSelection from '../BoostPackageSelection/BoostPackageSelection';
 import ConditionBadge from '../ConditionBadge/ConditionBadge';
 import {
-  postMessage, postConversation, postBoost, getConversationsBetweenUsers,
+  postMessage,
+  postConversation,
+  postBoost,
+  getConversationsBetweenUsers,
 } from '../../server/api';
 import { useSession } from '../../context/session';
 
@@ -123,7 +126,12 @@ export default function Listing({
 
       router.replace(`/listing/${listingID}`, undefined, { shallow: true });
       try {
-        const getConversationIDResponse = await getConversationsBetweenUsers(currentUserID, userID, listingID, authToken);
+        const getConversationIDResponse = await getConversationsBetweenUsers(
+          currentUserID,
+          userID,
+          listingID,
+          authToken,
+        );
 
         if (getConversationIDResponse.error) {
           // we dont want to do anything here but this can be used to debug
@@ -187,6 +195,29 @@ export default function Listing({
     router.replace(`/listing/${listingID}`, undefined, { shallow: true });
     onOpen();
   };
+
+  const contactButton = conversationID === '' ? (
+    <Button
+      aria-label="contact-seller-button"
+      colorScheme="teal"
+      onClick={postCon}
+      ml={4}
+    >
+      Start Conversation
+    </Button>
+  ) : (
+    <Button
+      aria-label="go-to-chat"
+      colorScheme="teal"
+      onClick={goToConversation}
+      ml={4}
+    >
+      Go to Chat
+    </Button>
+  );
+
+  const renderContactButton = !isSeller ? contactButton : undefined;
+
   return (
     <div>
       <Flex d="inline-flex" flexDir={['column', null, 'row', 'row']}>
@@ -301,27 +332,7 @@ export default function Listing({
                 )}
               </Box>
             )}
-            {!isSeller && conversationID === ''
-              ? (
-                <Button
-                  aria-label="contact-seller-button"
-                  colorScheme="teal"
-                  onClick={postCon}
-                  ml={4}
-                >
-                  Start Conversation
-                </Button>
-              )
-              : (
-                <Button
-                  aria-label="go-to-chat"
-                  colorScheme="teal"
-                  onClick={goToConversation}
-                  ml={4}
-                >
-                  Go to Chat
-                </Button>
-              )}
+            {renderContactButton}
           </Box>
         </Flex>
       </Flex>
