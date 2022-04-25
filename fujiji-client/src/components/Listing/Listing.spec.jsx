@@ -1,7 +1,9 @@
 import { render, fireEvent } from '@testing-library/react';
 
 import { useRouter } from 'next/router';
-import { postBoost, postConversation, postMessage } from '../../server/api';
+import {
+  getConversationsBetweenUsers, postBoost, postConversation, postMessage,
+} from '../../server/api';
 
 import Listing from './Listing';
 import mockAdListing from '../../__mocks__/mockAdListing';
@@ -30,6 +32,7 @@ jest.mock('../../server/api', () => ({
   postBoost: jest.fn(),
   postConversation: jest.fn(),
   postMessage: jest.fn(),
+  getConversationsBetweenUsers: jest.fn(),
 }));
 
 describe('Listing', () => {
@@ -118,6 +121,7 @@ describe('Listing', () => {
       senderID: '2',
       message: 'hello',
     });
+    getConversationsBetweenUsers.mockResolvedValueOnce('35');
 
     const { getByLabelText } = render(
       <Listing {...mockAdListing[0]} isSeller />,
@@ -171,6 +175,7 @@ describe('Listing', () => {
       senderID: '2',
       message: 'hello',
     });
+    getConversationsBetweenUsers.mockResolvedValueOnce('35');
 
     render(<Listing {...mockAdListing[0]} />);
 
@@ -197,6 +202,7 @@ describe('Listing', () => {
       senderID: '2',
       message: 'hello',
     });
+    getConversationsBetweenUsers.mockResolvedValueOnce('35');
 
     render(<Listing {...mockAdListing[0]} />);
 
@@ -223,6 +229,7 @@ describe('Listing', () => {
       senderID: '2',
       message: 'hello',
     });
+    getConversationsBetweenUsers.mockResolvedValueOnce('35');
 
     render(<Listing {...mockAdListing[0]} />);
 
