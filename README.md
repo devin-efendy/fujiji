@@ -8,10 +8,12 @@ Sellers can post an ad and choose to boost their ad by purchasing an extra fee. 
 ## Core Features
 1. User profile/account
 2. Posting ad listings
-3. Listings filter/catalog/sort
+3. Listings filter/catalog
 4. Making a purchase
 5. Comments
-6. Chat between users
+
+## Additional Feature:
+- Chat between users
 
 ## Technologies
 - Front-end: React, Next.js
